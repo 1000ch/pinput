@@ -1,17 +1,17 @@
 (function() {
+  // get set url and title
   chrome.storage.local.get(["currentUrl", "currentTitle"], function(items) {
 
     var params = [];
+    
+    // pinboard API
     params.push("url=" + encodeURIComponent(items.currentUrl));
     params.push("title=" + encodeURIComponent(items.currentTitle));
-    //params.push("description=" + encodeURIComponent(description));
+    
+    // clear iframe cache
+    params.push("dt=" + Date.now());
 
-    var pinboardFrame = document.createElement("iframe");
-    pinboardFrame.width = "100%";
-    pinboardFrame.height = "100%";
-    pinboardFrame.src = "https://pinboard.in/add?" + params.join("&");
-
-    document.body.innerHTML = "";
-    document.body.appendChild(pinboardFrame);
+    // load at iframe
+    document.getElementById("js-pinboard").src = "https://pinboard.in/add?" + params.join("&");
   });
 })();
