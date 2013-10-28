@@ -1,6 +1,6 @@
 (function() {
   chrome.storage.local.get(["currentUrl", "currentTitle"], function(items) {
-    console.log(items);
+
     var params = [];
     params.push("url=" + encodeURIComponent(items.currentUrl));
     params.push("title=" + encodeURIComponent(items.currentTitle));
