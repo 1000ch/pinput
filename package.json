@@ -1,0 +1,23 @@
+{
+  "name": "Pinput",
+  "version": "0.1.0",
+  "description": "Light-weight chrome extension for Pinboard.",
+  "main": "Gruntfile.coffee",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/1000ch/Pinput.git"
+  },
+  "keywords": [
+    "pinboard"
+  ],
+  "author": "1000ch",
+  "license": "GPL v3",
+  "bugs": {
+    "url": "https://github.com/1000ch/Pinput/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.0",
+    "grunt-contrib-watch": "~0.5.3"
+  }
+}
