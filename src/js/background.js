@@ -1,16 +1,33 @@
 (function() {
 
+  var activeTabId = 0;
   var activeTabUrl = "";
   var activeTabTitle = "";
-  
-  // when the active tab is changed
-  chrome.tabs.onActivated.addListener(function(activeInfo) {
-    chrome.tabs.get(activeInfo.tabId, function(tab) {
+
+  /**
+   * Cache active tab information
+   * @param {Number} tabId
+   */
+  function cacheActiveTab(tabId) {
+    activeTabId = tabId;
+    chrome.tabs.get(tabId, function(tab) {
       activeTabUrl = tab.url;
       activeTabTitle = tab.title;
     });
+  }
+  
+  // when the active tab is changed
+  chrome.tabs.onActivated.addListener(function(activeInfo) {
+    cacheActiveTab(activeInfo.tabId);
   });
 
+  // when a tab is updated
+  chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if(activeTabId === tabId) {
+      cacheActiveTab(tabId);
+    }
+  });
+  
   // when received message, 
   // return the url and title of active tab
   chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {

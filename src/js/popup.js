@@ -5,7 +5,7 @@
   chrome.runtime.sendMessage({}, function(response) {
     var params = [];
 
-    // pinboard API
+    // query string for pinboard API
     params.push("url=" + encodeURIComponent(response.url));
     params.push("title=" + encodeURIComponent(response.title));
 
