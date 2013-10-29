@@ -1,8 +1,8 @@
 {
   "name": "Pinput",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "Light-weight chrome extension for Pinboard.",
-  "main": "Gruntfile.coffee",
+  "main": "gruntfile.coffee",
   "repository": {
     "type": "git",
     "url": "git://github.com/1000ch/Pinput.git"
