@@ -1,21 +1,23 @@
 (function() {
 
-  // if icon is clicked
-  chrome.browserAction.onClicked.addListener(function(tab) {
-    if(!tab) {
-      return;
-    }
-
-    // set current url and title
-    chrome.storage.local.set({
-      currentUrl: tab.url,
-      currentTitle: tab.title
-    }, function() {
-      chrome.browserAction.setPopup({
-        tabId: tab.id,
-        popup: "/src/html/popup.html"
-      });
+  var activeTabUrl = "";
+  var activeTabTitle = "";
+  
+  // when the active tab is changed
+  chrome.tabs.onActivated.addListener(function(activeInfo) {
+    chrome.tabs.get(activeInfo.tabId, function(tab) {
+      activeTabUrl = tab.url;
+      activeTabTitle = tab.title;
     });
+  });
+
+  // when received message, 
+  // return the url and title of active tab
+  chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    sendResponse({
+      url: activeTabUrl,
+      title: activeTabTitle
+    });    
   });
 
 })();
