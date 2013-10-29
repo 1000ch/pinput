@@ -1,6 +1,6 @@
 {
   "name": "Pinput",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "manifest_version": 2,
   "description": "Light-weight chrome extension for Pinboard.",
   "permissions": [
@@ -13,6 +13,8 @@
     "page": "/src/html/background.html"
   },
   "browser_action": {
-    "default_icon": "/src/icon/icon_32.png"
+    "default_icon": "/src/icon/icon_32.png",
+    "default_title": "Popup",
+    "default_popup": "/src/html/popup.html"
   }
 }
