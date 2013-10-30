@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Pinput",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Light-weight chrome extension for Pinboard.",
   "permissions": [
     "tabs",
@@ -15,6 +15,14 @@
     "default_icon": "/src/icon/icon_32.png",
     "default_title": "Pinput",
     "default_popup": "/src/html/popup.html"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+B",
+        "mac": "MacCtrl+B"
+      }
+    }
   },
   "offline_enabled": false,
   "author": "1000ch"
