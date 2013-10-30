@@ -3,6 +3,9 @@
   "version": "0.2.2",
   "description": "Light-weight chrome extension for Pinboard.",
   "main": "gruntfile.coffee",
+  "scripts": {
+    "test": "grunt jshint"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/1000ch/Pinput.git"
@@ -16,6 +19,7 @@
     "url": "https://github.com/1000ch/Pinput/issues"
   },
   "devDependencies": {
+    "grunt-cli": "~0.1.9",
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.0",
     "grunt-contrib-watch": "~0.5.3"
