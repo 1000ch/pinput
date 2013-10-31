@@ -7,7 +7,7 @@ module.exports = (grunt) ->
         globals: {}
         esprimaOptions: {}
         verbose: false
-      targetName:
+      all:
         files:
           src: ['<%=jshint.all%>']
     jshint:
