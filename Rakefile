@@ -5,8 +5,7 @@ end
 
 desc "copy files"
 task :copy => [:mkdir] do
-    FileUtils.cp_r("./manifest.json", "./tmp/")
-    FileUtils.cp_r("./src", "./tmp/")
+    FileUtils.cp_r("./src", "./tmp")
 end
 
 desc "compress files"
@@ -16,7 +15,7 @@ end
 
 desc "zip directory"
 task :archive => [:compress] do
-    sh "zip package.zip -r ./tmp/"
+    sh "zip package.zip -r ./tmp"
 end
 
 desc "remove temporary files"

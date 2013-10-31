@@ -9,12 +9,12 @@
     "https://*/*"
   ],
   "background": {
-    "page": "/src/html/background.html"
+    "page": "/html/background.html"
   },
   "browser_action": {
-    "default_icon": "/src/icon/icon_32.png",
+    "default_icon": "/icon/icon_32.png",
     "default_title": "Pinput",
-    "default_popup": "/src/html/popup.html"
+    "default_popup": "/html/popup.html"
   },
   "commands": {
     "_execute_browser_action": {
