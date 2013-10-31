@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Pinput",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Light-weight chrome extension for Pinboard.",
   "permissions": [
     "tabs",
@@ -19,9 +19,9 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Ctrl+B",
-        "mac": "MacCtrl+B"
-      }
+        "default": "Ctrl+B"
+      },
+      "description": "Open popup window."
     }
   },
   "offline_enabled": false,
