@@ -8,10 +8,10 @@ Light-weight chrome extension for Pinboard.
 
 Click only!
 
-## Lisence
+## License
 
 Copyright 1000ch  
 
 This extension is made with following resource.  
-These lisence equivalent distribution.  
-Other resources are lisenced under the GPL Lisence version 3.  
+These license equivalent distribution.  
+Other resources are licensed under the GPL License version 3.  
