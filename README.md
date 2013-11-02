@@ -2,11 +2,13 @@
 
 ## About
 
-Light-weight chrome extension for Pinboard.
+Light-weight chrome extension for [Pinboard](http://pinboard.in/).
 
 ## Usage
 
 Click only!
+
+![Screen Shot](./screenshot/pinput.png)
 
 ## License
 
