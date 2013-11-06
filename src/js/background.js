@@ -28,6 +28,19 @@
     }
   });
   
+  // when current window is switched
+  chrome.windows.onFocusChanged.addListener(function(windowId) {
+    chrome.windows.getCurrent({
+      populate: true
+    }, function(window) {
+      window.tabs.forEach(function(tab) {
+        if(tab.active) {
+          cacheActiveTab(tab.id);
+        }
+      });
+    });
+  });
+  
   // when received message, 
   // return the url and title of active tab
   chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
