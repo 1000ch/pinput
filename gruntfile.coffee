@@ -11,7 +11,7 @@ module.exports = (grunt) ->
         files:
           src: ['<%=jshint.all%>']
     jshint:
-      all: ['./src/js/*']
+      all: ['./src/js/*.js']
     watch:
       js:
         files: ['./src/js/*.js']

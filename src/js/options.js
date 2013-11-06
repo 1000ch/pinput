@@ -7,10 +7,11 @@
     var $alert = $("#js-alert");
     var chromeStorage = chrome.storage.sync;
 
+    // check set API token is authenticated
     chromeStorage.get("pinput_APIToken", function(items) {
       var token = "";
       if(items.hasOwnProperty("pinput_APIToken")) {
-        token = items["pinput_APIToken"];
+        token = items.pinput_APIToken;
       }
       var url = "https://api.pinboard.in/v1/posts/get?format=json&auth_token=" + token;
       $.getJSON(url).done(function(data) {
