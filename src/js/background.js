@@ -3,6 +3,7 @@
   var activeTabId = 0;
   var activeTabUrl = "";
   var activeTabTitle = "";
+  var checkedUrl = "";
 
   /**
    * Cache active tab information
@@ -13,6 +14,62 @@
     chrome.tabs.get(tabId, function(tab) {
       activeTabUrl = tab.url;
       activeTabTitle = tab.title;
+      updateIcon(activeTabId, activeTabUrl);
+    });
+  }
+
+  /**
+   * Check url is already bookmarked or not
+   * @param {Number} tabId
+   * @param {String} checkUrl
+   */
+  function updateIcon(tabId, checkUrl) {
+
+    // if schema is chrome related
+    if(checkUrl.indexOf("chrome://") !== -1 || checkUrl.indexOf("chrome-extension://") !== -1) {
+      chrome.browserAction.setBadgeText({
+        text: "",
+        tabId: tabId
+      });
+      return;
+    }
+
+    // filter duplicated check
+    if(checkedUrl === checkUrl) {
+      return;
+    } else {
+      checkedUrl = checkUrl;
+    }
+
+    // get Token and check
+    chrome.storage.sync.get(["pinput_APIToken", "pinput_isAuthenticated"], function(item) {
+      
+      var APIToken = item["pinput_APIToken"];
+      var isAuthenticated = item["pinput_isAuthenticated"];
+      
+      // if API token is authenticated
+      if(isAuthenticated) {
+        
+        // create url for check
+        var param = [];
+        param.push("format=json");
+        param.push("auth_token=" + APIToken);
+        param.push("url=" + checkUrl);
+        var url = "https://api.pinboard.in/v1/posts/get?" + param.join("&");
+
+        // request
+        $.getJSON(url).done(function(data) {
+          chrome.browserAction.setBadgeText({
+            text: (data.posts.length !== 0) ? "✓": "",
+            tabId: tabId
+          });
+        }).fail(function(error) {
+          chrome.browserAction.setBadgeText({
+            text: "",
+            tabId: tabId
+          });
+        });
+      }
     });
   }
   

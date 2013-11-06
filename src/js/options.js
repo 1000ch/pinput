@@ -7,22 +7,19 @@
     var $alert = $("#js-alert");
     var chromeStorage = chrome.storage.sync;
 
-    chromeStorage.get("pinput_apitoken_key", function(items) {
+    chromeStorage.get("pinput_APIToken", function(items) {
       var token = "";
-      if(items.hasOwnProperty("pinput_apitoken_key")) {
-        token = items["pinput_apitoken_key"];
+      if(items.hasOwnProperty("pinput_APIToken")) {
+        token = items["pinput_APIToken"];
       }
-      $.ajax({
-        url: "https://api.pinboard.in/v1/posts/get?format=json&auth_token=" + token,
-        method: "post",
-        type: "json"
-      }).success(function(data) {
-          $alert.removeClass("alert-info alert-warning alert-danger").addClass("alert-success");
-          $alert.html("API token is successfully authenticated!");
-        }).error(function(error) {
-          $alert.removeClass("alert-info alert-warning alert-success").addClass("alert-danger");
-          $alert.html("API token authentication is failed...");
-        });
+      var url = "https://api.pinboard.in/v1/posts/get?format=json&auth_token=" + token;
+      $.getJSON(url).done(function(data) {
+        $alert.removeClass("alert-info alert-warning alert-danger").addClass("alert-success");
+        $alert.html("API token is successfully authenticated!");
+      }).fail(function(error) {
+        $alert.removeClass("alert-info alert-warning alert-success").addClass("alert-danger");
+        $alert.html("API token authentication is failed...");
+      });
       $input.val(token);
     });
 
@@ -34,20 +31,17 @@
     $button.on("click", function(e) {
       var token = $input.val();
       var data = {
-        pinput_apitoken_key: token
+        pinput_APIToken: token
       };
       chromeStorage.set(data, function() {
-        $.ajax({
-          url: "https://api.pinboard.in/v1/posts/get?format=json&auth_token=" + token,
-          method: "post",
-          type: "json"
-        }).success(function(data) {
-          chromeStorage.set({pinput_is_authenticated: 1}, function() {
+        var url = "https://api.pinboard.in/v1/posts/get?format=json&auth_token=" + token;
+        $.getJSON(url).done(function(data) {
+          chromeStorage.set({pinput_isAuthenticated: 1}, function() {
             $alert.removeClass("alert-info alert-warning alert-danger").addClass("alert-success");
             $alert.html("API token is successfully authenticated!");
           });
-        }).error(function(error) {
-          chromeStorage.set({pinput_is_authenticated: 0}, function() {
+        }).fail(function(error) {
+          chromeStorage.set({pinput_isAuthenticated: 0}, function() {
             $alert.removeClass("alert-info alert-warning alert-success").addClass("alert-danger");
             $alert.html("API token authentication is failed...");
           });
