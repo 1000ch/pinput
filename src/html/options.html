@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pinput Settings</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <header class="jumbotron">
+        <h1><a href="https://github.com/1000ch/Pinput" target="_blank">Pinput</a> Settings</h1>
+        <p>Light-weight chrome extension for Pinboard.</p>
+      </header>
+      <section>
+        <h1>Pinboard API Token</h1>
+        <p>
+          This token will be used for checking current page is already bookmarked or not.<br>
+          Pinboard API Token is available <a href="https://pinboard.in/settings/password" target=_blank">"settings -> password"</a> and will be saved chrome sync storage.
+        </p>
+        <div class="input-group">
+          <input type="text" id="js-input" class="form-control" placeholder="Pinboard API Token">
+          <span class="input-group-btn">
+            <button id="js-button" class="btn btn-default" type="button">Save</button>
+          </span>
+        </div><br>
+        <div id="js-alert" class="alert alert-info">Please input token and try to save.</div>
+      </section>
+      <section>
+        <h1>Extension License</h1>
+        <p>Copyright <a href="http://twitter.com/1000ch" target="_blank">@1000ch</a></p>
+      </section>
+    </div>
+    <script src="/js/lib/jquery.min.js"></script>
+    <script src="/js/options.js"></script>
+  </body>
+</html>

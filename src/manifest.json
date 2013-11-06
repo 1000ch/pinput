@@ -5,6 +5,7 @@
   "description": "Light-weight chrome extension for Pinboard.",
   "permissions": [
     "tabs",
+    "storage",
     "http://*/*",
     "https://*/*"
   ],
@@ -16,6 +17,7 @@
     "default_title": "Pinput",
     "default_popup": "/html/popup.html"
   },
+  "options_page": "/html/options.html",
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
