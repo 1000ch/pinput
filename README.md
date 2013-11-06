@@ -10,6 +10,10 @@ Click only!
 
 ![Screen Shot](./screenshot/pinput.png)
 
+## Shortcut Key
+
+Press `Ctrl + B` then popup will open.
+
 ## License
 
 Copyright 1000ch  
