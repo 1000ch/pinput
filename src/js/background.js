@@ -51,7 +51,7 @@
     chrome.storage.sync.get([storageKey.APIToken, storageKey.isAuthenticated], function(item) {
       
       var APIToken = item[storageKey.APIToken];
-      var isAuthenticated = item[storageKey.isAuthenticated];console.log(isAuthenticated);
+      var isAuthenticated = item[storageKey.isAuthenticated];
       
       // if API token is authenticated
       if (isAuthenticated) {
