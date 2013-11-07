@@ -5,6 +5,12 @@
   var activeTabTitle = "";
   var checkedUrl = "";
 
+  // chrome storage key
+  var storageKey = {
+    APIToken: "pinput_APIToken",
+    isAuthenticated: "pinput_isAuthenticated"
+  };
+
   /**
    * Cache active tab information
    * @param {Number} tabId
@@ -26,7 +32,7 @@
   function updateIcon(tabId, checkUrl) {
 
     // if schema is chrome related
-    if(checkUrl.indexOf("chrome://") !== -1 || checkUrl.indexOf("chrome-extension://") !== -1) {
+    if (checkUrl.indexOf("chrome://") !== -1 || checkUrl.indexOf("chrome-extension://") !== -1) {
       chrome.browserAction.setBadgeText({
         text: "",
         tabId: tabId
@@ -35,20 +41,20 @@
     }
 
     // filter duplicated check
-    if(checkedUrl === checkUrl) {
+    if (checkedUrl === checkUrl) {
       return;
     } else {
       checkedUrl = checkUrl;
     }
 
     // get Token and check
-    chrome.storage.sync.get(["pinput_APIToken", "pinput_isAuthenticated"], function(item) {
+    chrome.storage.sync.get([storageKey.APIToken, storageKey.isAuthenticated], function(item) {
       
-      var APIToken = item.pinput_APIToken;
-      var isAuthenticated = item.pinput_isAuthenticated;
+      var APIToken = item[storageKey.APIToken];
+      var isAuthenticated = item[storageKey.isAuthenticated];console.log(isAuthenticated);
       
       // if API token is authenticated
-      if(isAuthenticated) {
+      if (isAuthenticated) {
         
         // create url for check
         var param = [];
@@ -69,6 +75,7 @@
             tabId: tabId
           });
         });
+
       }
     });
   }
