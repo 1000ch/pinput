@@ -31,18 +31,18 @@
           <label for="js-tags">Tags</label>
           <input type="text" name="tags" class="form-control" id="js-tags" placeholder="Tags">
         </div>
-        <div class="checkbox">
-          <label>
+        <div class="clearfix">
+          <label class="checkbox-inline">
             <input type="checkbox" id="js-private"> Private
           </label>
-        </div>
-        <div class="checkbox">
-          <label>
+          <label class="checkbox-inline">
             <input type="checkbox" id="js-readlater"> Read later
           </label>
+          <button id="js-bookmark" class="btn btn-primary pull-right">Bookmark</button>
         </div>
-        <button id="js-bookmark" class="btn btn-default">Bookmark</button>
       </form>
+      <br>
+      <div id="js-alert" class="alert alert-info">Add to Pinboard...</div>
     </div>
     <script src="/js/lib/jquery.min.js"></script>
     <script src="/js/lib/typeahead.min.js"></script>

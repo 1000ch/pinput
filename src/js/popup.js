@@ -8,11 +8,20 @@ $(function() {
   var $private = $("#js-private");
   var $readlater = $("#js-readlater");
   var $bookmark = $("#js-bookmark");
+  var $alert = $("#js-alert");
+  var chromeStorage = chrome.storage.sync;
 
   // chrome storage key
   var storageKey = {
     APIToken: "pinput_APIToken",
     isAuthenticated: "pinput_isAuthenticated"
+  };
+
+  // add result message
+  var resultMessage = {
+    bookmarked: "This URL is already bookmarked.",
+    succeed: "Bookmarked successfully!",
+    failed: "Bookmark is failed..."
   };
 
   // when popup is opened, 
@@ -23,7 +32,7 @@ $(function() {
     $title.val(response.title);
 
     // get Token and check
-    chrome.storage.sync.get([storageKey.APIToken, storageKey.isAuthenticated], function(item) {
+    chromeStorage.get([storageKey.APIToken, storageKey.isAuthenticated], function(item) {
 
       token = item[storageKey.APIToken];
 
@@ -43,46 +52,47 @@ $(function() {
             }
           });
         });
+        
+        url = "https://api.pinboard.in/v1/posts/get?" + params.join("&");
+        $.getJSON(url).done(function(data) {
+          if(data.posts.length !== 0) {
+            $alert.removeClass("alert-info alert-success alert-danger");
+            $alert.html(resultMessage.bookmarked).addClass("alert-warning");
+          }
+        });
 
         $bookmark.on("click", function(e) {
           
           e.preventDefault();
-          
-          var data = {
-            format: "json",
-            auth_token: token,
-            url: $url.val(),
-            title: $title.val(),
-            description: $description.val(),
-            tags: $tags.val(),
-            private: $private.prop("checked"),
-            toread: $readlater.prop("checked")
-          };
-          
-          $.ajax({
-            url: "https://api.pinboard.in/v1/posts/add?auth_token=" + token,
-            crossDomain: true,
-            data: data,
-            dataType: "json",
-            type: "post"
-          }).done(function(data) {
-            console.log("done");
-            console.log(data);
-          }).fail(function(error) {
-            console.log("fail");
-            console.log(error);
-          });
 
-          //var params = [];
-          //params.push("format=json");
-          //params.push("auth_token=" + token);
-          //params.push("url=" + encodeURIComponent($url.val()));
-          //params.push("title=" + encodeURIComponent($title.val()));
+          var params = [];
+          params.push("format=json");
+          params.push("auth_token=" + token);
+          params.push("url=" + encodeURIComponent($url.val()));
+          params.push("description=" + encodeURIComponent($title.val()));
+          params.push("extended=" + encodeURIComponent($description.val()));
+          params.push("tags=" + encodeURIComponent($tags.val()));
+          params.push("private=" + $private.prop("checked"));
+          params.push("toread=" + $readlater.prop("checked"));
+          params.push("_=" + Date.now());
           
-          //var url = "https://api.pinboard.in/v1/posts/add?" + params.join("&");
-          //$.getJSON(url).done(function(data) {
-          //  console.log(data);
-          //});
+          var url = "https://api.pinboard.in/v1/posts/add?" + params.join("&");
+ 
+          $.getJSON(url).done(function(data) {
+            if(data.result_code !== "done") {
+              $alert.removeClass("alert-info alert-warning alert-success");
+              $alert.html(data.result_code).addClass("alert-danger");
+            } else {
+              $alert.removeClass("alert-info alert-warning alert-danger");
+              $alert.html(resultMessage.succeed).addClass("alert-success");
+              window.setTimeout(function() {
+                window.close();
+              }, 500);
+            }
+          }).fail(function(error) {
+            $alert.removeClass("alert-info alert-warning alert-success");
+            $alert.html(error).addClass("alert-danger");
+          });
         });
       }
     });
