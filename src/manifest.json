@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Pinput",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Light-weight chrome extension for Pinboard.",
   "permissions": [
     "tabs",
