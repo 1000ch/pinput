@@ -48,31 +48,36 @@ $(function() {
           
           e.preventDefault();
           
-          var params = [];
-          params.push("format=json");
-          params.push("auth_token=" + token);
-          params.push("url=" + encodeURIComponent($url.val()));
-          params.push("title=" + encodeURIComponent($title.val()));
-
           var data = {
             format: "json",
             auth_token: token,
             url: $url.val(),
             title: $title.val(),
             description: $description.val(),
-            tags: $tags.val()
+            tags: $tags.val(),
+            private: $private.prop("checked"),
+            toread: $readlater.prop("checked")
           };
           
-          $.ajax("https://api.pinboard.in/v1/posts/add?auth_token=" + token, {
+          $.ajax({
+            url: "https://api.pinboard.in/v1/posts/add?auth_token=" + token,
             crossDomain: true,
             data: data,
             dataType: "json",
             type: "post"
           }).done(function(data) {
+            console.log("done");
             console.log(data);
           }).fail(function(error) {
+            console.log("fail");
             console.log(error);
           });
+
+          //var params = [];
+          //params.push("format=json");
+          //params.push("auth_token=" + token);
+          //params.push("url=" + encodeURIComponent($url.val()));
+          //params.push("title=" + encodeURIComponent($title.val()));
           
           //var url = "https://api.pinboard.in/v1/posts/add?" + params.join("&");
           //$.getJSON(url).done(function(data) {
@@ -81,8 +86,5 @@ $(function() {
         });
       }
     });
-    
-    
-
   });
 });
