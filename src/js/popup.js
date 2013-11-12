@@ -1,19 +1,88 @@
-(function() {
+$(function() {
+
+  var token = "";
+  var $url = $("#js-url");
+  var $title = $("#js-title");
+  var $tags = $("#js-tags");
+  var $description = $("#js-description");
+  var $private = $("#js-private");
+  var $readlater = $("#js-readlater");
+  var $bookmark = $("#js-bookmark");
+
+  // chrome storage key
+  var storageKey = {
+    APIToken: "pinput_APIToken",
+    isAuthenticated: "pinput_isAuthenticated"
+  };
 
   // when popup is opened, 
   // send blank message to background
   chrome.runtime.sendMessage({}, function(response) {
-    var params = [];
 
-    // query string for pinboard API
-    params.push("url=" + encodeURIComponent(response.url));
-    params.push("title=" + encodeURIComponent(response.title));
+    $url.val(response.url);
+    $title.val(response.title);
 
-    // clear iframe cache
-    params.push("dt=" + Date.now());
+    // get Token and check
+    chrome.storage.sync.get([storageKey.APIToken, storageKey.isAuthenticated], function(item) {
 
-    // load at iframe
-    document.getElementById("js-pinboard").src = "https://pinboard.in/add?" + params.join("&");
+      token = item[storageKey.APIToken];
+
+      if(item[storageKey.isAuthenticated]) {
+        
+        var params = [];
+        params.push("format=json");
+        params.push("auth_token=" + token);
+        params.push("url=" + response.url);
+
+        var url = "https://api.pinboard.in/v1/posts/suggest?" + params.join("&");
+
+        $.getJSON(url).done(function(array) {
+          array.forEach(function(data) {
+            if(Array.isArray(data.recommended)) {
+              $tags.val(data.recommended.join(" "));
+            }
+          });
+        });
+
+        $bookmark.on("click", function(e) {
+          
+          e.preventDefault();
+          
+          var params = [];
+          params.push("format=json");
+          params.push("auth_token=" + token);
+          params.push("url=" + encodeURIComponent($url.val()));
+          params.push("title=" + encodeURIComponent($title.val()));
+
+          var data = {
+            format: "json",
+            auth_token: token,
+            url: $url.val(),
+            title: $title.val(),
+            description: $description.val(),
+            tags: $tags.val()
+          };
+          
+          $.ajax("https://api.pinboard.in/v1/posts/add?auth_token=" + token, {
+            crossDomain: true,
+            data: data,
+            dataType: "json",
+            type: "post"
+          }).done(function(data) {
+            console.log(data);
+          }).fail(function(error) {
+            console.log(error);
+          });
+          
+          //var url = "https://api.pinboard.in/v1/posts/add?" + params.join("&");
+          //$.getJSON(url).done(function(data) {
+          //  console.log(data);
+          //});
+        });
+      }
+    });
+    
+    
+
   });
-
-})();
+});

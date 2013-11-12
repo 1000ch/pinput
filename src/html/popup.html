@@ -3,16 +3,49 @@
   <head>
     <meta charset="utf-8">
     <title>Pinput</title>
-    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <style>
       body {
-        width: 640px;
-        height: 300px;
+        width: 400px;
+        height: 480px;
+        padding: 10px 0;
       }
     </style>
   </head>
   <body>
-    <iframe id="js-pinboard" width="100%" height="100%"></iframe>
+    <div class="container">
+      <form id="js-form" role="form">
+        <div class="form-group">
+          <label for="js-url">URL</label>
+          <input type="url" name="url" class="form-control" id="js-url" placeholder="URL">
+        </div>
+        <div class="form-group">
+          <label for="js-title">Title</label>
+          <input type="text" name="title" class="form-control" id="js-title" placeholder="Title">
+        </div>
+        <div class="form-group">
+          <label for="js-description">Description</label>
+          <textarea name="description" class="form-control" id="js-description" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="js-tags">Tags</label>
+          <input type="text" name="tags" class="form-control" id="js-tags" placeholder="Tags">
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="js-private"> Private
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="js-readlater"> Read later
+          </label>
+        </div>
+        <button id="js-bookmark" class="btn btn-default">Bookmark</button>
+      </form>
+    </div>
+    <script src="/js/lib/jquery.min.js"></script>
+    <script src="/js/lib/typeahead.min.js"></script>
     <script src="/js/popup.js"></script>
   </body>
 </html>
