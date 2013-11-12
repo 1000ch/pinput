@@ -57,11 +57,11 @@
       if (isAuthenticated) {
         
         // create url for check
-        var param = [];
-        param.push("format=json");
-        param.push("auth_token=" + APIToken);
-        param.push("url=" + checkUrl);
-        var url = "https://api.pinboard.in/v1/posts/get?" + param.join("&");
+        var params = [];
+        params.push("format=json");
+        params.push("auth_token=" + APIToken);
+        params.push("url=" + checkUrl);
+        var url = "https://api.pinboard.in/v1/posts/get?" + params.join("&");
 
         // request
         $.getJSON(url).done(function(data) {
