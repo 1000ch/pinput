@@ -19,7 +19,8 @@ $(function() {
 
   // add result message
   var resultMessage = {
-    bookmarked: "This URL is already bookmarked.",
+    isBookmarked: "This URL is already bookmarked.",
+    isNotAuthenticated: "API Token is not authenticated.",
     succeed: "Bookmarked successfully!",
     failed: "Bookmark is failed..."
   };
@@ -57,7 +58,7 @@ $(function() {
         $.getJSON(url).done(function(data) {
           if(data.posts.length !== 0) {
             $alert.removeClass("alert-info alert-success alert-danger");
-            $alert.html(resultMessage.bookmarked).addClass("alert-warning");
+            $alert.html(resultMessage.isBookmarked).addClass("alert-warning");
           }
         });
 
@@ -94,6 +95,10 @@ $(function() {
             $alert.html(error).addClass("alert-danger");
           });
         });
+      } else {
+        $alert.removeClass("alert-info alert-warning alert-success");
+        $alert.html(resultMessage.isNotAuthenticated).addClass("alert-danger");
+        $bookmark.attr("disabled", "disabled");
       }
     });
   });
