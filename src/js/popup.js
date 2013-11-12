@@ -43,29 +43,34 @@ $(function() {
         params.push("format=json");
         params.push("auth_token=" + token);
         params.push("url=" + response.url);
+        params.push("_=" + Date.now());
 
-        var url = "https://api.pinboard.in/v1/posts/suggest?" + params.join("&");
-
-        $.getJSON(url).done(function(array) {
-          array.forEach(function(data) {
-            if(Array.isArray(data.recommended)) {
-              $tags.val(data.recommended.join(" "));
-            }
-          });
-        });
-        
-        url = "https://api.pinboard.in/v1/posts/get?" + params.join("&");
-        $.getJSON(url).done(function(data) {
+        var $jqxhrGet = $.getJSON("https://api.pinboard.in/v1/posts/get?" + params.join("&"));
+        $jqxhrGet.done(function(data) {
           if(data.posts.length !== 0) {
+            // if url is already bookmarked
+            $tags.val(data.posts[0].tags);
             $alert.removeClass("alert-info alert-success alert-danger");
             $alert.html(resultMessage.isBookmarked).addClass("alert-warning");
+          } else {
+            // if url is not bookmarked
+            var $jqxhrSuggest = $.getJSON("https://api.pinboard.in/v1/posts/suggest?" + params.join("&"));
+            $jqxhrSuggest.done(function(array) {
+              array.forEach(function(data) {
+                if(Array.isArray(data.popular)) {
+                  $tags.val(data.popular.join(" "));
+                }
+              });
+            });
           }
         });
 
         $bookmark.on("click", function(e) {
           
+          // prevent default
           e.preventDefault();
 
+          // create query string
           var params = [];
           params.push("format=json");
           params.push("auth_token=" + token);
@@ -76,10 +81,9 @@ $(function() {
           params.push("private=" + $private.prop("checked"));
           params.push("toread=" + $readlater.prop("checked"));
           params.push("_=" + Date.now());
-          
-          var url = "https://api.pinboard.in/v1/posts/add?" + params.join("&");
  
-          $.getJSON(url).done(function(data) {
+          var $jqxhrAdd = $.getJSON("https://api.pinboard.in/v1/posts/add?" + params.join("&"));
+          $jqxhrAdd.done(function(data) {
             if(data.result_code !== "done") {
               $alert.removeClass("alert-info alert-warning alert-success");
               $alert.html(data.result_code).addClass("alert-danger");
