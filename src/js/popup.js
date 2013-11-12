@@ -65,6 +65,13 @@ $(function() {
           }
         });
 
+        $.getJSON("https://api.pinboard.in/v1/tags/get?format=json&auth_token=" + token).done(function(data) {
+          $tags.typeahead({
+            name: "tags",
+            local: Object.keys(data)
+          })
+        });
+
         $bookmark.on("click", function(e) {
           
           // prevent default
