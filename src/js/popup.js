@@ -79,7 +79,7 @@ $(function() {
           $tags.typeahead({
             name: "tags",
             local: Object.keys(data)
-          })
+          });
         });
 
         $bookmark.on("click", function(e) {
