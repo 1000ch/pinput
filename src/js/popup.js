@@ -95,7 +95,7 @@ $(function() {
           params.push("description=" + encodeURIComponent($title.val()));
           params.push("extended=" + encodeURIComponent($description.val()));
           params.push("tags=" + encodeURIComponent($tags.val()));
-          params.push("private=" + ($private.prop("checked") ? "yes" : "no"));
+          params.push("shared=" + ($private.prop("checked") ? "no" : "yes"));
           params.push("toread=" + ($readlater.prop("checked") ? "yes" : "no"));
           params.push("_=" + Date.now());
  
