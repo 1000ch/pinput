@@ -24,6 +24,7 @@ You can open setting page with right click on icon, or from extensions page.
 
 ## License
 
-Copyright [1000ch](http://twitter.com/1000ch)  
+Copyright [@1000ch](http://twitter.com/1000ch)  
+Icons by [@t32k](http://twitter.com/t32k)  
 
 Licensed under the GPL License version 3.  

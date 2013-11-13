@@ -63,10 +63,16 @@
         params.push("url=" + checkUrl);
         var url = "https://api.pinboard.in/v1/posts/get?" + params.join("&");
 
+        // set background
+        chrome.browserAction.setBadgeBackgroundColor({
+          color: "#66cc33"
+        });
+
         // request
         $.getJSON(url).done(function(data) {
+          var isBookmarked = (data.posts.length !== 0);
           chrome.browserAction.setBadgeText({
-            text: (data.posts.length !== 0) ? "✓": "",
+            text: (isBookmarked) ? "✓": "",
             tabId: tabId
           });
         }).fail(function(error) {
