@@ -72,13 +72,13 @@ $(function() {
               });
             });
           }
-        });
-
-        // set up word suggestion
-        $.getJSON("https://api.pinboard.in/v1/tags/get?format=json&auth_token=" + token).done(function(data) {
-          $tags.typeahead({
-            name: "tags",
-            local: Object.keys(data)
+        }).always(function() {
+          // set up word suggestion
+          $.getJSON("https://api.pinboard.in/v1/tags/get?format=json&auth_token=" + token).done(function(data) {
+            $tags.typeahead({
+              name: "tags",
+              local: Object.keys(data)
+            });
           });
         });
 
