@@ -37,14 +37,23 @@ $(function() {
 
       token = item[storageKey.APIToken];
 
-      if(item[storageKey.isAuthenticated]) {
+      if(!item[storageKey.isAuthenticated]) {
+
+        // if API token is not authenticated, make me disabled.
+        $alert.removeClass("alert-info alert-warning alert-success");
+        $alert.html(resultMessage.isNotAuthenticated).addClass("alert-danger");
+        $bookmark.attr("disabled", "disabled");
         
+      } else {
+        
+        // create parameters
         var params = [];
         params.push("format=json");
         params.push("auth_token=" + token);
         params.push("url=" + response.url);
         params.push("_=" + Date.now());
 
+        // check whether url is bookmarked or not
         var $jqxhrGet = $.getJSON("https://api.pinboard.in/v1/posts/get?" + params.join("&"));
         $jqxhrGet.done(function(data) {
           if(data.posts.length !== 0) {
@@ -65,6 +74,7 @@ $(function() {
           }
         });
 
+        // set up word suggestion
         $.getJSON("https://api.pinboard.in/v1/tags/get?format=json&auth_token=" + token).done(function(data) {
           $tags.typeahead({
             name: "tags",
@@ -85,8 +95,8 @@ $(function() {
           params.push("description=" + encodeURIComponent($title.val()));
           params.push("extended=" + encodeURIComponent($description.val()));
           params.push("tags=" + encodeURIComponent($tags.val()));
-          params.push("private=" + $private.prop("checked"));
-          params.push("toread=" + $readlater.prop("checked"));
+          params.push("private=" + ($private.prop("checked") ? "yes" : "no"));
+          params.push("toread=" + ($readlater.prop("checked") ? "yes" : "no"));
           params.push("_=" + Date.now());
  
           var $jqxhrAdd = $.getJSON("https://api.pinboard.in/v1/posts/add?" + params.join("&"));
@@ -97,6 +107,8 @@ $(function() {
             } else {
               $alert.removeClass("alert-info alert-warning alert-danger");
               $alert.html(resultMessage.succeed).addClass("alert-success");
+
+              // close popup window
               window.setTimeout(function() {
                 window.close();
               }, 500);
@@ -106,10 +118,6 @@ $(function() {
             $alert.html(error).addClass("alert-danger");
           });
         });
-      } else {
-        $alert.removeClass("alert-info alert-warning alert-success");
-        $alert.html(resultMessage.isNotAuthenticated).addClass("alert-danger");
-        $bookmark.attr("disabled", "disabled");
       }
     });
   });

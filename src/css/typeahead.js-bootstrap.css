@@ -3,6 +3,14 @@
   margin-bottom: 0;
 }
 
+.twitter-typeahead {
+  display: block !important;
+}
+
+.twitter-typeahead .tt-hint {
+  display: none;
+}
+
 .tt-dropdown-menu {
   min-width: 160px;
   margin-top: 2px;
