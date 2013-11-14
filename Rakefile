@@ -25,8 +25,11 @@ end
 
 desc "remove temporary files"
 task :remove_tmp do
+    if File.exist?("package.zip") then
+        FileUtils.rm("package.zip")
+    end
     if File.exist?("./tmp") then
-        FileUtils.remove_dir("./tmp")
+        FileUtils.rm_r("./tmp")
     end
 end
 
