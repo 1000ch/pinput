@@ -25,6 +25,13 @@ $(function() {
     failed: "Bookmark is failed..."
   };
 
+  function split(val) {
+    return val.split(/ \s*/);
+  }
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
   // when popup is opened, 
   // send blank message to background
   chrome.runtime.sendMessage({}, function(response) {
@@ -75,9 +82,34 @@ $(function() {
         }).always(function() {
           // set up word suggestion
           $.getJSON("https://api.pinboard.in/v1/tags/get?format=json&auth_token=" + token).done(function(data) {
-            $tags.typeahead({
-              name: "tags",
-              local: Object.keys(data)
+            
+            var availableTags = Object.keys(data);
+            $tags.bind("keydown", function( event ) {
+              if(event.keyCode === $.ui.keyCode.TAB && $(this).data( "ui-autocomplete" ).menu.active) {
+                event.preventDefault();
+              }
+            }).autocomplete({
+              minLength: 0,
+              max: 5,
+              source: function(request, response) {
+                // delegate back to autocomplete, but extract the last term
+                response($.ui.autocomplete.filter(availableTags, extractLast(request.term)).slice(0, 5));
+              },
+              focus: function() {
+                // prevent value inserted on focus
+                return false;
+              },
+              select: function(event, ui) {
+                var terms = split(this.value);
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join(" ");
+                return false;
+              }
             });
           });
         });
