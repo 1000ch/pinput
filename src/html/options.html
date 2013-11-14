@@ -18,11 +18,13 @@
           Pinboard API Token is available at <a href="https://pinboard.in/settings/password" target="_blank"><code>settings -> password</code></a>.
           This token will be saved at chrome sync storage.
         </p>
-        <div class="input-group">
-          <input type="text" id="js-input" class="form-control" placeholder="Pinboard API Token">
-          <span class="input-group-btn">
-            <button id="js-button" class="btn btn-default" type="button">Save</button>
-          </span>
+        <div class="row row-margin">
+          <div class="col-xs-10">
+            <input type="text" id="js-input" class="form-control" placeholder="Pinboard API Token">
+          </div>
+          <div class="col-xs-2">
+            <button id="js-button" class="btn primary btn-block" type="button">Save</button>
+          </div>
         </div><br>
         <div id="js-alert" class="alert alert-info">Please input token and try to save.</div>
       </section>
