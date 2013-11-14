@@ -25,7 +25,9 @@ end
 
 desc "remove temporary files"
 task :remove_tmp do
-    FileUtils.remove_dir("./tmp")
+    if File.exist?("./tmp") then
+        FileUtils.remove_dir("./tmp")
+    end
 end
 
-task :default => [:archive, :remove_tmp]
+task :default => [:remove_tmp, :archive, :remove_tmp]
