@@ -1,6 +1,15 @@
+// autofocus attribute is not working on chrome extension :(
+// https://code.google.com/p/chromium/issues/detail?id=111660#c7
+if(location.search !== "?foo") {
+  location.search = "?foo";
+  throw new Error; // load everything on the next page;
+                   // stop execution on this page
+}
+
 $(function() {
 
   var token = "";
+  var $form = $("#js-form");
   var $url = $("#js-url");
   var $title = $("#js-title");
   var $tags = $("#js-tags");
@@ -32,12 +41,13 @@ $(function() {
     return split(term).pop();
   }
 
-  // when popup is opened, 
+  // when popup is opened,
   // send blank message to background
   chrome.runtime.sendMessage({}, function(response) {
 
     $url.val(response.url);
     $title.val(response.title);
+    $tags.focus();
 
     // get Token and check
     chromeStorage.get([storageKey.APIToken, storageKey.isAuthenticated], function(item) {
@@ -50,9 +60,9 @@ $(function() {
         $alert.removeClass("alert-info alert-warning alert-success");
         $alert.html(resultMessage.isNotAuthenticated).addClass("alert-danger");
         $bookmark.attr("disabled", "disabled");
-        
+
       } else {
-        
+
         // create parameters
         var params = [];
         params.push("format=json");
@@ -82,7 +92,7 @@ $(function() {
         }).always(function() {
           // set up word suggestion
           $.getJSON("https://api.pinboard.in/v1/tags/get?format=json&auth_token=" + token).done(function(data) {
-            
+
             var availableTags = Object.keys(data);
             $tags.bind("keydown", function( event ) {
               if(event.keyCode === $.ui.keyCode.TAB && $(this).data( "ui-autocomplete" ).menu.active) {
@@ -91,6 +101,7 @@ $(function() {
             }).autocomplete({
               minLength: 0,
               max: 5,
+              autoFocus: true,
               source: function(request, response) {
                 // delegate back to autocomplete, but extract the last term
                 response($.ui.autocomplete.filter(availableTags, extractLast(request.term)).slice(0, 5));
@@ -114,8 +125,8 @@ $(function() {
           });
         });
 
-        $bookmark.on("click", function(e) {
-          
+        function doBookmark(e) {
+
           // prevent default
           e.preventDefault();
 
@@ -130,7 +141,7 @@ $(function() {
           params.push("shared=" + ($private.prop("checked") ? "no" : "yes"));
           params.push("toread=" + ($readlater.prop("checked") ? "yes" : "no"));
           params.push("_=" + Date.now());
- 
+
           var $jqxhrAdd = $.getJSON("https://api.pinboard.in/v1/posts/add?" + params.join("&"));
           $jqxhrAdd.done(function(data) {
             if(data.result_code !== "done") {
@@ -149,7 +160,10 @@ $(function() {
             $alert.removeClass("alert-info alert-warning alert-success");
             $alert.html(error).addClass("alert-danger");
           });
-        });
+        }
+
+        $form.on("submit", doBookmark);
+        $bookmark.on("click", doBookmark);
       }
     });
   });
