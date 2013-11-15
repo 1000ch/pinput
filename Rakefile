@@ -33,4 +33,4 @@ task :remove_tmp do
     end
 end
 
-task :default => [:remove_tmp, :archive, :remove_tmp]
+task :default => [:remove_tmp, :archive]
