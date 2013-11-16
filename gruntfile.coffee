@@ -26,16 +26,11 @@ module.exports = (grunt) ->
           'dist/html/popup.html': 'src/html/popup.html'
     cssmin:
       all:
+        options:
+          keepSpecialComments: 1
         files:
           'dist/css/bootstrap.min.css': ['src/css/bootstrap.min.css']
           'dist/css/jquery-ui.custom.css': ['src/css/jquery-ui.custom.css']
-    uncss:
-      dist:
-        files:
-          'dist/css/bootstrap.min.css': ['src/html/popup.html', 'src/html/options.html']
-          'dist/css/jquery-ui.custom.css': ['src/html/popup.html']
-        options:
-          compress: true
     uglify:
       all:
         files:
@@ -43,6 +38,8 @@ module.exports = (grunt) ->
           'dist/js/options.js': ['src/js/options.js']
           'dist/js/popup.js': ['src/js/popup.js']
       lib:
+        options:
+          preserveComments: 'some'
         files:
           'dist/js/lib/jquery.min.js': ['src/js/lib/jquery.min.js']
           'dist/js/lib/jquery-ui.custom.min.js': ['src/js/lib/jquery-ui.custom.min.js']
@@ -63,12 +60,11 @@ module.exports = (grunt) ->
   
   grunt.loadNpmTasks 'grunt-contrib-htmlmin'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
-  grunt.loadNpmTasks 'grunt-uncss'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-exec'
   
   grunt.registerTask 'default', 'watch'
   grunt.registerTask 'test', ['jshint', 'jsvalidate', 'html-inspector']
-  grunt.registerTask 'optimize', ['htmlmin', 'cssmin', 'uncss', 'uglify']
+  grunt.registerTask 'optimize', ['htmlmin', 'cssmin', 'uglify']
   grunt.registerTask 'build', ['optimize', 'exec']
