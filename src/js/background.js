@@ -31,8 +31,13 @@
    */
   function updateIcon(tabId, checkUrl) {
 
+    var isNotBookmarkable = 
+      (checkUrl.indexOf("chrome://") !== -1) || 
+      (checkUrl.indexOf("chrome-extension://") !== -1) || 
+      (checkUrl.indexOf("file://") !== -1);
+
     // if schema is chrome related
-    if (checkUrl.indexOf("chrome://") !== -1 || checkUrl.indexOf("chrome-extension://") !== -1) {
+    if (isNotBookmarkable) {
       chrome.browserAction.setBadgeText({
         text: "",
         tabId: tabId
@@ -40,7 +45,7 @@
       return;
     }
 
-    // filter duplicated check
+    // filter 2nd check
     if (checkedUrl === checkUrl) {
       return;
     } else {
