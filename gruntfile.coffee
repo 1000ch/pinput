@@ -31,6 +31,7 @@ module.exports = (grunt) ->
         files:
           'dist/css/bootstrap.min.css': ['src/css/bootstrap.min.css']
           'dist/css/jquery-ui.custom.css': ['src/css/jquery-ui.custom.css']
+          'dist/css/popup.css': ['src/css/popup.css']
     uglify:
       all:
         files:
