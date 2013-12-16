@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Pinput",
-  "version": "0.6.6",
+  "version": "0.7.0",
   "description": "Light-weight chrome extension for Pinboard.",
   "icons": { 
     "16": "icons/icon16.png",
