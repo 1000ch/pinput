@@ -38,6 +38,7 @@ module.exports = (grunt) ->
           'dist/js/background.js': ['src/js/background.js']
           'dist/js/options.js': ['src/js/options.js']
           'dist/js/popup.js': ['src/js/popup.js']
+          'dist/js/common.js': ['src/js/common.js']
       lib:
         options:
           preserveComments: 'some'
