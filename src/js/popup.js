@@ -77,7 +77,7 @@ if(location.search !== "?foo") {
             // set up word suggestion
             Pinput.API.getTags().done(function(data) {
               var availableTags = Object.keys(data);
-              $tags.bind("keydown", function(event) {
+              $tags.on("keydown", function(event) {
                 if(event.keyCode === $.ui.keyCode.TAB && $(this).data("ui-autocomplete").menu.active) {
                   event.preventDefault();
                 }
@@ -112,14 +112,14 @@ if(location.search !== "?foo") {
             // prevent default
             e.preventDefault();
             
-            Pinput.API.addPost({
-              url: $url.val(),
-              description: $title.val(),
-              extended: $description.val(),
-              tags: $tags.val(),
-              shared: ($private.prop("checked") ? "no" : "yes"),
-              toread: ($readlater.prop("checked") ? "yes" : "no")
-            }).done(function(data) {
+            Pinput.API.addPost(
+              $url.val(),
+              $title.val(),
+              $description.val(),
+              $tags.val(),
+              ($private.prop("checked") ? "no" : "yes"),
+              ($readlater.prop("checked") ? "yes" : "no")
+            ).done(function(data) {
               if(data.result_code !== "done") {
                 $alert.removeClass("alert-info alert-warning alert-success");
                 $alert.html(data.result_code).addClass("alert-danger");
@@ -141,15 +141,15 @@ if(location.search !== "?foo") {
           $bookmark.on("click", function(e) {
             // prevent default
             e.preventDefault();
-  
-            Pinput.API.addPost({
-              url: $url.val(),
-              description: $title.val(),
-              extended: $description.val(),
-              tags: $tags.val(),
-              shared: ($private.prop("checked") ? "no" : "yes"),
-              toread: ($readlater.prop("checked") ? "yes" : "no")
-            }).done(function(data) {
+
+            Pinput.API.addPost(
+              $url.val(),
+              $title.val(),
+              $description.val(),
+              $tags.val(),
+              ($private.prop("checked") ? "no" : "yes"),
+              ($readlater.prop("checked") ? "yes" : "no")
+            ).done(function(data) {
               if(data.result_code !== "done") {
                 $alert.removeClass("alert-info alert-warning alert-success");
                 $alert.html(data.result_code).addClass("alert-danger");
