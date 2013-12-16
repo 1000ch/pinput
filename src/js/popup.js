@@ -7,62 +7,62 @@ if(location.search !== "?foo") {
   // stop execution on this page
 }
 
-/**
- * Split string with whitespace
- * @param {String} val
- * @returns {String}
- */
-function split(val) {
-  return val.split(/ \s*/);
-}
+var Pinput = {};
 
-/**
- * Extract last
- * @param {String} term
- * @returns {String}
- */
-function extractLast(term) {
-  return split(term).pop();
-}
+Pinput.authToken = '';
 
-/**
- * Serialize object to array
- * @param {Object} param
- * @returns {Array}
- */
-function serializeArray(param) {
-  // array to return
-  var array = [];
-  // fix argument
-  param = param || {};
+Pinput.Util = {
+  /**
+   * Split string with whitespace
+   * @param {String} val
+   * @returns {String}
+   */
+  split: function(val) {
+    return val.split(/ \s*/);
+  },
+  /**
+   * Extract last
+   * @param {String} term
+   * @returns {String}
+   */
+  extractLast: function(term) {
+    return this.split(term).pop();
+  },
+  /**
+   * Serialize object to array
+   * @param {Object} param
+   * @returns {Array}
+   */
+  serializeArray: function(param) {
+    // array to return
+    var array = [];
+    // fix argument
+    param = param || {};
+  
+    Object.keys(param).forEach(function(key) {
+      array.push(key + "=" + param[key]);
+    });
+    return array;
+  }
+};
 
-  Object.keys(param).forEach(function(key) {
-    array.push(key + "=" + param[key]);
-  });
-  return array;
-}
-
-var pinput = {};
-
-pinput.authToken = '';
-
-pinput.StorageKey = {
+Pinput.StorageKey = {
   APIToken: "pinput_APIToken",
   isAuthenticated: "pinput_isAuthenticated"
 };
 
-pinput.Message = {
+Pinput.Message = {
   isBookmarked: "This URL is already bookmarked.",
   isNotAuthenticated: "API Token is not authenticated.",
   succeed: "Bookmarked successfully!",
   failed: "Bookmark is failed..."
 };
 
-pinput.API = {
+Pinput.API = {
   addPost: function(url, title, description, tags, shared, toread) {
-    var params = serializeArray({
+    var params = Pinput.Util.serializeArray({
       format: "json",
-      auth_token: pinput.authToken,
+      auth_token: Pinput.authToken,
       url: encodeURIComponent(url),
       description: encodeURIComponent(title),
       extended: encodeURIComponent(description),
@@ -75,9 +75,9 @@ pinput.API = {
     return 'https://api.pinboard.in/v1/posts/add?' + params.join('&');
   },
   getPost: function(url) {
-    var params = serializeArray({
+    var params = Pinput.Util.serializeArray({
       format: "json",
-      auth_token: pinput.authToken,
+      auth_token: Pinput.authToken,
       url: encodeURIComponent(url),
       _: Date.now()
     });
@@ -85,9 +85,9 @@ pinput.API = {
     return 'https://api.pinboard.in/v1/posts/get?' + params.join('&');
   },
   suggestPost: function(url) {
-    var params = serializeArray({
+    var params = Pinput.Util.serializeArray({
       format: "json",
-      auth_token: pinput.authToken,
+      auth_token: Pinput.authToken,
       url: encodeURIComponent(url),
       _: Date.now()
     });
@@ -95,9 +95,9 @@ pinput.API = {
     return 'https://api.pinboard.in/v1/posts/suggest?' + params.join('&');
   },
   getTags: function() {
-    var params = serializeArray({
+    var params = Pinput.Util.serializeArray({
       format: "json",
-      auth_token: pinput.authToken,
+      auth_token: Pinput.authToken,
       _: Date.now()
     });
     return 'https://api.pinboard.in/v1/tags/get?' + params.join('&');
@@ -128,26 +128,26 @@ $(function() {
     $tags.focus();
 
     // get Token and check
-    chromeStorage.get([pinput.StorageKey.APIToken, pinput.StorageKey.isAuthenticated], function(item) {
+    chromeStorage.get([Pinput.StorageKey.APIToken, Pinput.StorageKey.isAuthenticated], function(item) {
       // cache token
-      pinput.authToken = item[pinput.StorageKey.APIToken];
+      Pinput.authToken = item[Pinput.StorageKey.APIToken];
 
-      if(!item[pinput.StorageKey.isAuthenticated]) {
+      if(!item[Pinput.StorageKey.isAuthenticated]) {
         // if API token is not authenticated, make me disabled.
         $alert.removeClass("alert-info alert-warning alert-success");
-        $alert.html(pinput.Message.isNotAuthenticated).addClass("alert-danger");
+        $alert.html(Pinput.Message.isNotAuthenticated).addClass("alert-danger");
         $bookmark.attr("disabled", "disabled");
       } else {
         // check whether url is bookmarked or not
-        $.getJSON(pinput.API.getPost(response.url)).done(function(data) {
+        $.getJSON(Pinput.API.getPost(response.url)).done(function(data) {
           if(data.posts.length !== 0) {
             // if url is already bookmarked
             $tags.val(data.posts.shift().tags);
             $alert.removeClass("alert-info alert-success alert-danger");
-            $alert.html(pinput.Message.isBookmarked).addClass("alert-warning");
+            $alert.html(Pinput.Message.isBookmarked).addClass("alert-warning");
           } else {
             // if url is not bookmarked
-            $.getJSON(pinput.API.suggestPost(response.url)).done(function(array) {
+            $.getJSON(Pinput.API.suggestPost(response.url)).done(function(array) {
               array.forEach(function(data) {
                 if(Array.isArray(data.popular)) {
                   $tags.val(data.popular.join(" "));
@@ -157,7 +157,7 @@ $(function() {
           }
         }).always(function() {
           // set up word suggestion
-          $.getJSON(pinput.API.getTags()).done(function(data) {
+          $.getJSON(Pinput.API.getTags()).done(function(data) {
 
             var availableTags = Object.keys(data);
             $tags.bind("keydown", function(event) {
@@ -170,14 +170,14 @@ $(function() {
               autoFocus: true,
               source: function(request, response) {
                 // delegate back to autocomplete, but extract the last term
-                response($.ui.autocomplete.filter(availableTags, extractLast(request.term)).slice(0, 5));
+                response($.ui.autocomplete.filter(availableTags, Pinput.Util.extractLast(request.term)).slice(0, 5));
               },
               focus: function() {
                 // prevent value inserted on focus
                 return false;
               },
               select: function(event, ui) {
-                var terms = split(this.value);
+                var terms = Pinput.Util.split(this.value);
                 // remove the current input
                 terms.pop();
                 // add the selected item
@@ -195,7 +195,7 @@ $(function() {
           // prevent default
           e.preventDefault();
           
-          var url = pinput.API.addPost({
+          var url = Pinput.API.addPost({
             url: $url.val(),
             description: $title.val(),
             extended: $description.val(),
@@ -210,7 +210,7 @@ $(function() {
               $alert.html(data.result_code).addClass("alert-danger");
             } else {
               $alert.removeClass("alert-info alert-warning alert-danger");
-              $alert.html(pinput.Message.succeed).addClass("alert-success");
+              $alert.html(Pinput.Message.succeed).addClass("alert-success");
 
               // close popup window
               window.setTimeout(function() {
@@ -227,7 +227,7 @@ $(function() {
           // prevent default
           e.preventDefault();
 
-          var url = pinput.API.addPost({
+          var url = Pinput.API.addPost({
             url: $url.val(),
             description: $title.val(),
             extended: $description.val(),
@@ -242,7 +242,7 @@ $(function() {
               $alert.html(data.result_code).addClass("alert-danger");
             } else {
               $alert.removeClass("alert-info alert-warning alert-danger");
-              $alert.html(pinput.Message.succeed).addClass("alert-success");
+              $alert.html(Pinput.Message.succeed).addClass("alert-success");
 
               // close popup window
               window.setTimeout(function() {
