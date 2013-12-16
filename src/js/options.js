@@ -61,19 +61,20 @@
     $button.on("click", function(e) {
       
       // get put value
-      var token = $input.val();
+      Pinput.authToken = $input.val();
       var storageData = {};
-      storageData[Pinput.StorageKey.APIToken] = token;
+      storageData[Pinput.StorageKey.APIToken] = Pinput.authToken;
   
       // save put value as token to chrome storage
       chromeStorage.set(storageData, function() {
-        if (token.length !== 0) {
+        if (Pinput.authToken.length !== 0) {
           Pinput.API.getPost().done(function(data) {
             // update as token is authenticated
             storageData[Pinput.StorageKey.isAuthenticated] = 1;
             chromeStorage.set(storageData, function() {
               $alert.removeClass("alert-info alert-warning alert-danger");
               $alert.html(Options.Message.succeed).addClass("alert-success");
+              Pinput.isAuthenticated = true;
             });
           }).fail(function(error) {
             // update as token is not authenticated
@@ -81,6 +82,7 @@
             chromeStorage.set(storageData, function() {
               $alert.removeClass("alert-info alert-warning alert-success");
               $alert.html(Options.Message.failed).addClass("alert-danger");
+              Pinput.isAuthenticated = false;
             });
           });
         } else {
@@ -89,6 +91,7 @@
           chromeStorage.set(storageData, function() {
             $alert.removeClass("alert-danger alert-warning alert-success");
             $alert.html(Options.Message.isBlank).addClass("alert-info");
+            Pinput.isAuthenticated = false;
           });
         }
       });
