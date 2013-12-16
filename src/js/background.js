@@ -5,10 +5,10 @@
   // background page namespace
   var Background = Pinput.Background || {};
 
-  var activeTabId = 0;
-  var activeTabUrl = "";
-  var activeTabTitle = "";
-  var checkedUrl = "";
+  Background.activeTabId = 0;
+  Background.activeTabUrl = "";
+  Background.activeTabTitle = "";
+  Background.checkedUrl = "";
   var chromeStorage = chrome.storage.sync;
 
   // check token authentication
@@ -22,11 +22,11 @@
    * @param {Number} tabId
    */
   function cacheActiveTab(tabId) {
-    activeTabId = tabId;
+    Background.activeTabId = tabId;
     chrome.tabs.get(tabId, function(tab) {
-      activeTabUrl = tab.url;
-      activeTabTitle = tab.title;
-      updateIcon(activeTabId, activeTabUrl);
+      Background.activeTabUrl = tab.url;
+      Background.activeTabTitle = tab.title;
+      updateIcon(Background.activeTabId, Background.activeTabUrl);
     });
   }
 
@@ -51,10 +51,10 @@
     }
 
     // filter 2nd check
-    if (checkedUrl === checkUrl) {
+    if (Background.checkedUrl === checkUrl) {
       return;
     } else {
-      checkedUrl = checkUrl;
+      Background.checkedUrl = checkUrl;
     }
 
     // if API token is authenticated
@@ -87,7 +87,7 @@
 
   // when a tab is updated
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if(activeTabId === tabId) {
+    if(Background.activeTabId === tabId) {
       cacheActiveTab(tabId);
     }
   });
@@ -109,8 +109,8 @@
   // return the url and title of active tab
   chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     sendResponse({
-      url: activeTabUrl,
-      title: activeTabTitle
+      url: Background.activeTabUrl,
+      title: Background.activeTabTitle
     });    
   });
 
