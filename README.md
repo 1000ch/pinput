@@ -6,11 +6,11 @@ Light-weight chrome extension for [Pinboard](http://pinboard.in/).
 
 ## Usage
 
-Click only!
+### Click to open popup window.
 
-![Screen Shot](https://raw.github.com/1000ch/Pinput/master/screenshot/pinput.png)
+![Screen Shot](https://raw.github.com/1000ch/pinput/master/screenshot/pinput.png)
 
-## Shortcut Key
+### Shortcut key
 
 Press `Ctrl + B` then popup will open.
 
@@ -20,7 +20,7 @@ To display whether the current tab is already bookmarked or not at icon,
 set your Pinboard API token at setting page.  
 You can open setting page with right click on icon, or from extensions page.  
 
-![Screen Shot](https://raw.github.com/1000ch/Pinput/master/screenshot/settings.png)
+![Screen Shot](https://raw.github.com/1000ch/pinput/master/screenshot/settings.png)
 
 ## License
 
