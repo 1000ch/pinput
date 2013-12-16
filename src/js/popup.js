@@ -44,6 +44,8 @@ function serializeArray(param) {
 
 var pinput = {};
 
+pinput.authToken = '';
+
 pinput.StorageKey = {
   APIToken: "pinput_APIToken",
   isAuthenticated: "pinput_isAuthenticated"
@@ -60,7 +62,7 @@ pinput.API = {
   addPost: function(url, title, description, tags, shared, toread) {
     var params = serializeArray({
       format: "json",
-      auth_token: token,
+      auth_token: pinput.authToken,
       url: encodeURIComponent(url),
       description: encodeURIComponent(title),
       extended: encodeURIComponent(description),
@@ -75,7 +77,7 @@ pinput.API = {
   getPost: function(url) {
     var params = serializeArray({
       format: "json",
-      auth_token: token,
+      auth_token: pinput.authToken,
       url: encodeURIComponent(url),
       _: Date.now()
     });
@@ -85,7 +87,7 @@ pinput.API = {
   suggestPost: function(url) {
     var params = serializeArray({
       format: "json",
-      auth_token: token,
+      auth_token: pinput.authToken,
       url: encodeURIComponent(url),
       _: Date.now()
     });
@@ -95,7 +97,7 @@ pinput.API = {
   getTags: function() {
     var params = serializeArray({
       format: "json",
-      auth_token: token,
+      auth_token: pinput.authToken,
       _: Date.now()
     });
     return 'https://api.pinboard.in/v1/tags/get?' + params.join('&');
@@ -104,7 +106,6 @@ pinput.API = {
 
 $(function() {
 
-  var token = "";
   var $form = $("#js-form");
   var $url = $("#js-url");
   var $title = $("#js-title");
@@ -129,7 +130,7 @@ $(function() {
     // get Token and check
     chromeStorage.get([pinput.StorageKey.APIToken, pinput.StorageKey.isAuthenticated], function(item) {
       // cache token
-      token = item[pinput.StorageKey.APIToken];
+      pinput.authToken = item[pinput.StorageKey.APIToken];
 
       if(!item[pinput.StorageKey.isAuthenticated]) {
         // if API token is not authenticated, make me disabled.
