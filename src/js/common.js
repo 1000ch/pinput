@@ -1,6 +1,7 @@
 var Pinput = Pinput || {};
 
 Pinput.authToken = '';
+Pinput.isAuthenticated = false;
 
 Pinput.Util = {
   /**

@@ -1,15 +1,21 @@
-(function() {
+(function(global) {
+
+  // common namespace
+  var Pinput = global.Pinput || {};
+  // background page namespace
+  var Background = Pinput.Background || {};
 
   var activeTabId = 0;
   var activeTabUrl = "";
   var activeTabTitle = "";
   var checkedUrl = "";
+  var chromeStorage = chrome.storage.sync;
 
-  // chrome storage key
-  var storageKey = {
-    APIToken: "pinput_APIToken",
-    isAuthenticated: "pinput_isAuthenticated"
-  };
+  // check token authentication
+  chromeStorage.get([Pinput.StorageKey.APIToken, Pinput.StorageKey.isAuthenticated], function(item) {
+    Pinput.authToken = item[Pinput.StorageKey.APIToken];
+    Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
+  });
 
   /**
    * Cache active tab information
@@ -30,7 +36,6 @@
    * @param {String} checkUrl
    */
   function updateIcon(tabId, checkUrl) {
-
     var isNotBookmarkable = 
       (checkUrl.indexOf("chrome://") !== -1) || 
       (checkUrl.indexOf("chrome-extension://") !== -1) || 
@@ -52,43 +57,27 @@
       checkedUrl = checkUrl;
     }
 
-    // get Token and check
-    chrome.storage.sync.get([storageKey.APIToken, storageKey.isAuthenticated], function(item) {
-      
-      var APIToken = item[storageKey.APIToken];
-      var isAuthenticated = item[storageKey.isAuthenticated];
-      
-      // if API token is authenticated
-      if (isAuthenticated) {
-        
-        // create url for check
-        var params = [];
-        params.push("format=json");
-        params.push("auth_token=" + APIToken);
-        params.push("url=" + checkUrl);
-        var url = "https://api.pinboard.in/v1/posts/get?" + params.join("&");
+    // if API token is authenticated
+    if (Pinput.isAuthenticated) {
+      // set background
+      chrome.browserAction.setBadgeBackgroundColor({
+        color: "#66cc33"
+      });
 
-        // set background
-        chrome.browserAction.setBadgeBackgroundColor({
-          color: "#66cc33"
+      // request
+      Pinput.API.getPost(checkUrl).done(function(data) {
+        var isBookmarked = (data.posts.length !== 0);
+        chrome.browserAction.setBadgeText({
+          text: (isBookmarked) ? "✓": "",
+          tabId: tabId
         });
-
-        // request
-        $.getJSON(url).done(function(data) {
-          var isBookmarked = (data.posts.length !== 0);
-          chrome.browserAction.setBadgeText({
-            text: (isBookmarked) ? "✓": "",
-            tabId: tabId
-          });
-        }).fail(function(error) {
-          chrome.browserAction.setBadgeText({
-            text: "",
-            tabId: tabId
-          });
+      }).fail(function(error) {
+        chrome.browserAction.setBadgeText({
+          text: "",
+          tabId: tabId
         });
-
-      }
-    });
+      });
+    }
   }
   
   // when the active tab is changed
@@ -125,4 +114,4 @@
     });    
   });
 
-})();
+})(this);
