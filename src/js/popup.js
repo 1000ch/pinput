@@ -7,101 +7,14 @@ if(location.search !== "?foo") {
   // stop execution on this page
 }
 
-var Pinput = {};
+var Pinput = Pinput || {};
+var Popup = Pinput.Popup || {};
 
-Pinput.authToken = '';
-
-Pinput.Util = {
-  /**
-   * Split string with whitespace
-   * @param {String} val
-   * @returns {String}
-   */
-  split: function(val) {
-    return val.split(/ \s*/);
-  },
-  /**
-   * Extract last
-   * @param {String} term
-   * @returns {String}
-   */
-  extractLast: function(term) {
-    return this.split(term).pop();
-  },
-  /**
-   * Serialize object to array
-   * @param {Object} param
-   * @returns {Array}
-   */
-  serializeArray: function(param) {
-    // array to return
-    var array = [];
-    // fix argument
-    param = param || {};
-  
-    Object.keys(param).forEach(function(key) {
-      array.push(key + "=" + param[key]);
-    });
-    return array;
-  }
-};
-
-Pinput.StorageKey = {
-  APIToken: "pinput_APIToken",
-  isAuthenticated: "pinput_isAuthenticated"
-};
-
-Pinput.Message = {
+Popup.Message = {
   isBookmarked: "This URL is already bookmarked.",
   isNotAuthenticated: "API Token is not authenticated.",
   succeed: "Bookmarked successfully!",
   failed: "Bookmark is failed..."
-};
-
-Pinput.API = {
-  addPost: function(url, title, description, tags, shared, toread) {
-    var params = Pinput.Util.serializeArray({
-      format: "json",
-      auth_token: Pinput.authToken,
-      url: encodeURIComponent(url),
-      description: encodeURIComponent(title),
-      extended: encodeURIComponent(description),
-      tags: encodeURIComponent(tags),
-      shared: ($private.prop("checked") ? "no" : "yes"),
-      toread: ($readlater.prop("checked") ? "yes" : "no"),
-      _: Date.now()
-    });
-    // all of API is get method
-    return 'https://api.pinboard.in/v1/posts/add?' + params.join('&');
-  },
-  getPost: function(url) {
-    var params = Pinput.Util.serializeArray({
-      format: "json",
-      auth_token: Pinput.authToken,
-      url: encodeURIComponent(url),
-      _: Date.now()
-    });
-    // all of API is get method
-    return 'https://api.pinboard.in/v1/posts/get?' + params.join('&');
-  },
-  suggestPost: function(url) {
-    var params = Pinput.Util.serializeArray({
-      format: "json",
-      auth_token: Pinput.authToken,
-      url: encodeURIComponent(url),
-      _: Date.now()
-    });
-    // all of API is get method
-    return 'https://api.pinboard.in/v1/posts/suggest?' + params.join('&');
-  },
-  getTags: function() {
-    var params = Pinput.Util.serializeArray({
-      format: "json",
-      auth_token: Pinput.authToken,
-      _: Date.now()
-    });
-    return 'https://api.pinboard.in/v1/tags/get?' + params.join('&');
-  }
 };
 
 $(function() {
@@ -135,19 +48,19 @@ $(function() {
       if(!item[Pinput.StorageKey.isAuthenticated]) {
         // if API token is not authenticated, make me disabled.
         $alert.removeClass("alert-info alert-warning alert-success");
-        $alert.html(Pinput.Message.isNotAuthenticated).addClass("alert-danger");
+        $alert.html(Popup.Message.isNotAuthenticated).addClass("alert-danger");
         $bookmark.attr("disabled", "disabled");
       } else {
         // check whether url is bookmarked or not
-        $.getJSON(Pinput.API.getPost(response.url)).done(function(data) {
+        Pinput.API.getPost(response.url).done(function(data) {
           if(data.posts.length !== 0) {
             // if url is already bookmarked
             $tags.val(data.posts.shift().tags);
             $alert.removeClass("alert-info alert-success alert-danger");
-            $alert.html(Pinput.Message.isBookmarked).addClass("alert-warning");
+            $alert.html(Popup.Message.isBookmarked).addClass("alert-warning");
           } else {
             // if url is not bookmarked
-            $.getJSON(Pinput.API.suggestPost(response.url)).done(function(array) {
+            Pinput.API.suggestPost(response.url).done(function(array) {
               array.forEach(function(data) {
                 if(Array.isArray(data.popular)) {
                   $tags.val(data.popular.join(" "));
@@ -157,8 +70,7 @@ $(function() {
           }
         }).always(function() {
           // set up word suggestion
-          $.getJSON(Pinput.API.getTags()).done(function(data) {
-
+          Pinput.API.getTags().done(function(data) {
             var availableTags = Object.keys(data);
             $tags.bind("keydown", function(event) {
               if(event.keyCode === $.ui.keyCode.TAB && $(this).data("ui-autocomplete").menu.active) {
@@ -195,22 +107,20 @@ $(function() {
           // prevent default
           e.preventDefault();
           
-          var url = Pinput.API.addPost({
+          Pinput.API.addPost({
             url: $url.val(),
             description: $title.val(),
             extended: $description.val(),
             tags: $tags.val(),
             shared: ($private.prop("checked") ? "no" : "yes"),
             toread: ($readlater.prop("checked") ? "yes" : "no")
-          });
-
-          $.getJSON(url).done(function(data) {
+          }).done(function(data) {
             if(data.result_code !== "done") {
               $alert.removeClass("alert-info alert-warning alert-success");
               $alert.html(data.result_code).addClass("alert-danger");
             } else {
               $alert.removeClass("alert-info alert-warning alert-danger");
-              $alert.html(Pinput.Message.succeed).addClass("alert-success");
+              $alert.html(Popup.Message.succeed).addClass("alert-success");
 
               // close popup window
               window.setTimeout(function() {
@@ -227,22 +137,20 @@ $(function() {
           // prevent default
           e.preventDefault();
 
-          var url = Pinput.API.addPost({
+          Pinput.API.addPost({
             url: $url.val(),
             description: $title.val(),
             extended: $description.val(),
             tags: $tags.val(),
             shared: ($private.prop("checked") ? "no" : "yes"),
             toread: ($readlater.prop("checked") ? "yes" : "no")
-          });
-
-          $.getJSON(url).done(function(data) {
+          }).done(function(data) {
             if(data.result_code !== "done") {
               $alert.removeClass("alert-info alert-warning alert-success");
               $alert.html(data.result_code).addClass("alert-danger");
             } else {
               $alert.removeClass("alert-info alert-warning alert-danger");
-              $alert.html(Pinput.Message.succeed).addClass("alert-success");
+              $alert.html(Popup.Message.succeed).addClass("alert-success");
 
               // close popup window
               window.setTimeout(function() {
