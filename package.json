@@ -1,6 +1,6 @@
 {
   "name": "Pinput",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Light-weight chrome extension for Pinboard.",
   "main": "gruntfile.coffee",
   "scripts": {
