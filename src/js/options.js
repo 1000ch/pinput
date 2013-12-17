@@ -21,11 +21,11 @@
     var chromeStorage = chrome.storage.sync;
     
     // check set API token is authenticated
-    chromeStorage.get(Pinput.StorageKey.APIToken, function(items) {
+    chromeStorage.get(Pinput.StorageKey.authToken, function(items) {
   
       // get saved(?) token
-      if (items.hasOwnProperty(Pinput.StorageKey.APIToken)) {
-        Pinput.authToken = items[Pinput.StorageKey.APIToken];
+      if (items.hasOwnProperty(Pinput.StorageKey.authToken)) {
+        Pinput.authToken = items[Pinput.StorageKey.authToken];
       } else {
         Pinput.authToken = '';
       }
@@ -63,7 +63,7 @@
       // get put value
       Pinput.authToken = $input.val();
       var storageData = {};
-      storageData[Pinput.StorageKey.APIToken] = Pinput.authToken;
+      storageData[Pinput.StorageKey.authToken] = Pinput.authToken;
   
       // save put value as token to chrome storage
       chromeStorage.set(storageData, function() {

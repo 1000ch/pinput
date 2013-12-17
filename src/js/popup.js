@@ -45,9 +45,9 @@ if(location.search !== "?foo") {
       $tags.focus();
   
       // get Token and check
-      chromeStorage.get([Pinput.StorageKey.APIToken, Pinput.StorageKey.isAuthenticated], function(item) {
+      chromeStorage.get([Pinput.StorageKey.authToken, Pinput.StorageKey.isAuthenticated], function(item) {
         // cache token
-        Pinput.authToken = item[Pinput.StorageKey.APIToken];
+        Pinput.authToken = item[Pinput.StorageKey.authToken];
         Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
   
         if(!Pinput.isAuthenticated) {

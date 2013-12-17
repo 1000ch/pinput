@@ -12,8 +12,8 @@
   var chromeStorage = chrome.storage.sync;
 
   // check token authentication
-  chromeStorage.get([Pinput.StorageKey.APIToken, Pinput.StorageKey.isAuthenticated], function(item) {
-    Pinput.authToken = item[Pinput.StorageKey.APIToken];
+  chromeStorage.get([Pinput.StorageKey.authToken, Pinput.StorageKey.isAuthenticated], function(item) {
+    Pinput.authToken = item[Pinput.StorageKey.authToken];
     Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
   });
 
