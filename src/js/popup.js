@@ -172,4 +172,7 @@ if(location.search !== "?foo") {
     });
   });
 
+  // export
+  global.Pinput = Pinput;
+  
 })(this);

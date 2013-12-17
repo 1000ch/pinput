@@ -98,4 +98,7 @@
     });
   });
 
+  // export
+  global.Pinput = Pinput;
+
 })(this);
