@@ -18,7 +18,7 @@
     "page": "/html/background.html"
   },
   "browser_action": {
-    "default_icon": "icons/icon19.png",
+    "default_icon": "icons/icon38.png",
     "default_title": "Pinput",
     "default_popup": "html/popup.html"
   },
