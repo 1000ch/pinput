@@ -6,9 +6,9 @@
   var Background = Pinput.Background || {};
 
   Background.activeTabId = 0;
-  Background.activeTabUrl = "";
-  Background.activeTabTitle = "";
-  Background.checkedUrl = "";
+  Background.activeTabUrl = '';
+  Background.activeTabTitle = '';
+  Background.checkedUrl = '';
   var chromeStorage = chrome.storage.sync;
 
   // check token authentication
@@ -44,7 +44,7 @@
     // if schema is chrome related
     if (isNotBookmarkable) {
       chrome.browserAction.setBadgeText({
-        text: "",
+        text: '',
         tabId: tabId
       });
       return;
@@ -117,7 +117,7 @@
   // launch options.html on installation
   chrome.runtime.onInstalled.addListener(function(details) {
     if (details.reason == 'install'){
-      chrome.tabs.create({"url": '/html/options.html'});
+      chrome.tabs.create({'url': '/html/options.html'});
     }
   });
 

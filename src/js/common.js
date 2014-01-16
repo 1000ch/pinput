@@ -34,7 +34,7 @@
       param = param || {};
   
       Object.keys(param).forEach(function(key) {
-        array.push(key + "=" + param[key]);
+        array.push(key + '=' + param[key]);
       });
       return array;
     }
@@ -59,7 +59,7 @@
      */
     addPost: function(url, title, description, tags, shared, toread) {
       var params = Pinput.Util.serializeArray({
-        format: "json",
+        format: 'json',
         auth_token: Pinput.authToken,
         url: encodeURIComponent(url),
         description: encodeURIComponent(title),
@@ -114,7 +114,7 @@
      */
     getTags: function() {
       var params = Pinput.Util.serializeArray({
-        format: "json",
+        format: 'json',
         auth_token: Pinput.authToken,
         _: Date.now()
       });
