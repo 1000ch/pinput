@@ -113,6 +113,13 @@
       title: Background.activeTabTitle
     });    
   });
+  
+  // launch options.html on installation
+  chrome.runtime.onInstalled.addListener( function(details) {
+    if(details.reason == "install"){
+      chrome.tabs.create({"url": "/html/options.html"});
+    }
+  });
 
   // export
   global.Pinput = Pinput;
