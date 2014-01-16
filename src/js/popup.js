@@ -1,7 +1,7 @@
 // autofocus attribute is not working on chrome extension :(
 // https://code.google.com/p/chromium/issues/detail?id=111660#c7
-if(location.search !== "?foo") {
-  location.search = "?foo";
+if (location.search !== '?foo') {
+  location.search = '?foo';
   throw new Error();
   // load everything on the next page;
   // stop execution on this page
@@ -15,23 +15,23 @@ if(location.search !== "?foo") {
   var Popup = Pinput.Popup || {};
 
   Popup.Message = {
-    isBookmarked: "This URL is already bookmarked.",
-    isNotAuthenticated: "API Token is not authenticated.",
-    succeed: "Bookmarked successfully!",
-    failed: "Bookmark is failed..."
+    isBookmarked: 'This URL is already bookmarked.',
+    isNotAuthenticated: 'API Token is not authenticated.',
+    succeed: 'Bookmarked successfully!',
+    failed: 'Bookmark is failed...'
   };
 
   $(function() {
   
-    var $form = $("#js-form");
-    var $url = $("#js-url");
-    var $title = $("#js-title");
-    var $tags = $("#js-tags");
-    var $description = $("#js-description");
-    var $private = $("#js-private");
-    var $readlater = $("#js-readlater");
-    var $bookmark = $("#js-bookmark");
-    var $alert = $("#js-alert");
+    var $form = $('#js-form');
+    var $url = $('#js-url');
+    var $title = $('#js-title');
+    var $tags = $('#js-tags');
+    var $description = $('#js-description');
+    var $private = $('#js-private');
+    var $readlater = $('#js-readlater');
+    var $bookmark = $('#js-bookmark');
+    var $alert = $('#js-alert');
     var chromeStorage = chrome.storage.sync;
   
     // when popup is opened,
@@ -50,25 +50,25 @@ if(location.search !== "?foo") {
         Pinput.authToken = item[Pinput.StorageKey.authToken];
         Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
   
-        if(!Pinput.isAuthenticated) {
+        if (!Pinput.isAuthenticated) {
           // if API token is not authenticated, make me disabled.
-          $alert.removeClass("alert-info alert-warning alert-success");
-          $alert.html(Popup.Message.isNotAuthenticated).addClass("alert-danger");
-          $bookmark.attr("disabled", "disabled");
+          $alert.removeClass('alert-info alert-warning alert-success');
+          $alert.html(Popup.Message.isNotAuthenticated).addClass('alert-danger');
+          $bookmark.attr('disabled', 'disabled');
         } else {
           // check whether url is bookmarked or not
           Pinput.API.getPost(response.url).done(function(data) {
-            if(data.posts.length !== 0) {
+            if (data.posts.length !== 0) {
               // if url is already bookmarked
               $tags.val(data.posts.shift().tags);
-              $alert.removeClass("alert-info alert-success alert-danger");
-              $alert.html(Popup.Message.isBookmarked).addClass("alert-warning");
+              $alert.removeClass('alert-info alert-success alert-danger');
+              $alert.html(Popup.Message.isBookmarked).addClass('alert-warning');
             } else {
               // if url is not bookmarked
               Pinput.API.suggestPost(response.url).done(function(array) {
                 array.forEach(function(data) {
-                  if(Array.isArray(data.popular)) {
-                    $tags.val(data.popular.join(" "));
+                  if (Array.isArray(data.popular)) {
+                    $tags.val(data.popular.join(' '));
                   }
                 });
               });
@@ -77,8 +77,8 @@ if(location.search !== "?foo") {
             // set up word suggestion
             Pinput.API.getTags().done(function(data) {
               var availableTags = Object.keys(data);
-              $tags.on("keydown", function(event) {
-                if(event.keyCode === $.ui.keyCode.TAB && $(this).data("ui-autocomplete").menu.active) {
+              $tags.on('keydown', function(event) {
+                if (event.keyCode === $.ui.keyCode.TAB && $(this).data('ui-autocomplete').menu.active) {
                   event.preventDefault();
                 }
               }).autocomplete({
@@ -100,15 +100,15 @@ if(location.search !== "?foo") {
                   // add the selected item
                   terms.push(ui.item.value);
                   // add placeholder to get the comma-and-space at the end
-                  terms.push("");
-                  this.value = terms.join(" ");
+                  terms.push('');
+                  this.value = terms.join(' ');
                   return false;
                 }
               });
             });
           });
   
-          $form.on("submit", function(e) {
+          $form.on('submit', function(e) {
             // prevent default
             e.preventDefault();
             
@@ -117,15 +117,15 @@ if(location.search !== "?foo") {
               $title.val(),
               $description.val(),
               $tags.val(),
-              ($private.prop("checked") ? "no" : "yes"),
-              ($readlater.prop("checked") ? "yes" : "no")
+              ($private.prop('checked') ? 'no' : 'yes'),
+              ($readlater.prop('checked') ? 'yes' : 'no')
             ).done(function(data) {
-              if(data.result_code !== "done") {
-                $alert.removeClass("alert-info alert-warning alert-success");
-                $alert.html(data.result_code).addClass("alert-danger");
+              if (data.result_code !== 'done') {
+                $alert.removeClass('alert-info alert-warning alert-success');
+                $alert.html(data.result_code).addClass('alert-danger');
               } else {
-                $alert.removeClass("alert-info alert-warning alert-danger");
-                $alert.html(Popup.Message.succeed).addClass("alert-success");
+                $alert.removeClass('alert-info alert-warning alert-danger');
+                $alert.html(Popup.Message.succeed).addClass('alert-success');
   
                 // close popup window
                 window.setTimeout(function() {
@@ -133,12 +133,12 @@ if(location.search !== "?foo") {
                 }, 500);
               }
             }).fail(function(error) {
-              $alert.removeClass("alert-info alert-warning alert-success");
-              $alert.html(error).addClass("alert-danger");
+              $alert.removeClass('alert-info alert-warning alert-success');
+              $alert.html(error).addClass('alert-danger');
             });
           });
   
-          $bookmark.on("click", function(e) {
+          $bookmark.on('click', function(e) {
             // prevent default
             e.preventDefault();
 
@@ -147,15 +147,15 @@ if(location.search !== "?foo") {
               $title.val(),
               $description.val(),
               $tags.val(),
-              ($private.prop("checked") ? "no" : "yes"),
-              ($readlater.prop("checked") ? "yes" : "no")
+              ($private.prop('checked') ? 'no' : 'yes'),
+              ($readlater.prop('checked') ? 'yes' : 'no')
             ).done(function(data) {
-              if(data.result_code !== "done") {
-                $alert.removeClass("alert-info alert-warning alert-success");
-                $alert.html(data.result_code).addClass("alert-danger");
+              if (data.result_code !== 'done') {
+                $alert.removeClass('alert-info alert-warning alert-success');
+                $alert.html(data.result_code).addClass('alert-danger');
               } else {
-                $alert.removeClass("alert-info alert-warning alert-danger");
-                $alert.html(Popup.Message.succeed).addClass("alert-success");
+                $alert.removeClass('alert-info alert-warning alert-danger');
+                $alert.html(Popup.Message.succeed).addClass('alert-success');
   
                 // close popup window
                 window.setTimeout(function() {
@@ -163,8 +163,8 @@ if(location.search !== "?foo") {
                 }, 500);
               }
             }).fail(function(error) {
-              $alert.removeClass("alert-info alert-warning alert-success");
-              $alert.html(error).addClass("alert-danger");
+              $alert.removeClass('alert-info alert-warning alert-success');
+              $alert.html(error).addClass('alert-danger');
             });
           });
         }

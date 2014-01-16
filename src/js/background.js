@@ -37,9 +37,9 @@
    */
   function updateIcon(tabId, checkUrl) {
     var isNotBookmarkable = 
-      (checkUrl.indexOf("chrome://") !== -1) || 
-      (checkUrl.indexOf("chrome-extension://") !== -1) || 
-      (checkUrl.indexOf("file://") !== -1);
+      (checkUrl.indexOf('chrome://') !== -1) || 
+      (checkUrl.indexOf('chrome-extension://') !== -1) || 
+      (checkUrl.indexOf('file://') !== -1);
 
     // if schema is chrome related
     if (isNotBookmarkable) {
@@ -61,19 +61,19 @@
     if (Pinput.isAuthenticated) {
       // set background
       chrome.browserAction.setBadgeBackgroundColor({
-        color: "#66cc33"
+        color: '#66cc33'
       });
 
       // request
       Pinput.API.getPost(checkUrl).done(function(data) {
         var isBookmarked = (data.posts.length !== 0);
         chrome.browserAction.setBadgeText({
-          text: (isBookmarked) ? "✓": "",
+          text: (isBookmarked) ? '✓': '',
           tabId: tabId
         });
       }).fail(function(error) {
         chrome.browserAction.setBadgeText({
-          text: "",
+          text: '',
           tabId: tabId
         });
       });
@@ -87,7 +87,7 @@
 
   // when a tab is updated
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if(Background.activeTabId === tabId) {
+    if (Background.activeTabId === tabId) {
       cacheActiveTab(tabId);
     }
   });
@@ -98,7 +98,7 @@
       populate: true
     }, function(window) {
       window.tabs.forEach(function(tab) {
-        if(tab.active) {
+        if (tab.active) {
           cacheActiveTab(tab.id);
         }
       });
@@ -115,9 +115,9 @@
   });
   
   // launch options.html on installation
-  chrome.runtime.onInstalled.addListener( function(details) {
-    if(details.reason == "install"){
-      chrome.tabs.create({"url": "/html/options.html"});
+  chrome.runtime.onInstalled.addListener(function(details) {
+    if (details.reason == 'install'){
+      chrome.tabs.create({"url": '/html/options.html'});
     }
   });
 

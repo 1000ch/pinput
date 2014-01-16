@@ -41,8 +41,8 @@
   };
 
   Pinput.StorageKey = {
-    authToken: "pinput_authToken",
-    isAuthenticated: "pinput_isAuthenticated"
+    authToken: 'pinput_authToken',
+    isAuthenticated: 'pinput_isAuthenticated'
   };
   
   Pinput.API = {
@@ -81,7 +81,7 @@
      */
     getPost: function(url) {
       var params = Pinput.Util.serializeArray({
-        format: "json",
+        format: 'json',
         auth_token: Pinput.authToken,
         url: url ? encodeURIComponent(url) : '',
         _: Date.now()
@@ -99,7 +99,7 @@
      */
     suggestPost: function(url) {
       var params = Pinput.Util.serializeArray({
-        format: "json",
+        format: 'json',
         auth_token: Pinput.authToken,
         url: encodeURIComponent(url),
         _: Date.now()
