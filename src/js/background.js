@@ -1,4 +1,4 @@
-(function(global) {
+(function (global) {
 
   // common namespace
   var Pinput = global.Pinput || {};
@@ -12,7 +12,7 @@
   var chromeStorage = chrome.storage.sync;
 
   // check token authentication
-  chromeStorage.get([Pinput.StorageKey.authToken, Pinput.StorageKey.isAuthenticated], function(item) {
+  chromeStorage.get([Pinput.StorageKey.authToken, Pinput.StorageKey.isAuthenticated], function (item) {
     Pinput.authToken = item[Pinput.StorageKey.authToken];
     Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
   });
@@ -23,7 +23,7 @@
    */
   function cacheActiveTab(tabId) {
     Background.activeTabId = tabId;
-    chrome.tabs.get(tabId, function(tab) {
+    chrome.tabs.get(tabId, function (tab) {
       Background.activeTabUrl = tab.url;
       Background.activeTabTitle = tab.title;
       updateIcon(Background.activeTabId, Background.activeTabUrl);
@@ -65,13 +65,13 @@
       });
 
       // request
-      Pinput.API.getPost(checkUrl).done(function(data) {
+      Pinput.API.getPost(checkUrl).done(function (data) {
         var isBookmarked = (data.posts.length !== 0);
         chrome.browserAction.setBadgeText({
           text: (isBookmarked) ? '✓': '',
           tabId: tabId
         });
-      }).fail(function(error) {
+      }).fail(function (error) {
         chrome.browserAction.setBadgeText({
           text: '',
           tabId: tabId
@@ -81,23 +81,23 @@
   }
   
   // when the active tab is changed
-  chrome.tabs.onActivated.addListener(function(activeInfo) {
+  chrome.tabs.onActivated.addListener(function (activeInfo) {
     cacheActiveTab(activeInfo.tabId);
   });
 
   // when a tab is updated
-  chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (Background.activeTabId === tabId) {
       cacheActiveTab(tabId);
     }
   });
   
   // when current window is switched
-  chrome.windows.onFocusChanged.addListener(function(windowId) {
+  chrome.windows.onFocusChanged.addListener(function (windowId) {
     chrome.windows.getCurrent({
       populate: true
-    }, function(window) {
-      window.tabs.forEach(function(tab) {
+    }, function (window) {
+      window.tabs.forEach(function (tab) {
         if (tab.active) {
           cacheActiveTab(tab.id);
         }
@@ -107,7 +107,7 @@
   
   // when received message, 
   // return the url and title of active tab
-  chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     sendResponse({
       url: Background.activeTabUrl,
       title: Background.activeTabTitle
@@ -115,7 +115,7 @@
   });
   
   // launch options.html on installation
-  chrome.runtime.onInstalled.addListener(function(details) {
+  chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason == 'install'){
       chrome.tabs.create({'url': '/html/options.html'});
     }

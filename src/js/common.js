@@ -1,4 +1,4 @@
-(function(global) {
+(function (global) {
 
   var Pinput = global.Pinput || {};
   
@@ -11,7 +11,7 @@
      * @param {String} val
      * @returns {String}
      */
-    split: function(val) {
+    split: function (val) {
       return val.split(/ \s*/);
     },
     /**
@@ -19,7 +19,7 @@
      * @param {String} term
      * @returns {String}
      */
-    extractLast: function(term) {
+    extractLast: function (term) {
       return this.split(term).pop();
     },
     /**
@@ -27,13 +27,13 @@
      * @param {Object} param
      * @returns {Array}
      */
-    serializeArray: function(param) {
+    serializeArray: function (param) {
       // array to return
       var array = [];
       // fix argument
       param = param || {};
   
-      Object.keys(param).forEach(function(key) {
+      Object.keys(param).forEach(function (key) {
         array.push(key + '=' + param[key]);
       });
       return array;
@@ -42,7 +42,8 @@
 
   Pinput.StorageKey = {
     authToken: 'pinput_authToken',
-    isAuthenticated: 'pinput_isAuthenticated'
+    isAuthenticated: 'pinput_isAuthenticated',
+    useTagSuggestion: 'pinput_useTagSuggestion'
   };
   
   Pinput.API = {
@@ -57,7 +58,7 @@
      * @param {String} toread
      * @returns {$.Deferred}
      */
-    addPost: function(url, title, description, tags, shared, toread) {
+    addPost: function (url, title, description, tags, shared, toread) {
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,
@@ -79,7 +80,7 @@
      * @param {String} url
      * @returns {$.Deferred}
      */
-    getPost: function(url) {
+    getPost: function (url) {
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,
@@ -97,7 +98,7 @@
      * @param {String} url
      * @returns {$.Deferred}
      */
-    suggestPost: function(url) {
+    suggestPost: function (url) {
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,
@@ -112,7 +113,7 @@
      * @see https://pinboard.in/api#tags_get
      * @returns {$.Deferred}
      */
-    getTags: function() {
+    getTags: function () {
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,

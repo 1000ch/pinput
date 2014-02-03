@@ -36,20 +36,26 @@ if (location.search !== '?foo') {
   
     // when popup is opened,
     // send blank message to background
-    chrome.runtime.sendMessage({}, function(response) {
+    chrome.runtime.sendMessage({}, function (response) {
       // get url and title of current tab
       $url.val(response.url);
       $title.val(response.title);
       
       // focus to tag area
       $tags.focus();
-  
+
+      var keys = [
+        Pinput.StorageKey.authToken,
+        Pinput.StorageKey.isAuthenticated,
+        Pinput.StorageKey.useTagSuggestion
+      ];
       // get Token and check
-      chromeStorage.get([Pinput.StorageKey.authToken, Pinput.StorageKey.isAuthenticated], function(item) {
+      chromeStorage.get(keys, function (item) {
         // cache token
         Pinput.authToken = item[Pinput.StorageKey.authToken];
         Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
-  
+        Pinput.useTagSuggestion = !!item[Pinput.StorageKey.useTagSuggestion];
+
         if (!Pinput.isAuthenticated) {
           // if API token is not authenticated, make me disabled.
           $alert.removeClass('alert-info alert-warning alert-success');
@@ -57,25 +63,25 @@ if (location.search !== '?foo') {
           $bookmark.attr('disabled', 'disabled');
         } else {
           // check whether url is bookmarked or not
-          Pinput.API.getPost(response.url).done(function(data) {
+          Pinput.API.getPost(response.url).done(function (data) {
             if (data.posts.length !== 0) {
               // if url is already bookmarked
               $tags.val(data.posts.shift().tags);
               $alert.removeClass('alert-info alert-success alert-danger');
               $alert.html(Popup.Message.isBookmarked).addClass('alert-warning');
-            } else {
+            } else if (Pinput.useTagSuggestion) {
               // if url is not bookmarked
-              Pinput.API.suggestPost(response.url).done(function(array) {
-                array.forEach(function(data) {
+              Pinput.API.suggestPost(response.url).done(function (array) {
+                array.forEach(function (data) {
                   if (Array.isArray(data.popular)) {
                     $tags.val(data.popular.join(' '));
                   }
                 });
               });
             }
-          }).always(function() {
+          }).always(function () {
             // set up word suggestion
-            Pinput.API.getTags().done(function(data) {
+            Pinput.API.getTags().done(function (data) {
               var availableTags = Object.keys(data);
               $tags.on('keydown', function(event) {
                 if (event.keyCode === $.ui.keyCode.TAB && $(this).data('ui-autocomplete').menu.active) {
@@ -89,11 +95,11 @@ if (location.search !== '?foo') {
                   // delegate back to autocomplete, but extract the last term
                   response($.ui.autocomplete.filter(availableTags, Pinput.Util.extractLast(request.term)).slice(0, 5));
                 },
-                focus: function() {
+                focus: function () {
                   // prevent value inserted on focus
                   return false;
                 },
-                select: function(event, ui) {
+                select: function (event, ui) {
                   var terms = Pinput.Util.split(this.value);
                   // remove the current input
                   terms.pop();
@@ -108,7 +114,7 @@ if (location.search !== '?foo') {
             });
           });
   
-          $form.on('submit', function(e) {
+          $form.on('submit', function (e) {
             // prevent default
             e.preventDefault();
             
@@ -128,7 +134,7 @@ if (location.search !== '?foo') {
                 $alert.html(Popup.Message.succeed).addClass('alert-success');
   
                 // close popup window
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                   window.close();
                 }, 500);
               }
@@ -138,7 +144,7 @@ if (location.search !== '?foo') {
             });
           });
   
-          $bookmark.on('click', function(e) {
+          $bookmark.on('click', function (e) {
             // prevent default
             e.preventDefault();
 
@@ -158,7 +164,7 @@ if (location.search !== '?foo') {
                 $alert.html(Popup.Message.succeed).addClass('alert-success');
   
                 // close popup window
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                   window.close();
                 }, 500);
               }
