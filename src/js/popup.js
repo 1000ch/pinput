@@ -82,7 +82,7 @@ if (location.search !== '?foo') {
               Popup.Message.failedToBookmark = Popup.Message.failedToUpdate;
             } else {
               // if url is not bookmarked
-              $bookmarkDropdown.prop('disabled', 'disabled');
+              $bookmarkDropdown.attr('disabled', 'disabled');
 
               if (Pinput.useTagSuggestion) {
                 Pinput.API.suggestPost(response.url).done(function (array) {
