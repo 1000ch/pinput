@@ -80,15 +80,19 @@ if (location.search !== '?foo') {
               
               Popup.Message.bookmarkedSuccessfully = Popup.Message.updatedSuccessfully;
               Popup.Message.failedToBookmark = Popup.Message.failedToUpdate;
-            } else if (Pinput.useTagSuggestion) {
+            } else {
               // if url is not bookmarked
-              Pinput.API.suggestPost(response.url).done(function (array) {
-                array.forEach(function (data) {
-                  if (Array.isArray(data.popular)) {
-                    $tags.val(data.popular.join(' '));
-                  }
+              $bookmarkDropdown.prop('disabled', 'disabled');
+
+              if (Pinput.useTagSuggestion) {
+                Pinput.API.suggestPost(response.url).done(function (array) {
+                  array.forEach(function (data) {
+                    if (Array.isArray(data.popular)) {
+                      $tags.val(data.popular.join(' '));
+                    }
+                  });
                 });
-              });
+              }
             }
           }).always(function () {
             // set up word suggestion
