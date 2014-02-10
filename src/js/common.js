@@ -74,6 +74,22 @@
       return $.getJSON('https://api.pinboard.in/v1/posts/add?' + params.join('&'));
     },
     /**
+     * Delete a bookmark.
+     * @see https://pinboard.in/api#posts_delete
+     * @param {String} url
+     * @returns {$.Deferred}
+     */
+    deletePost: function (url) {
+      var params = Pinput.Util.serializeArray({
+        format: 'json',
+        auth_token: Pinput.authToken,
+        url: encodeURIComponent(url),
+        _: Date.now()
+      });
+      // all of API is get method
+      return $.getJSON('https://api.pinboard.in/v1/posts/delete?' + params.join('&'));
+    },
+    /**
      * Returns one or more posts on a single day matching the arguments.
      * If no date or url is given, date of most recent bookmark will be used.
      * @see https://pinboard.in/api#posts_get

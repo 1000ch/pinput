@@ -17,8 +17,12 @@ if (location.search !== '?foo') {
   Popup.Message = {
     isBookmarked: 'This URL is already bookmarked.',
     isNotAuthenticated: 'API Token is not authenticated.',
-    succeed: 'Bookmarked successfully!',
-    failed: 'Bookmark is failed...'
+    bookmarkedSuccessfully: 'Bookmarked successfully!',
+    updatedSuccessfully: 'Updated successfully!',
+    deletedSuccessfully: 'Deleted successfully!',
+    failedToBookmark: 'Failed to bookmark...',
+    failedToUpdate: 'Failed to update...',
+    failedToDelete: 'Failed to delete...'
   };
 
   $(function() {
@@ -31,6 +35,8 @@ if (location.search !== '?foo') {
     var $private = $('#js-private');
     var $readlater = $('#js-readlater');
     var $bookmark = $('#js-bookmark');
+    var $bookmarkDropdown = $('#js-bookmark-dropdown');
+    var $delete = $('#js-delete');
     var $alert = $('#js-alert');
     var chromeStorage = chrome.storage.sync;
   
@@ -67,8 +73,13 @@ if (location.search !== '?foo') {
             if (data.posts.length !== 0) {
               // if url is already bookmarked
               $tags.val(data.posts.shift().tags);
+              $bookmark.removeClass('btn-primary').addClass('btn-warning').text('Update bookmark');
+              $bookmarkDropdown.removeClass('btn-primary').addClass('btn-warning');
               $alert.removeClass('alert-info alert-success alert-danger');
               $alert.html(Popup.Message.isBookmarked).addClass('alert-warning');
+              
+              Popup.Message.bookmarkedSuccessfully = Popup.Message.updatedSuccessfully;
+              Popup.Message.failedToBookmark = Popup.Message.failedToUpdate;
             } else if (Pinput.useTagSuggestion) {
               // if url is not bookmarked
               Pinput.API.suggestPost(response.url).done(function (array) {
@@ -128,10 +139,10 @@ if (location.search !== '?foo') {
             ).done(function(data) {
               if (data.result_code !== 'done') {
                 $alert.removeClass('alert-info alert-warning alert-success');
-                $alert.html(data.result_code).addClass('alert-danger');
+                $alert.html(Popup.Message.failedToBookmark).addClass('alert-danger');
               } else {
                 $alert.removeClass('alert-info alert-warning alert-danger');
-                $alert.html(Popup.Message.succeed).addClass('alert-success');
+                $alert.html(Popup.Message.bookmarkedSuccessfully).addClass('alert-success');
   
                 // close popup window
                 window.setTimeout(function () {
@@ -158,11 +169,36 @@ if (location.search !== '?foo') {
             ).done(function(data) {
               if (data.result_code !== 'done') {
                 $alert.removeClass('alert-info alert-warning alert-success');
-                $alert.html(data.result_code).addClass('alert-danger');
+                $alert.html(Popup.Message.failedToBookmark).addClass('alert-danger');
               } else {
                 $alert.removeClass('alert-info alert-warning alert-danger');
-                $alert.html(Popup.Message.succeed).addClass('alert-success');
+                $alert.html(Popup.Message.bookmarkedSuccessfully).addClass('alert-success');
   
+                // close popup window
+                window.setTimeout(function () {
+                  window.close();
+                }, 500);
+              }
+            }).fail(function(error) {
+              $alert.removeClass('alert-info alert-warning alert-success');
+              $alert.html(error).addClass('alert-danger');
+            });
+          });
+
+          $delete.on('click', function (e) {
+            // prevent default
+            e.preventDefault();
+
+            Pinput.API.deletePost(
+              $url.val()
+            ).done(function(data) {
+              if (data.result_code !== 'done') {
+                $alert.removeClass('alert-info alert-warning alert-success');
+                $alert.html(Popup.Message.failedToDelete).addClass('alert-danger');
+              } else {
+                $alert.removeClass('alert-info alert-warning alert-danger');
+                $alert.html(Popup.Message.deletedSuccessfully).addClass('alert-success');
+
                 // close popup window
                 window.setTimeout(function () {
                   window.close();
