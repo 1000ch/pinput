@@ -45,6 +45,7 @@ module.exports = (grunt) ->
         files:
           'dist/js/lib/jquery.min.js': ['src/js/lib/jquery.min.js']
           'dist/js/lib/jquery-ui.custom.min.js': ['src/js/lib/jquery-ui.custom.min.js']
+          'dist/js/lib/bootstrap.min.js': ['src/js/lib/bootstrap.min.js']
     watch:
       html:
         files: ['src/html/*.html']
