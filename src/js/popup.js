@@ -74,7 +74,7 @@ if (location.search !== '?foo') {
               // if url is already bookmarked
               $tags.val(data.posts.shift().tags);
               $bookmark.removeClass('btn-primary').addClass('btn-warning').text('Update bookmark');
-              $bookmarkDropdown.removeClass('btn-primary').addClass('btn-warning');
+              $bookmarkDropdown.removeAttr('disabled').removeClass('btn-primary').addClass('btn-warning');
               $alert.removeClass('alert-info alert-success alert-danger');
               $alert.html(Popup.Message.isBookmarked).addClass('alert-warning');
               
@@ -82,7 +82,6 @@ if (location.search !== '?foo') {
               Popup.Message.failedToBookmark = Popup.Message.failedToUpdate;
             } else {
               // if url is not bookmarked
-              $bookmarkDropdown.attr('disabled', 'disabled');
 
               if (Pinput.useTagSuggestion) {
                 Pinput.API.suggestPost(response.url).done(function (array) {
