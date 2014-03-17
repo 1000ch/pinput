@@ -18,26 +18,31 @@
           This token will be saved at chrome sync storage.
         </p>
         <div class="row">
-          <div class="col-xs-10">
-            <input type="text" id="js-input" class="form-control" placeholder="Pinboard API Token">
+          <div class="col-xs-6">
+            <input type="text" id="js-input" class="form-control input-lg" placeholder="Pinboard API Token">
           </div>
           <div class="col-xs-2">
-            <button id="js-button" class="btn btn-primary btn-block" type="button">Save</button>
+            <button id="js-button" class="btn btn-primary btn-block btn-lg" type="button">Save</button>
           </div>
-        </div><br>
-        <div id="js-alert" class="alert alert-info">Please input token and try to save.</div>
-      </section>
-      <section>
-        <h2>Tag suggestion for given url</h2>
+        </div>
         <div class="row">
-          <div class="col-xs-12">
-            <label for="js-checkbox"><input type="checkbox" id="js-checkbox"> Suggest tag for given url</label>
+          <div class="col-xs-8" style="margin: 20px 0px;">
+            <div id="js-alert" class="alert alert-info">Please input token and try to save.</div>
           </div>
         </div>
       </section>
       <section>
-        <h2>License</h2>
-        <p>Copyright <a href="http://twitter.com/1000ch" target="_blank">@1000ch</a></p>
+        <h2>Tag suggestion for given url</h2>
+        <div class="row">
+          <div class="col-xs-8">
+            <input type="checkbox" class="input-lg" id="js-checkbox" style="vertical-align: middle;">
+            <label for="js-checkbox" style="vertical-align: middle;margin-left: 10px;margin-bottom: 0;">Suggest tag for given url</label>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2>Author</h2>
+        <p><a href="http://twitter.com/1000ch" target="_blank">@1000ch</a></p>
       </section>
     </div>
     <script src="../js/lib/jquery.min.js"></script>
