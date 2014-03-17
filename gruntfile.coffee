@@ -46,16 +46,6 @@ module.exports = (grunt) ->
           'dist/js/lib/jquery.min.js': ['src/js/lib/jquery.min.js']
           'dist/js/lib/jquery-ui.custom.min.js': ['src/js/lib/jquery-ui.custom.min.js']
           'dist/js/lib/bootstrap.min.js': ['src/js/lib/bootstrap.min.js']
-    watch:
-      html:
-        files: ['src/html/*.html']
-        tasks: ['html-inspector']
-      js:
-        files: ['src/js/*.js']
-        tasks: ['jshint', 'jsvalidate']
-    exec:
-      rake:
-        command: 'rake'
 
   grunt.loadNpmTasks 'grunt-html-inspector'
   grunt.loadNpmTasks 'grunt-jsvalidate'
@@ -64,10 +54,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-htmlmin'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
-  grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.loadNpmTasks 'grunt-exec'
   
   grunt.registerTask 'default', 'watch'
   grunt.registerTask 'test', ['jshint', 'jsvalidate', 'html-inspector']
-  grunt.registerTask 'optimize', ['htmlmin', 'cssmin', 'uglify']
-  grunt.registerTask 'build', ['optimize', 'exec']
+  grunt.registerTask 'build', ['htmlmin', 'cssmin', 'uglify']
