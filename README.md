@@ -1,4 +1,4 @@
-# Pinput [![Build Status](https://travis-ci.org/1000ch/pinput.png?branch=master)](https://travis-ci.org/1000ch/pinput)
+# Pinput [![Build Status](https://travis-ci.org/1000ch/pinput.svg?branch=master)](https://travis-ci.org/1000ch/pinput)
 
 ## About
 
