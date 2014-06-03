@@ -13,15 +13,15 @@
       <div class="row row-margin">
         <div class="col-xs-6">
           <label class="checkbox-inline" style="margin-top: 7px;">
-            <input type="checkbox" id="js-private"> Private
+            <input type="checkbox" id="js-private" tabindex="1"> Private
           </label>
           <label class="checkbox-inline" style="margin-top: 7px;">
-            <input type="checkbox" id="js-readlater"> Read later
+            <input type="checkbox" id="js-readlater" tabindex="2"> Read later
           </label>
         </div>
         <div class="col-xs-6">
           <div class="btn-group pull-right">
-            <button id="js-bookmark" class="btn btn-primary">Add bookmark</button>
+            <button id="js-bookmark" class="btn btn-primary" tabindex="7">Add bookmark</button>
             <button id="js-bookmark-dropdown" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" disabled="disabled">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
@@ -37,7 +37,7 @@
           <label for="js-url">URL</label>
         </div>
         <div class="col-xs-10">
-          <input type="url" name="url" class="form-control" id="js-url" placeholder="URL">
+          <input type="url" name="url" class="form-control" id="js-url" placeholder="URL" tabindex="3">
         </div>
       </div>
       <div class="row row-margin">
@@ -45,7 +45,7 @@
           <label for="js-title">Title</label>
         </div>
         <div class="col-xs-10">
-          <input type="text" name="title" class="form-control" id="js-title" placeholder="Title">
+          <input type="text" name="title" class="form-control" id="js-title" placeholder="Title" tabindex="4">
         </div>
       </div>
       <div class="row row-margin">
@@ -53,12 +53,12 @@
           <label for="js-tags">Tags</label>
         </div>
         <div class="col-xs-10">
-          <input type="text" name="tags" class="form-control" id="js-tags" placeholder="Tags">
+          <input type="text" name="tags" class="form-control" id="js-tags" placeholder="Tags" tabindex="5">
         </div>
       </div>
       <div class="row row-margin">
         <div class="col-xs-12">
-          <textarea name="description" class="form-control" id="js-description" cols="40" rows="4" placeholder="Write description here."></textarea>
+          <textarea name="description" class="form-control" id="js-description" cols="40" rows="4" placeholder="Write description here." tabindex="6"></textarea>
         </div>
       </div>
       <div class="row row-margin">
