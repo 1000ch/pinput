@@ -13,7 +13,11 @@
   "keywords": [
     "pinboard"
   ],
-  "author": "1000ch",
+  "author": {
+    "name": "1000ch",
+    "email": "shogo.sensui@gmail.com",
+    "url": "https://github.com/1000ch"
+  },
   "license": "GPL v3",
   "bugs": {
     "url": "https://github.com/1000ch/pinput/issues"
