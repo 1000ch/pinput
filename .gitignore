@@ -1,5 +1,9 @@
+bower_components
 node_modules
 .idea
 .DS_Store
 tmp
 package.zip
+src/css/lib/*
+src/js/lib/*
+dist/
