@@ -29,8 +29,7 @@ module.exports = (grunt) ->
         options:
           keepSpecialComments: 1
         files:
-          'dist/css/bootstrap.min.css': ['src/css/bootstrap.min.css']
-          'dist/css/jquery-ui.custom.css': ['src/css/jquery-ui.custom.css']
+          'dist/css/lib/jquery-ui.custom.css': ['src/css/lib/jquery-ui.custom.css']
     uglify:
       all:
         files:

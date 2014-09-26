@@ -6,4 +6,5 @@ tmp
 package.zip
 src/css/lib/*
 src/js/lib/*
+src/fonts
 dist/
