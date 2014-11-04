@@ -72,7 +72,9 @@ if (location.search !== '?foo') {
           Pinput.API.getPost(response.url).done(function (data) {
             if (data.posts.length !== 0) {
               // if url is already bookmarked
-              $tags.val(data.posts.shift().tags);
+              var post = data.posts.shift();
+              $tags.val(post.tags);
+              $description.val(post.description);
               $bookmark.removeClass('btn-primary').addClass('btn-warning').text('Update bookmark');
               $bookmarkDropdown.removeAttr('disabled').removeClass('btn-primary').addClass('btn-warning');
               $alert.removeClass('alert-info alert-success alert-danger');
