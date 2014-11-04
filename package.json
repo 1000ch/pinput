@@ -1,6 +1,6 @@
 {
-  "name": "Pinput",
-  "version": "1.3.8",
+  "name": "pinput",
+  "version": "1.3.9",
   "description": "Light-weight chrome extension for Pinboard.",
   "scripts": {
     "test": "grunt test",
