@@ -55,6 +55,7 @@ if (location.search !== '?foo') {
         Pinput.StorageKey.isAuthenticated,
         Pinput.StorageKey.useTagSuggestion
       ];
+
       // get Token and check
       chromeStorage.get(keys, function (item) {
         // cache token
@@ -74,7 +75,7 @@ if (location.search !== '?foo') {
               // if url is already bookmarked
               var post = data.posts.shift();
               $tags.val(post.tags);
-              $description.val(post.description);
+              $description.val(post.extended);
               $bookmark.removeClass('btn-primary').addClass('btn-warning').text('Update bookmark');
               $bookmarkDropdown.removeAttr('disabled').removeClass('btn-primary').addClass('btn-warning');
               $alert.removeClass('alert-info alert-success alert-danger');
