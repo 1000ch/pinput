@@ -85,7 +85,6 @@ if (location.search !== '?foo') {
               Popup.Message.failedToBookmark = Popup.Message.failedToUpdate;
             } else {
               // if url is not bookmarked
-
               if (Pinput.useTagSuggestion) {
                 Pinput.API.suggestPost(response.url).done(function (array) {
                   array.forEach(function (data) {
@@ -182,8 +181,10 @@ if (location.search !== '?foo') {
   
                 // close popup window
                 window.setTimeout(function () {
-                  window.close();
-                }, 500);
+                  chrome.runtime.sendMessage({}, function (response) {
+                    window.close();
+                  });
+                }, 300);
               }
             }).fail(function(error) {
               $alert.removeClass('alert-info alert-warning alert-success');
@@ -207,8 +208,10 @@ if (location.search !== '?foo') {
 
                 // close popup window
                 window.setTimeout(function () {
-                  window.close();
-                }, 500);
+                  chrome.runtime.sendMessage({}, function (response) {
+                    window.close();
+                  });
+                }, 300);
               }
             }).fail(function(error) {
               $alert.removeClass('alert-info alert-warning alert-success');

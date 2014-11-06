@@ -108,16 +108,19 @@
   // when received message, 
   // return the url and title of active tab
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    updateIcon(Background.activeTabId, Background.activeTabUrl);
     sendResponse({
       url: Background.activeTabUrl,
       title: Background.activeTabTitle
-    });    
+    });
   });
   
   // launch options.html on installation
   chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason == 'install'){
-      chrome.tabs.create({'url': '/html/options.html'});
+      chrome.tabs.create({
+        url: '/html/options.html'
+      });
     }
   });
 
