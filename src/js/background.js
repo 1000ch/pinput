@@ -97,11 +97,13 @@
     chrome.windows.getCurrent({
       populate: true
     }, function (window) {
-      window.tabs.forEach(function (tab) {
-        if (tab.active) {
-          cacheActiveTab(tab.id);
-        }
-      });
+      if (window && Array.isArray(window.tabs)) {
+        window.tabs.forEach(function (tab) {
+          if (tab.highlighted) {
+            cacheActiveTab(tab.id);
+          }
+        });
+      }
     });
   });
   
