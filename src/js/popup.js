@@ -42,7 +42,7 @@ if (location.search !== '?foo') {
   
     // when popup is opened,
     // send blank message to background
-    chrome.runtime.sendMessage({}, function (response) {
+    chrome.runtime.sendMessage({useStrict: true}, function (response) {
       // get url and title of current tab
       $url.val(response.url);
       $title.val(response.title);
@@ -145,18 +145,33 @@ if (location.search !== '?foo') {
               if (data.result_code !== 'done') {
                 $alert.removeClass('alert-info alert-warning alert-success');
                 $alert.html(Popup.Message.failedToBookmark).addClass('alert-danger');
+
+                chrome.runtime.sendMessage({
+                  useStrict: false,
+                  isBookmarked: false
+                }, function (response) {});
               } else {
                 $alert.removeClass('alert-info alert-warning alert-danger');
                 $alert.html(Popup.Message.bookmarkedSuccessfully).addClass('alert-success');
+
+                chrome.runtime.sendMessage({
+                  useStrict: false,
+                  isBookmarked: true
+                }, function (response) {});
   
                 // close popup window
                 window.setTimeout(function () {
                   window.close();
-                }, 500);
+                }, 300);
               }
             }).fail(function(error) {
               $alert.removeClass('alert-info alert-warning alert-success');
               $alert.html(error).addClass('alert-danger');
+
+              chrome.runtime.sendMessage({
+                useStrict: false,
+                isBookmarked: false
+              }, function (response) {});
             });
           });
   
@@ -175,20 +190,34 @@ if (location.search !== '?foo') {
               if (data.result_code !== 'done') {
                 $alert.removeClass('alert-info alert-warning alert-success');
                 $alert.html(Popup.Message.failedToBookmark).addClass('alert-danger');
+
+                chrome.runtime.sendMessage({
+                  useStrict: false,
+                  isBookmarked: false
+                }, function (response) {});
+                
               } else {
                 $alert.removeClass('alert-info alert-warning alert-danger');
                 $alert.html(Popup.Message.bookmarkedSuccessfully).addClass('alert-success');
-  
+
+                chrome.runtime.sendMessage({
+                  useStrict: false,
+                  isBookmarked: true
+                }, function (response) {});
+
                 // close popup window
                 window.setTimeout(function () {
-                  chrome.runtime.sendMessage({}, function (response) {
-                    window.close();
-                  });
+                  window.close();
                 }, 300);
               }
             }).fail(function(error) {
               $alert.removeClass('alert-info alert-warning alert-success');
               $alert.html(error).addClass('alert-danger');
+
+              chrome.runtime.sendMessage({
+                useStrict: false,
+                isBookmarked: false
+              }, function (response) {});
             });
           });
 
@@ -202,20 +231,34 @@ if (location.search !== '?foo') {
               if (data.result_code !== 'done') {
                 $alert.removeClass('alert-info alert-warning alert-success');
                 $alert.html(Popup.Message.failedToDelete).addClass('alert-danger');
+
+                chrome.runtime.sendMessage({
+                  useStrict: false,
+                  isBookmarked: true
+                }, function (response) {});
+
               } else {
                 $alert.removeClass('alert-info alert-warning alert-danger');
                 $alert.html(Popup.Message.deletedSuccessfully).addClass('alert-success');
 
+                chrome.runtime.sendMessage({
+                  useStrict: false,
+                  isBookmarked: false
+                }, function (response) {});
+
                 // close popup window
                 window.setTimeout(function () {
-                  chrome.runtime.sendMessage({}, function (response) {
-                    window.close();
-                  });
+                  window.close();
                 }, 300);
               }
             }).fail(function(error) {
               $alert.removeClass('alert-info alert-warning alert-success');
               $alert.html(error).addClass('alert-danger');
+
+              chrome.runtime.sendMessage({
+                useStrict: false,
+                isBookmarked: true
+              }, function (response) {});
             });
           });
         }

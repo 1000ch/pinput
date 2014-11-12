@@ -8,7 +8,6 @@
   Background.activeTabId = 0;
   Background.activeTabUrl = '';
   Background.activeTabTitle = '';
-  Background.checkedUrl = '';
   var chromeStorage = chrome.storage.sync;
 
   // check token authentication
@@ -36,6 +35,7 @@
    * @param {String} checkUrl
    */
   function updateIcon(tabId, checkUrl) {
+
     var isNotBookmarkable = 
       (checkUrl.indexOf('chrome://') !== -1) || 
       (checkUrl.indexOf('chrome-extension://') !== -1) || 
@@ -49,14 +49,7 @@
       });
       return;
     }
-
-    // filter 2nd check
-    if (Background.checkedUrl === checkUrl) {
-      return;
-    } else {
-      Background.checkedUrl = checkUrl;
-    }
-
+    
     // if API token is authenticated
     if (Pinput.isAuthenticated) {
       // set background
@@ -76,6 +69,43 @@
           text: '',
           tabId: tabId
         });
+      });
+    }
+  }
+
+  /**
+   * Set extension icon checked or not
+   * @param {Number} tabId
+   * @param {String} checkUrl
+   * @param {Bookean} isChecked
+   */
+  function setIcon(tabId, checkUrl, isChecked) {
+
+    var isNotBookmarkable =
+      (checkUrl.indexOf('chrome://') !== -1) ||
+      (checkUrl.indexOf('chrome-extension://') !== -1) ||
+      (checkUrl.indexOf('file://') !== -1);
+
+    // if schema is chrome related
+    if (isNotBookmarkable) {
+      chrome.browserAction.setBadgeText({
+        text: '',
+        tabId: tabId
+      });
+      return;
+    }
+
+    // if API token is authenticated
+    if (Pinput.isAuthenticated) {
+      // set background
+      chrome.browserAction.setBadgeBackgroundColor({
+        color: '#66cc33'
+      });
+
+      // set icon checked
+      chrome.browserAction.setBadgeText({
+        text: isChecked ? '✓': '',
+        tabId: tabId
       });
     }
   }
@@ -110,7 +140,11 @@
   // when received message, 
   // return the url and title of active tab
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    updateIcon(Background.activeTabId, Background.activeTabUrl);
+    if (message.useStrict) {
+      updateIcon(Background.activeTabId, Background.activeTabUrl);
+    } else {
+      setIcon(Background.activeTabId, Background.activeTabUrl, !!message.isBookmarked);
+    }
     sendResponse({
       url: Background.activeTabUrl,
       title: Background.activeTabTitle
@@ -129,11 +163,13 @@
       ).done(function(data) {
         if (data.result_code !== 'done') {
           console.error(data);
+          setIcon(Background.activeTabId, Background.activeTabUrl, false);
         } else {
-          updateIcon(Background.activeTabId, Background.activeTabUrl);
+          setIcon(Background.activeTabId, Background.activeTabUrl, true);
         }
       }).fail(function(error) {
         console.error(error);
+        setIcon(Background.activeTabId, Background.activeTabUrl, false);
       });
     }
   });
