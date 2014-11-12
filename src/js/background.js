@@ -116,7 +116,6 @@
   });
   
   chrome.commands.onCommand.addListener(function (command) {
-    console.log(command);
     if ("direct-bookmark" === command) {
       Pinput.API.addPost(
         Background.activeTabUrl,
