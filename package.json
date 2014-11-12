@@ -1,6 +1,6 @@
 {
   "name": "pinput",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Light-weight chrome extension for Pinboard.",
   "scripts": {
     "test": "grunt test",
