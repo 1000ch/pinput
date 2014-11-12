@@ -115,6 +115,26 @@
     });
   });
   
+  chrome.commands.onCommand.addListener(function (command) {
+    console.log(command);
+    if ("direct-bookmark" === command) {
+      Pinput.API.addPost(
+        Background.activeTabUrl,
+        Background.activeTabTitle,
+        '',
+        '',
+        'yes',
+        'no'
+      ).done(function(data) {
+        if (data.result_code !== 'done') {
+          console.error(data);
+        }
+      }).fail(function(error) {
+        console.error(error);
+      });
+    }
+  });
+  
   // launch options.html on installation
   chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason == 'install'){
