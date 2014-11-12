@@ -87,7 +87,7 @@
 
   // when a tab is updated
   chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (Background.activeTabId === tabId) {
+    if (tab.highlighted) {
       cacheActiveTab(tabId);
     }
   });
@@ -129,6 +129,8 @@
       ).done(function(data) {
         if (data.result_code !== 'done') {
           console.error(data);
+        } else {
+          updateIcon(Background.activeTabId, Background.activeTabUrl);
         }
       }).fail(function(error) {
         console.error(error);
