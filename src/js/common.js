@@ -6,6 +6,15 @@
   Pinput.isAuthenticated = false;
   
   Pinput.Util = {
+    syncAuthStatus: function () {
+      if (Pinput.authToken === '' || !Pinput.isAuthenticated) {
+        // check token authentication
+        chrome.storage.sync.get([Pinput.StorageKey.authToken, Pinput.StorageKey.isAuthenticated], function (item) {
+          Pinput.authToken = item[Pinput.StorageKey.authToken];
+          Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
+        });
+      }
+    },
     /**
      * Split string with whitespace
      * @param {String} val
@@ -59,6 +68,10 @@
      * @returns {$.Deferred}
      */
     addPost: function (url, title, description, tags, shared, toread) {
+      
+      // synchronize authentication status
+      Pinput.Util.syncAuthStatus();
+
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,
@@ -80,6 +93,10 @@
      * @returns {$.Deferred}
      */
     deletePost: function (url) {
+
+      // synchronize authentication status
+      Pinput.Util.syncAuthStatus();
+
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,
@@ -97,6 +114,10 @@
      * @returns {$.Deferred}
      */
     getPost: function (url) {
+
+      // synchronize authentication status
+      Pinput.Util.syncAuthStatus();
+
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,
@@ -130,6 +151,10 @@
      * @returns {$.Deferred}
      */
     getTags: function () {
+
+      // synchronize authentication status
+      Pinput.Util.syncAuthStatus();
+
       var params = Pinput.Util.serializeArray({
         format: 'json',
         auth_token: Pinput.authToken,
