@@ -53,6 +53,8 @@ if (location.search !== '?foo') {
       var keys = [
         Pinput.StorageKey.authToken,
         Pinput.StorageKey.isAuthenticated,
+        Pinput.StorageKey.defaultPrivate,
+        Pinput.StorageKey.defaultReadLater,
         Pinput.StorageKey.useTagSuggestion
       ];
 
@@ -61,13 +63,23 @@ if (location.search !== '?foo') {
         // cache token
         Pinput.authToken = item[Pinput.StorageKey.authToken];
         Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
+        Pinput.defaultPrivate = !!item[Pinput.StorageKey.defaultPrivate];
+        Pinput.defaultReadLater = !!item[Pinput.StorageKey.defaultReadLater];
         Pinput.useTagSuggestion = !!item[Pinput.StorageKey.useTagSuggestion];
+
+        if (Pinput.defaultPrivate) {
+          $private.prop('checked', true);
+        }
+
+        if (Pinput.defaultReadLater) {
+          $readlater.prop('checked', true);
+        }
 
         if (!Pinput.isAuthenticated) {
           // if API token is not authenticated, make me disabled.
           $alert.removeClass('alert-info alert-warning alert-success');
           $alert.html(Popup.Message.isNotAuthenticated).addClass('alert-danger');
-          $bookmark.attr('disabled', 'disabled');
+          $bookmark.prop('disabled', true);
         } else {
           // check whether url is bookmarked or not
           Pinput.API.getPost(response.url).done(function (data) {
