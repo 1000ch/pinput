@@ -12,7 +12,8 @@ Light-weight chrome extension for [Pinboard](http://pinboard.in/).
 
 ### Shortcut key
 
-Press `Ctrl + B` then popup will open.
+- Press `Ctrl + B` to open popup window.
+- Press `Ctrl + Shift + B` to bookmark directly without opening popup window.
 
 ## Settings
 

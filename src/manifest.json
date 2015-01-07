@@ -27,14 +27,14 @@
     "direct-bookmark": {
       "suggested_key": {
         "default": "Ctrl+Shift+B",
-        "mac": "Command+Shift+B"
+        "mac": "Ctrl+Shift+B"
       },
       "description": "Bookmark directly without opening popup window."
     },
     "_execute_browser_action": {
       "suggested_key": {
         "default": "Ctrl+B",
-        "mac": "Command+B"
+        "mac": "Ctrl+B"
       },
       "description": "Open popup window."
     }
