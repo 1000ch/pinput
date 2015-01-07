@@ -18,11 +18,15 @@
     var $input = $('#js-input');
     var $button = $('#js-button');
     var $alert = $('#js-alert');
-    var $checkbox = $('#js-checkbox');
+    var $checkboxPrivate = $('#js-checkbox-private');
+    var $checkboxReadLater = $('#js-checkbox-readlater');
+    var $checkboxTagSuggestion = $('#js-checkbox-tagsuggestion');
     var chromeStorage = chrome.storage.sync;
     
     var keys = [
       Pinput.StorageKey.authToken,
+      Pinput.StorageKey.defaultPrivate,
+      Pinput.StorageKey.defaultReadLater,
       Pinput.StorageKey.useTagSuggestion
     ];
     // check set API token is authenticated
@@ -34,13 +38,25 @@
       } else {
         Pinput.authToken = '';
       }
-      
+
+      if (items.hasOwnProperty(Pinput.StorageKey.defaultPrivate)) {
+        Pinput.defaultPrivate = !!items[Pinput.StorageKey.defaultPrivate];
+      } else {
+        Pinput.defaultPrivate = false;
+      }
+      if (items.hasOwnProperty(Pinput.StorageKey.defaultReadLater)) {
+        Pinput.defaultReadLater = !!items[Pinput.StorageKey.defaultReadLater];
+      } else {
+        Pinput.defaultReadLater = false;
+      }
       if (items.hasOwnProperty(Pinput.StorageKey.useTagSuggestion)) {
         Pinput.useTagSuggestion = !!items[Pinput.StorageKey.useTagSuggestion];
       } else {
         Pinput.useTagSuggestion = false;
       }
-      $checkbox.prop('checked', Pinput.useTagSuggestion);
+      $checkboxPrivate.prop('checked', Pinput.defaultPrivate);
+      $checkboxReadLater.prop('checked', Pinput.defaultReadLater);
+      $checkboxTagSuggestion.prop('checked', Pinput.useTagSuggestion);
   
       if (Pinput.authToken.length !== 0) {
         // if the saved token is not blank
@@ -68,11 +84,33 @@
       $alert.removeClass('alert-info alert-success alert-danger');
       $alert.html(Options.Message.changed).addClass('alert-warning');
     });
-    
-    $checkbox.on('change', function (e) {
+
+    $checkboxPrivate.on('change', function (e) {
+
+      // get checked or not
+      Pinput.defaultPrivate = $checkboxPrivate.prop('checked');
+      var storageData = {};
+      storageData[Pinput.StorageKey.defaultPrivate] = Pinput.defaultPrivate;
+
+      // save checked value to chrome storage
+      chromeStorage.set(storageData, function () {});
+    });
+
+    $checkboxReadLater.on('change', function (e) {
+
+      // get checked or not
+      Pinput.defaultReadLater = $checkboxReadLater.prop('checked');
+      var storageData = {};
+      storageData[Pinput.StorageKey.defaultReadLater] = Pinput.defaultReadLater;
+
+      // save checked value to chrome storage
+      chromeStorage.set(storageData, function () {});
+    });
+
+    $checkboxTagSuggestion.on('change', function (e) {
       
       // get checked or not
-      Pinput.useTagSuggestion = $checkbox.prop('checked');
+      Pinput.useTagSuggestion = $checkboxTagSuggestion.prop('checked');
       var storageData = {};
       storageData[Pinput.StorageKey.useTagSuggestion] = Pinput.useTagSuggestion;
       
