@@ -10,10 +10,18 @@
   Background.activeTabTitle = '';
   var chromeStorage = chrome.storage.sync;
 
+  var keys = [
+    Pinput.StorageKey.authToken,
+    Pinput.StorageKey.isAuthenticated,
+    Pinput.StorageKey.defaultPrivate,
+    Pinput.StorageKey.defaultReadLater
+  ];
   // check token authentication
-  chromeStorage.get([Pinput.StorageKey.authToken, Pinput.StorageKey.isAuthenticated], function (item) {
+  chromeStorage.get(keys, function (item) {
     Pinput.authToken = item[Pinput.StorageKey.authToken];
     Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
+    Pinput.defaultPrivate = !!item[Pinput.StorageKey.defaultPrivate];
+    Pinput.defaultReadLater = !!item[Pinput.StorageKey.defaultReadLater];
   });
 
   /**
@@ -158,8 +166,8 @@
         Background.activeTabTitle,
         '',
         '',
-        'yes',
-        'no'
+        (Pinput.defaultPrivate ? 'no' : 'yes'),
+        (Pinput.defaultReadLater ? 'yes' : 'no')
       ).done(function(data) {
         if (data.result_code !== 'done') {
           console.error(data);
