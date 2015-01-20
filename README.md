@@ -1,5 +1,7 @@
 # Pinput [![Build Status](https://travis-ci.org/1000ch/pinput.svg?branch=master)](https://travis-ci.org/1000ch/pinput)
 
+![](assets/tile.png)
+
 ## About
 
 Light-weight chrome extension for [Pinboard](http://pinboard.in/).
