@@ -1,6 +1,5 @@
 {
   "name": "pinput",
-  "version": "1.6.0",
   "homepage": "https://github.com/1000ch/pinput",
   "authors": [
     "1000ch <shogo.sensui@gmail.com>"
@@ -15,8 +14,8 @@
     "tests"
   ],
   "dependencies": {
-    "jquery-ui": "jquery/jquery-ui#~1.11.2",
-    "bootstrap": "~3.3.0",
-    "jquery": "~2.1.1"
+    "jquery-ui": "jquery/jquery-ui#~1.11.3",
+    "bootstrap": "~3.3.2",
+    "jquery": "~2.1.3"
   }
 }
