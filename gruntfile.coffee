@@ -2,19 +2,6 @@ module.exports = (grunt) ->
   
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
-    'html-inspector':
-      all:
-        src: ['src/html/*.html']
-    jshint:
-      all: ['src/js/*.js']
-    jsvalidate:
-      options:
-        globals: {}
-        esprimaOptions: {}
-        verbose: false
-      all:
-        files:
-          src: ['<%=jshint.all%>']
     htmlmin:
       all:
         options:
@@ -79,10 +66,6 @@ module.exports = (grunt) ->
           src: ['src/js/lib/jquery-ui.custom.min.js'],
           dest: 'dist/js/lib'
         }]
-
-  grunt.loadNpmTasks 'grunt-html-inspector'
-  grunt.loadNpmTasks 'grunt-jsvalidate'
-  grunt.loadNpmTasks 'grunt-contrib-jshint'
   
   grunt.loadNpmTasks 'grunt-contrib-htmlmin'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
@@ -90,5 +73,4 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
   
   grunt.registerTask 'default', 'watch'
-  grunt.registerTask 'test', ['jshint', 'jsvalidate', 'html-inspector']
   grunt.registerTask 'build', ['htmlmin', 'cssmin', 'uglify', 'copy']

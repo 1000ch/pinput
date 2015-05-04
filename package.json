@@ -2,7 +2,7 @@
   "name": "pinput",
   "description": "Light-weight chrome extension for Pinboard.",
   "scripts": {
-    "test": "grunt test",
+    "test": "gulp test",
     "postinstall": "bower install"
   },
   "repository": {
@@ -28,9 +28,8 @@
     "grunt-contrib-copy": "^0.7.0",
     "grunt-contrib-cssmin": "^0.10.0",
     "grunt-contrib-htmlmin": "^0.3.0",
-    "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.6.0",
-    "grunt-html-inspector": "^0.1.6",
-    "grunt-jsvalidate": "^0.2.2"
+    "gulp": "^3.8.11",
+    "gulp-jsvalidate": "^2.0.0"
   }
 }
