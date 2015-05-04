@@ -69,7 +69,7 @@
       Pinput.API.getPost(checkUrl).done(function (data) {
         var isBookmarked = (data.posts.length !== 0);
         chrome.browserAction.setBadgeText({
-          text: (isBookmarked) ? '✓': '',
+          text: (isBookmarked) ? '●': '',
           tabId: tabId
         });
       }).fail(function (error) {
