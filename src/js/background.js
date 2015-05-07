@@ -112,7 +112,7 @@
 
       // set icon checked
       chrome.browserAction.setBadgeText({
-        text: isChecked ? '✓': '',
+        text: isChecked ? '●': '',
         tabId: tabId
       });
     }
