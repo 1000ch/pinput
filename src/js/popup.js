@@ -81,11 +81,11 @@ $(() => {
 
     chrome.storage.sync.get(keys, (item) => {
 
-      variable.authToken        = item[constant.authToken];
-      variable.isAuthenticated  = !!item[constant.isAuthenticated];
-      variable.defaultPrivate   = !!item[constant.defaultPrivate];
-      variable.defaultReadLater = !!item[constant.defaultReadLater];
-      variable.useTagSuggestion = !!item[constant.useTagSuggestion];
+      variable.authToken        = String(item[constant.authToken]);
+      variable.isAuthenticated  = Boolean(item[constant.isAuthenticated]);
+      variable.defaultPrivate   = Boolean(item[constant.defaultPrivate]);
+      variable.defaultReadLater = Boolean(item[constant.defaultReadLater]);
+      variable.useTagSuggestion = Boolean(item[constant.useTagSuggestion]);
 
       if (variable.defaultPrivate) {
         $private.prop('checked', true);

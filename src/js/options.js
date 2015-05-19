@@ -55,25 +55,25 @@ $(() => {
   chrome.storage.sync.get(keys, (items) => {
 
     if (items.hasOwnProperty(constant.authToken)) {
-      variable.authToken = items[constant.authToken];
+      variable.authToken = String(items[constant.authToken]);
     } else {
       variable.authToken = '';
     }
 
     if (items.hasOwnProperty(constant.defaultPrivate)) {
-      variable.defaultPrivate = !!items[constant.defaultPrivate];
+      variable.defaultPrivate = Boolean(items[constant.defaultPrivate]);
     } else {
       variable.defaultPrivate = false;
     }
 
     if (items.hasOwnProperty(constant.defaultReadLater)) {
-      variable.defaultReadLater = !!items[constant.defaultReadLater];
+      variable.defaultReadLater = Boolean(items[constant.defaultReadLater]);
     } else {
       variable.defaultReadLater = false;
     }
 
     if (items.hasOwnProperty(constant.useTagSuggestion)) {
-      variable.useTagSuggestion = !!items[constant.useTagSuggestion];
+      variable.useTagSuggestion = Boolean(items[constant.useTagSuggestion]);
     } else {
       variable.useTagSuggestion = false;
     }

@@ -23,8 +23,8 @@ export default {
 
         chrome.storage.sync.get(keys, (item) => {
 
-          variable.authToken       = item[constant.authToken];
-          variable.isAuthenticated = !!item[constant.isAuthenticated];
+          variable.authToken       = String(item[constant.authToken]);
+          variable.isAuthenticated = Boolean(item[constant.isAuthenticated]);
 
           if (variable.authToken === '' || !variable.isAuthenticated) {
             reject(new Error('API Token is not authenticated.'));
@@ -93,7 +93,7 @@ export default {
   /**
    * Delete a bookmark.
    * @see https://pinboard.in/api#posts_delete
-   * @param {String} url
+   * @param {String} url [required]
    * @returns {Promise}
    */
   deletePost : function(url) {
@@ -127,7 +127,7 @@ export default {
       let queryString = util.serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
-        url          : url ? encodeURIComponent(url) : '',
+        url          : encodeURIComponent(url),
         _            : Date.now()
       });
 
@@ -141,7 +141,7 @@ export default {
    * Popular tags are tags used site-wide for the url;
    * recommended tags are drawn from the user's own tags.
    * @see https://pinboard.in/api#posts_suggest
-   * @param {String} url
+   * @param {String} url [required]
    * @returns {Promise}
    */
   suggestPost : function(url) {

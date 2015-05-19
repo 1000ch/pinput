@@ -17,10 +17,10 @@ const keys = [
 
 // check token authentication
 chrome.storage.sync.get(keys, (item) => {
-  variable.authToken        = item[constant.authToken];
-  variable.isAuthenticated  = !!item[constant.isAuthenticated];
-  variable.defaultPrivate   = !!item[constant.defaultPrivate];
-  variable.defaultReadLater = !!item[constant.defaultReadLater];
+  variable.authToken        = String(item[constant.authToken]);
+  variable.isAuthenticated  = Boolean(item[constant.isAuthenticated]);
+  variable.defaultPrivate   = Boolean(item[constant.defaultPrivate]);
+  variable.defaultReadLater = Boolean(item[constant.defaultReadLater]);
 });
 
 /**
@@ -36,21 +36,16 @@ function cacheActiveTab(tabId) {
   });
 }
 
+const notAvailableSchemes = [
+  'chrome://',
+  'chrome-extension://',
+  'file://'
+];
+
 function isBookmarkable(url) {
-
-  if (url.indexOf('chrome://') !== -1) {
-    return false;
-  }
-
-  if (url.indexOf('chrome-extension://') !== -1) {
-    return false;
-  }
-
-  if (url.indexOf('file://') !== -1) {
-    return false;
-  }
-
-  return true;
+  return notAvailableSchemes.every((scheme) => {
+    return url.indexOf(scheme) === -1;
+  });
 }
 
 /**
