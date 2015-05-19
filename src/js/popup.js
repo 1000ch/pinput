@@ -1,3 +1,19 @@
+import variable from './variable';
+import constant from './constant';
+import util     from './util';
+import API      from './api';
+
+const Message = {
+  isBookmarked          : 'This URL is already bookmarked.',
+  isNotAuthenticated    : 'API Token is not authenticated.',
+  bookmarkedSuccessfully: 'Bookmarked successfully!',
+  updatedSuccessfully   : 'Updated successfully!',
+  deletedSuccessfully   : 'Deleted successfully!',
+  failedToBookmark      : 'Failed to bookmark...',
+  failedToUpdate        : 'Failed to update...',
+  failedToDelete        : 'Failed to delete...'
+};
+
 // autofocus attribute is not working on chrome extension :(
 // https://code.google.com/p/chromium/issues/detail?id=111660#c7
 if (location.search !== '?foo') {
@@ -7,278 +23,273 @@ if (location.search !== '?foo') {
   // stop execution on this page
 }
 
-(function(global) {
+$(() => {
 
-  // common namespace
-  var Pinput = global.Pinput || {};
-  // popup page namespace
-  var Popup = Pinput.Popup || {};
+  let $form             = $('#js-form');
+  let $url              = $('#js-url');
+  let $title            = $('#js-title');
+  let $tags             = $('#js-tags');
+  let $description      = $('#js-description');
+  let $private          = $('#js-private');
+  let $readlater        = $('#js-readlater');
+  let $bookmark         = $('#js-bookmark');
+  let $bookmarkDropdown = $('#js-bookmark-dropdown');
+  let $delete           = $('#js-delete');
+  let $alert            = $('#js-alert');
 
-  Popup.Message = {
-    isBookmarked: 'This URL is already bookmarked.',
-    isNotAuthenticated: 'API Token is not authenticated.',
-    bookmarkedSuccessfully: 'Bookmarked successfully!',
-    updatedSuccessfully: 'Updated successfully!',
-    deletedSuccessfully: 'Deleted successfully!',
-    failedToBookmark: 'Failed to bookmark...',
-    failedToUpdate: 'Failed to update...',
-    failedToDelete: 'Failed to delete...'
-  };
+  function setAlertInfo(message = '') {
+    $alert.removeClass('alert-danger alert-warning alert-success')
+          .addClass('alert-info')
+          .text(message);
+  }
 
-  $(function() {
-  
-    var $form = $('#js-form');
-    var $url = $('#js-url');
-    var $title = $('#js-title');
-    var $tags = $('#js-tags');
-    var $description = $('#js-description');
-    var $private = $('#js-private');
-    var $readlater = $('#js-readlater');
-    var $bookmark = $('#js-bookmark');
-    var $bookmarkDropdown = $('#js-bookmark-dropdown');
-    var $delete = $('#js-delete');
-    var $alert = $('#js-alert');
-    var chromeStorage = chrome.storage.sync;
-  
-    // when popup is opened,
-    // send blank message to background
-    chrome.runtime.sendMessage({useStrict: true}, function (response) {
-      // get url and title of current tab
-      $url.val(response.url);
-      $title.val(response.title);
-      
-      // focus to tag area
-      $tags.focus();
+  function setAlertSuccess(message = '') {
+    $alert.removeClass('alert-info alert-warning alert-danger')
+          .addClass('alert-success')
+          .text(message);
+  }
 
-      var keys = [
-        Pinput.StorageKey.authToken,
-        Pinput.StorageKey.isAuthenticated,
-        Pinput.StorageKey.defaultPrivate,
-        Pinput.StorageKey.defaultReadLater,
-        Pinput.StorageKey.useTagSuggestion
-      ];
+  function setAlertDanger(message = '') {
+    $alert.removeClass('alert-info alert-warning alert-success')
+          .addClass('alert-danger')
+          .text(message);
+  }
 
-      // get Token and check
-      chromeStorage.get(keys, function (item) {
-        // cache token
-        Pinput.authToken = item[Pinput.StorageKey.authToken];
-        Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
-        Pinput.defaultPrivate = !!item[Pinput.StorageKey.defaultPrivate];
-        Pinput.defaultReadLater = !!item[Pinput.StorageKey.defaultReadLater];
-        Pinput.useTagSuggestion = !!item[Pinput.StorageKey.useTagSuggestion];
+  function setAlertWarning(message = '') {
+    $alert.removeClass('alert-info alert-success alert-danger')
+          .addClass('alert-warning')
+          .text(message);
+  }
 
-        if (Pinput.defaultPrivate) {
-          $private.prop('checked', true);
-        }
+  // when popup is opened,
+  // send blank message to background
+  chrome.runtime.sendMessage({useStrict: true}, (response) => {
 
-        if (Pinput.defaultReadLater) {
-          $readlater.prop('checked', true);
-        }
+    $url.val(response.url);
+    $title.val(response.title);
+    $tags.focus();
 
-        if (!Pinput.isAuthenticated) {
-          // if API token is not authenticated, make me disabled.
-          $alert.removeClass('alert-info alert-warning alert-success');
-          $alert.html(Popup.Message.isNotAuthenticated).addClass('alert-danger');
-          $bookmark.prop('disabled', true);
-        } else {
-          // check whether url is bookmarked or not
-          Pinput.API.getPost(response.url).done(function (data) {
-            if (data.posts.length !== 0) {
-              // if url is already bookmarked
-              var post = data.posts.shift();
-              $tags.val(post.tags);
-              $description.val(post.extended);
-              $bookmark.removeClass('btn-primary').addClass('btn-warning').text('Update bookmark');
-              $bookmarkDropdown.removeAttr('disabled').removeClass('btn-primary').addClass('btn-warning');
-              $alert.removeClass('alert-info alert-success alert-danger');
-              $alert.html(Popup.Message.isBookmarked).addClass('alert-warning');
-              
-              Popup.Message.bookmarkedSuccessfully = Popup.Message.updatedSuccessfully;
-              Popup.Message.failedToBookmark = Popup.Message.failedToUpdate;
-            } else {
-              // if url is not bookmarked
-              if (Pinput.useTagSuggestion) {
-                Pinput.API.suggestPost(response.url).done(function (array) {
-                  array.forEach(function (data) {
-                    if (Array.isArray(data.popular)) {
-                      $tags.val(data.popular.join(' '));
-                    }
-                  });
-                });
-              }
-            }
-          }).always(function () {
-            // set up word suggestion
-            Pinput.API.getTags().done(function (data) {
-              var availableTags = Object.keys(data);
-              $tags.on('keydown', function(event) {
-                if (event.keyCode === $.ui.keyCode.TAB && $(this).data('ui-autocomplete').menu.active) {
-                  event.preventDefault();
-                }
-              }).autocomplete({
-                minLength: 0,
-                max: 5,
-                autoFocus: true,
-                source: function(request, response) {
-                  // delegate back to autocomplete, but extract the last term
-                  response($.ui.autocomplete.filter(availableTags, Pinput.Util.extractLast(request.term)).slice(0, 5));
-                },
-                focus: function () {
-                  // prevent value inserted on focus
-                  return false;
-                },
-                select: function (event, ui) {
-                  var terms = Pinput.Util.split(this.value);
-                  // remove the current input
-                  terms.pop();
-                  // add the selected item
-                  terms.push(ui.item.value);
-                  // add placeholder to get the comma-and-space at the end
-                  terms.push('');
-                  this.value = terms.join(' ');
-                  return false;
+    const keys = [
+      constant.authToken,
+      constant.isAuthenticated,
+      constant.defaultPrivate,
+      constant.defaultReadLater,
+      constant.useTagSuggestion
+    ];
+
+    chrome.storage.sync.get(keys, (item) => {
+
+      variable.authToken        = item[constant.authToken];
+      variable.isAuthenticated  = !!item[constant.isAuthenticated];
+      variable.defaultPrivate   = !!item[constant.defaultPrivate];
+      variable.defaultReadLater = !!item[constant.defaultReadLater];
+      variable.useTagSuggestion = !!item[constant.useTagSuggestion];
+
+      if (variable.defaultPrivate) {
+        $private.prop('checked', true);
+      }
+
+      if (variable.defaultReadLater) {
+        $readlater.prop('checked', true);
+      }
+
+      if (!variable.isAuthenticated) {
+
+        setAlertDanger(Message.isNotAuthenticated);
+        $bookmark.prop('disabled', true);
+
+      } else {
+
+        API.getPost(response.url).then((data) => {
+
+          if (data.posts.length !== 0) {
+
+            let post = data.posts.shift();
+            $tags.val(post.tags);
+            $description.val(post.extended);
+            $bookmark.removeClass('btn-primary').addClass('btn-warning').text('Update bookmark');
+            $bookmarkDropdown.removeAttr('disabled').removeClass('btn-primary').addClass('btn-warning');
+
+            setAlertWarning(Message.isBookmarked);
+
+            Message.bookmarkedSuccessfully = Message.updatedSuccessfully;
+            Message.failedToBookmark = Message.failedToUpdate;
+
+          } else {
+
+            if (variable.useTagSuggestion) {
+              API.suggestPost(response.url).then((array) => {
+                for (let data of array) {
+                  if (Array.isArray(data.popular)) {
+                    $tags.val(data.popular.join(' '));
+                  }
                 }
               });
+            }
+          }
+        }).then(() => {
+
+          // set up word suggestion
+          API.getTags().then((data) => {
+
+            let availableTags = Object.keys(data);
+            $tags.on('keydown', function (event) {
+              if (event.keyCode === $.ui.keyCode.TAB && $(this).data('ui-autocomplete').menu.active) {
+                event.preventDefault();
+              }
+            }).autocomplete({
+              minLength: 0,
+              max: 5,
+              autoFocus: true,
+              source: function (request, response) {
+                // delegate back to autocomplete, but extract the last term
+                response($.ui.autocomplete.filter(availableTags, util.extractLast(request.term)).slice(0, 5));
+              },
+              focus: function () {
+                // prevent value inserted on focus
+                return false;
+              },
+              select: function (event, ui) {
+                let terms = util.split(this.value);
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push(ui.item.value);
+                // add placeholder to get the comma-and-space at the end
+                terms.push('');
+                this.value = terms.join(' ');
+                return false;
+              }
             });
           });
-  
-          $form.on('submit', function (e) {
-            // prevent default
-            e.preventDefault();
-            
-            Pinput.API.addPost(
-              $url.val(),
-              $title.val(),
-              $description.val(),
-              $tags.val(),
-              ($private.prop('checked') ? 'no' : 'yes'),
-              ($readlater.prop('checked') ? 'yes' : 'no')
-            ).done(function(data) {
-              if (data.result_code !== 'done') {
-                $alert.removeClass('alert-info alert-warning alert-success');
-                $alert.html(Popup.Message.failedToBookmark).addClass('alert-danger');
+        });
 
-                chrome.runtime.sendMessage({
-                  useStrict: false,
-                  isBookmarked: false
-                }, function (response) {});
-              } else {
-                $alert.removeClass('alert-info alert-warning alert-danger');
-                $alert.html(Popup.Message.bookmarkedSuccessfully).addClass('alert-success');
+        $form.on('submit', function (e) {
 
-                chrome.runtime.sendMessage({
-                  useStrict: false,
-                  isBookmarked: true
-                }, function (response) {});
-  
-                // close popup window
-                window.setTimeout(function () {
-                  window.close();
-                }, 300);
-              }
-            }).fail(function(error) {
-              $alert.removeClass('alert-info alert-warning alert-success');
-              $alert.html(error).addClass('alert-danger');
+          e.preventDefault();
+          
+          API.addPost(
+            $url.val(),
+            $title.val(),
+            $description.val(),
+            $tags.val(),
+            $private.prop('checked')   ? 'no' : 'yes',
+            $readlater.prop('checked') ? 'yes' : 'no'
+          ).then((data) => {
+
+            if (data.result_code !== 'done') {
+
+              setAlertDanger(Message.failedToBookmark);
 
               chrome.runtime.sendMessage({
                 useStrict: false,
                 isBookmarked: false
-              }, function (response) {});
-            });
-          });
-  
-          $bookmark.on('click', function (e) {
-            // prevent default
-            e.preventDefault();
+              }, (response) => {});
+            } else {
 
-            Pinput.API.addPost(
-              $url.val(),
-              $title.val(),
-              $description.val(),
-              $tags.val(),
-              ($private.prop('checked') ? 'no' : 'yes'),
-              ($readlater.prop('checked') ? 'yes' : 'no')
-            ).done(function(data) {
-              if (data.result_code !== 'done') {
-                $alert.removeClass('alert-info alert-warning alert-success');
-                $alert.html(Popup.Message.failedToBookmark).addClass('alert-danger');
-
-                chrome.runtime.sendMessage({
-                  useStrict: false,
-                  isBookmarked: false
-                }, function (response) {});
-                
-              } else {
-                $alert.removeClass('alert-info alert-warning alert-danger');
-                $alert.html(Popup.Message.bookmarkedSuccessfully).addClass('alert-success');
-
-                chrome.runtime.sendMessage({
-                  useStrict: false,
-                  isBookmarked: true
-                }, function (response) {});
-
-                // close popup window
-                window.setTimeout(function () {
-                  window.close();
-                }, 300);
-              }
-            }).fail(function(error) {
-              $alert.removeClass('alert-info alert-warning alert-success');
-              $alert.html(error).addClass('alert-danger');
-
-              chrome.runtime.sendMessage({
-                useStrict: false,
-                isBookmarked: false
-              }, function (response) {});
-            });
-          });
-
-          $delete.on('click', function (e) {
-            // prevent default
-            e.preventDefault();
-
-            Pinput.API.deletePost(
-              $url.val()
-            ).done(function(data) {
-              if (data.result_code !== 'done') {
-                $alert.removeClass('alert-info alert-warning alert-success');
-                $alert.html(Popup.Message.failedToDelete).addClass('alert-danger');
-
-                chrome.runtime.sendMessage({
-                  useStrict: false,
-                  isBookmarked: true
-                }, function (response) {});
-
-              } else {
-                $alert.removeClass('alert-info alert-warning alert-danger');
-                $alert.html(Popup.Message.deletedSuccessfully).addClass('alert-success');
-
-                chrome.runtime.sendMessage({
-                  useStrict: false,
-                  isBookmarked: false
-                }, function (response) {});
-
-                // close popup window
-                window.setTimeout(function () {
-                  window.close();
-                }, 300);
-              }
-            }).fail(function(error) {
-              $alert.removeClass('alert-info alert-warning alert-success');
-              $alert.html(error).addClass('alert-danger');
+              setAlertSuccess(Message.bookmarkedSuccessfully);
 
               chrome.runtime.sendMessage({
                 useStrict: false,
                 isBookmarked: true
-              }, function (response) {});
-            });
+              }, (response) => {});
+
+              // close popup window
+              window.setTimeout(() => window.close(), 300);
+            }
+          }).catch((error) => {
+
+            setAlertDanger(error);
+
+            chrome.runtime.sendMessage({
+              useStrict: false,
+              isBookmarked: false
+            }, (response) => {});
           });
-        }
-      });
+        });
+
+        $bookmark.on('click', function (e) {
+
+          e.preventDefault();
+
+          API.addPost(
+            $url.val(),
+            $title.val(),
+            $description.val(),
+            $tags.val(),
+            $private.prop('checked')   ? 'no' : 'yes',
+            $readlater.prop('checked') ? 'yes' : 'no'
+          ).then((data) => {
+
+            if (data.result_code !== 'done') {
+
+              setAlertDanger(Message.failedToBookmark);
+
+              chrome.runtime.sendMessage({
+                useStrict: false,
+                isBookmarked: false
+              }, (response) => {});
+              
+            } else {
+
+              setAlertSuccess(Message.bookmarkedSuccessfully);
+
+              chrome.runtime.sendMessage({
+                useStrict: false,
+                isBookmarked: true
+              }, (response) => {});
+
+              window.setTimeout(() => window.close(), 300);
+            }
+          }).catch((error) => {
+
+            setAlertDanger(error);
+
+            chrome.runtime.sendMessage({
+              useStrict: false,
+              isBookmarked: false
+            }, (response) => {});
+          });
+        });
+
+        $delete.on('click', function (e) {
+
+          e.preventDefault();
+
+          API.deletePost(
+            $url.val()
+          ).then((data) => {
+            if (data.result_code !== 'done') {
+
+              setAlertDanger(Message.failedToDelete);
+
+              chrome.runtime.sendMessage({
+                useStrict: false,
+                isBookmarked: true
+              }, (response) => {});
+
+            } else {
+
+              setAlertSuccess(Message.deletedSuccessfully);
+
+              chrome.runtime.sendMessage({
+                useStrict: false,
+                isBookmarked: false
+              }, (response) => {});
+
+              window.setTimeout(() => window.close(), 300);
+            }
+          }).catch((error) => {
+
+            setAlertDanger(error);
+
+            chrome.runtime.sendMessage({
+              useStrict: false,
+              isBookmarked: true
+            }, (response) => {});
+          });
+        });
+      }
     });
   });
-
-  // export
-  global.Pinput = Pinput;
-  
-})(this);
+});

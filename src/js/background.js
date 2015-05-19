@@ -1,197 +1,186 @@
-(function (global) {
+import variable from './variable';
+import constant from './constant';
+import API      from './api';
 
-  // common namespace
-  var Pinput = global.Pinput || {};
-  // background page namespace
-  var Background = Pinput.Background || {};
+let activeTabId    = 0;
+let activeTabUrl   = '';
+let activeTabTitle = '';
 
-  Background.activeTabId = 0;
-  Background.activeTabUrl = '';
-  Background.activeTabTitle = '';
-  var chromeStorage = chrome.storage.sync;
+const keys = [
+  constant.authToken,
+  constant.isAuthenticated,
+  constant.defaultPrivate,
+  constant.defaultReadLater
+];
 
-  var keys = [
-    Pinput.StorageKey.authToken,
-    Pinput.StorageKey.isAuthenticated,
-    Pinput.StorageKey.defaultPrivate,
-    Pinput.StorageKey.defaultReadLater
-  ];
-  // check token authentication
-  chromeStorage.get(keys, function (item) {
-    Pinput.authToken = item[Pinput.StorageKey.authToken];
-    Pinput.isAuthenticated = !!item[Pinput.StorageKey.isAuthenticated];
-    Pinput.defaultPrivate = !!item[Pinput.StorageKey.defaultPrivate];
-    Pinput.defaultReadLater = !!item[Pinput.StorageKey.defaultReadLater];
+// check token authentication
+chrome.storage.sync.get(keys, (item) => {
+  variable.authToken        = item[constant.authToken];
+  variable.isAuthenticated  = !!item[constant.isAuthenticated];
+  variable.defaultPrivate   = !!item[constant.defaultPrivate];
+  variable.defaultReadLater = !!item[constant.defaultReadLater];
+});
+
+/**
+ * Cache active tab information
+ * @param {Number} tabId
+ */
+function cacheActiveTab(tabId) {
+  activeTabId = tabId;
+  chrome.tabs.get(tabId, (tab) => {
+    activeTabUrl = tab.url;
+    activeTabTitle = tab.title;
+    updateIcon(activeTabId, activeTabUrl);
   });
+}
 
-  /**
-   * Cache active tab information
-   * @param {Number} tabId
-   */
-  function cacheActiveTab(tabId) {
-    Background.activeTabId = tabId;
-    chrome.tabs.get(tabId, function (tab) {
-      Background.activeTabUrl = tab.url;
-      Background.activeTabTitle = tab.title;
-      updateIcon(Background.activeTabId, Background.activeTabUrl);
+/**
+ * Check URL is already bookmarked or not
+ * @param {Number} tabId
+ * @param {String} checkURL
+ */
+function updateIcon(tabId, checkURL) {
+
+  let isNotBookmarkable = 
+    (checkURL.indexOf('chrome://') !== -1) || 
+    (checkURL.indexOf('chrome-extension://') !== -1) || 
+    (checkURL.indexOf('file://') !== -1);
+
+  // if schema is chrome related
+  if (isNotBookmarkable) {
+    chrome.browserAction.setBadgeText({
+      text: '',
+      tabId: tabId
     });
+    return;
   }
+  
+  // if API token is authenticated
+  if (variable.isAuthenticated) {
+    // set background
+    chrome.browserAction.setBadgeBackgroundColor({
+      color: '#66cc33'
+    });
 
-  /**
-   * Check url is already bookmarked or not
-   * @param {Number} tabId
-   * @param {String} checkUrl
-   */
-  function updateIcon(tabId, checkUrl) {
-
-    var isNotBookmarkable = 
-      (checkUrl.indexOf('chrome://') !== -1) || 
-      (checkUrl.indexOf('chrome-extension://') !== -1) || 
-      (checkUrl.indexOf('file://') !== -1);
-
-    // if schema is chrome related
-    if (isNotBookmarkable) {
+    // request
+    API.getPost(checkURL).then((data) => {
+      chrome.browserAction.setBadgeText({
+        text: (data.posts.length !== 0) ? '●': '',
+        tabId: tabId
+      });
+    }).catch((error) => {
       chrome.browserAction.setBadgeText({
         text: '',
         tabId: tabId
       });
-      return;
-    }
-    
-    // if API token is authenticated
-    if (Pinput.isAuthenticated) {
-      // set background
-      chrome.browserAction.setBadgeBackgroundColor({
-        color: '#66cc33'
-      });
+    });
+  }
+}
 
-      // request
-      Pinput.API.getPost(checkUrl).done(function (data) {
-        var isBookmarked = (data.posts.length !== 0);
-        chrome.browserAction.setBadgeText({
-          text: (isBookmarked) ? '●': '',
-          tabId: tabId
-        });
-      }).fail(function (error) {
-        chrome.browserAction.setBadgeText({
-          text: '',
-          tabId: tabId
-        });
-      });
-    }
+/**
+ * Set extension icon checked or not
+ * @param {Number} tabId
+ * @param {String} checkURL
+ * @param {Bookean} isChecked
+ */
+function setIcon(tabId, checkURL, isChecked) {
+
+  let isNotBookmarkable =
+    (checkURL.indexOf('chrome://') !== -1) ||
+    (checkURL.indexOf('chrome-extension://') !== -1) ||
+    (checkURL.indexOf('file://') !== -1);
+
+  // if schema is chrome related
+  if (isNotBookmarkable) {
+    chrome.browserAction.setBadgeText({
+      text: '',
+      tabId: tabId
+    });
+    return;
   }
 
-  /**
-   * Set extension icon checked or not
-   * @param {Number} tabId
-   * @param {String} checkUrl
-   * @param {Bookean} isChecked
-   */
-  function setIcon(tabId, checkUrl, isChecked) {
+  // if API token is authenticated
+  if (variable.isAuthenticated) {
+    // set background
+    chrome.browserAction.setBadgeBackgroundColor({
+      color: '#66cc33'
+    });
 
-    var isNotBookmarkable =
-      (checkUrl.indexOf('chrome://') !== -1) ||
-      (checkUrl.indexOf('chrome-extension://') !== -1) ||
-      (checkUrl.indexOf('file://') !== -1);
-
-    // if schema is chrome related
-    if (isNotBookmarkable) {
-      chrome.browserAction.setBadgeText({
-        text: '',
-        tabId: tabId
-      });
-      return;
-    }
-
-    // if API token is authenticated
-    if (Pinput.isAuthenticated) {
-      // set background
-      chrome.browserAction.setBadgeBackgroundColor({
-        color: '#66cc33'
-      });
-
-      // set icon checked
-      chrome.browserAction.setBadgeText({
-        text: isChecked ? '●': '',
-        tabId: tabId
-      });
-    }
+    // set icon checked
+    chrome.browserAction.setBadgeText({
+      text: isChecked ? '●': '',
+      tabId: tabId
+    });
   }
-  
-  // when the active tab is changed
-  chrome.tabs.onActivated.addListener(function (activeInfo) {
-    cacheActiveTab(activeInfo.tabId);
-  });
+}
 
-  // when a tab is updated
-  chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (tab.highlighted) {
-      cacheActiveTab(tabId);
-    }
-  });
+// when the active tab is changed
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  cacheActiveTab(activeInfo.tabId);
+});
+
+// when a tab is updated
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (tab.highlighted) {
+    cacheActiveTab(tabId);
+  }
+});
   
-  // when current window is switched
-  chrome.windows.onFocusChanged.addListener(function (windowId) {
-    chrome.windows.getCurrent({
-      populate: true
-    }, function (window) {
-      if (window && Array.isArray(window.tabs)) {
-        window.tabs.forEach(function (tab) {
-          if (tab.highlighted) {
-            cacheActiveTab(tab.id);
-          }
-        });
-      }
-    });
-  });
-  
-  // when received message, 
-  // return the url and title of active tab
-  chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.useStrict) {
-      updateIcon(Background.activeTabId, Background.activeTabUrl);
-    } else {
-      setIcon(Background.activeTabId, Background.activeTabUrl, !!message.isBookmarked);
-    }
-    sendResponse({
-      url: Background.activeTabUrl,
-      title: Background.activeTabTitle
-    });
-  });
-  
-  chrome.commands.onCommand.addListener(function (command) {
-    if ("direct-bookmark" === command) {
-      Pinput.API.addPost(
-        Background.activeTabUrl,
-        Background.activeTabTitle,
-        '',
-        '',
-        (Pinput.defaultPrivate ? 'no' : 'yes'),
-        (Pinput.defaultReadLater ? 'yes' : 'no')
-      ).done(function(data) {
-        if (data.result_code !== 'done') {
-          console.error(data);
-          setIcon(Background.activeTabId, Background.activeTabUrl, false);
-        } else {
-          setIcon(Background.activeTabId, Background.activeTabUrl, true);
+// when current window is switched
+chrome.windows.onFocusChanged.addListener((windowId) => {
+  chrome.windows.getCurrent({
+    populate: true
+  }, (window) => {
+    if (window && Array.isArray(window.tabs)) {
+      for (let tab of window.tabs) {
+        if (tab.highlighted) {
+          cacheActiveTab(tab.id);
         }
-      }).fail(function(error) {
-        console.error(error);
-        setIcon(Background.activeTabId, Background.activeTabUrl, false);
-      });
+      }
     }
   });
-  
-  // launch options.html on installation
-  chrome.runtime.onInstalled.addListener(function (details) {
-    if (details.reason == 'install'){
-      chrome.tabs.create({
-        url: '/html/options.html'
-      });
-    }
+});
+
+// when received message, 
+// return the url and title of active tab
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.useStrict) {
+    updateIcon(activeTabId, activeTabUrl);
+  } else {
+    setIcon(activeTabId, activeTabUrl, !!message.isBookmarked);
+  }
+  sendResponse({
+    url: activeTabUrl,
+    title: activeTabTitle
   });
+});
 
-  // export
-  global.Pinput = Pinput;
+chrome.commands.onCommand.addListener((command) => {
+  if ('direct-bookmark' === command) {
+    API.addPost(
+      activeTabUrl,
+      activeTabTitle,
+      '',
+      '',
+      variable.defaultPrivate ? 'no' : 'yes',
+      variable.defaultReadLater ? 'yes' : 'no'
+    ).then((data) => {
+      if (data.result_code !== 'done') {
+        setIcon(activeTabId, activeTabUrl, false);
+      } else {
+        setIcon(activeTabId, activeTabUrl, true);
+      }
+    }).catch((error) => {
+      setIcon(activeTabId, activeTabUrl, false);
+    });
+  }
+});
 
-})(this);
+// launch options.html on installation
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason == 'install'){
+    chrome.tabs.create({
+      url: '/html/options.html'
+    });
+  }
+});
