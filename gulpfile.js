@@ -22,10 +22,40 @@ gulp.task('css', function () {
 });
 
 gulp.task('js', function () {
-  
-  var uglify = require('gulp-uglify');
-  
-  return gulp.src(['src/js/*.js'])
+
+  var browserify = require("browserify");
+  var babelify   = require("babelify");
+  var source     = require('vinyl-source-stream');
+  var buffer     = require('vinyl-buffer');
+  var uglify     = require("gulp-uglify");
+
+  browserify({
+    entries: ['src/js/background.js'],
+    extensions: ['.js']
+  }).transform(babelify)
+    .bundle()
+    .pipe(source('background.js'))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/js/'));
+
+  browserify({
+    entries: ['src/js/options.js'],
+    extensions: ['.js']
+  }).transform(babelify)
+    .bundle()
+    .pipe(source('options.js'))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/js/'));
+
+  browserify({
+    entries: ['src/js/popup.js'],
+    extensions: ['.js']
+  }).transform(babelify)
+    .bundle()
+    .pipe(source('popup.js'))
+    .pipe(buffer())
     .pipe(uglify())
     .pipe(gulp.dest('dist/js/'));
 });
