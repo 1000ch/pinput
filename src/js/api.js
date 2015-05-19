@@ -43,14 +43,14 @@ export default {
     
     return new Promise((resolve, reject) => {
 
-      let querystring = util.serializeArray({
+      let queryString = util.serialize({
         format    : 'json',
         auth_token: variable.authToken,
         url       : '',
         _         : Date.now()
       });
 
-      return fetch(`https://api.pinboard.in/v1/posts/get?${querystring}`)
+      return fetch(`https://api.pinboard.in/v1/posts/get?${queryString}`)
         .then((response) => response.json())
         .then((data) => resolve())
         .catch((error) => reject(error));
