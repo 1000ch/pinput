@@ -97,10 +97,14 @@ gulp.task('build', function () {
 
 gulp.task('test', function () {
 
-  var validate = require('gulp-jsvalidate');
+  var eslint = require('gulp-eslint');
   
   return gulp.src(['src/js/*.js'])
-    .pipe(validate());
+    .pipe(eslint({
+      useEslintrc: true
+    }))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('watch', function () {
