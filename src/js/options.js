@@ -1,23 +1,25 @@
+'use strict';
+
 import variable from './variable';
 import constant from './constant';
 import API      from './api';
 
 const Message = {
-  isBlank: 'Please input token and try to save.',
-  succeed: 'API token is successfully authenticated!',
-  changed: 'API token is not authenticated...',
-  failed : 'API token authentication is failed...'
+  isBlank : 'Please input token and try to save.',
+  succeed : 'API token is successfully authenticated!',
+  changed : 'API token is not authenticated...',
+  failed  : 'API token authentication is failed...'
 };
 
 $(() => {
-  
+
   let $input                 = $('#js-input');
   let $button                = $('#js-button');
   let $alert                 = $('#js-alert');
   let $checkboxPrivate       = $('#js-checkbox-private');
   let $checkboxReadLater     = $('#js-checkbox-readlater');
   let $checkboxTagSuggestion = $('#js-checkbox-tagsuggestion');
-  
+
   function setAlertInfo(message) {
     $alert.removeClass('alert-danger alert-warning alert-success')
           .addClass('alert-info')
@@ -87,6 +89,7 @@ $(() => {
       }).catch((error) => {
         setAlertDanger(Message.failed);
         variable.isAuthenticated = false;
+        console.error(error);
       });
     } else {
       setAlertInfo(Message.isBlank);
@@ -96,11 +99,11 @@ $(() => {
     $input.val(variable.authToken);
   });
 
-  $input.on('change', function (e) {
+  $input.on('change', function() {
     setAlertWarning(Message.changed);
   });
 
-  $checkboxPrivate.on('change', function (e) {
+  $checkboxPrivate.on('change', function() {
 
     variable.defaultPrivate = $checkboxPrivate.prop('checked');
 
@@ -110,7 +113,7 @@ $(() => {
     chrome.storage.sync.set(data, () => {});
   });
 
-  $checkboxReadLater.on('change', function (e) {
+  $checkboxReadLater.on('change', function() {
 
     variable.defaultReadLater = $checkboxReadLater.prop('checked');
 
@@ -120,7 +123,7 @@ $(() => {
     chrome.storage.sync.set(data, () => {});
   });
 
-  $checkboxTagSuggestion.on('change', function (e) {
+  $checkboxTagSuggestion.on('change', function() {
 
     variable.useTagSuggestion = $checkboxTagSuggestion.prop('checked');
 
@@ -129,9 +132,9 @@ $(() => {
 
     chrome.storage.sync.set(data, () => {});
   });
-  
+
   // if the save button is clicked
-  $button.on('click', function (e) {
+  $button.on('click', function() {
 
     variable.authToken = $input.val();
 
@@ -153,6 +156,7 @@ $(() => {
 
           variable.isAuthenticated = false;
           data[constant.isAuthenticated] = false;
+          console.error(error);
 
           chrome.storage.sync.set(data, () => {
             setAlertDanger(Message.failed);

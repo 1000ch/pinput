@@ -1,16 +1,20 @@
+'use strict';
+
 export default {
   /**
    * Split string with whitespace
    * @param {String} val
    * @returns {String}
    */
-  split: (val = '') => val.split(/ \s*/),
+  split : function(val = '') {
+    return val.split(/ \s*/);
+  },
   /**
    * Extract last
    * @param {String} term
    * @returns {String}
    */
-  extractLast: function (term) {
+  extractLast : function(term) {
     return this.split(term).pop();
   },
   /**
@@ -18,7 +22,7 @@ export default {
    * @param {Object} param
    * @returns {Array}
    */
-  serializeArray: (param = {}) => {
+  serializeArray : function(param = {}) {
 
     let array = [];
     let keys  = Object.keys(param);
@@ -34,7 +38,7 @@ export default {
    * @param {Object} param
    * @returns {String}
    */
-  serialize: function (param) {
+  serialize : function(param) {
     return this.serializeArray(param).join('&');
   }
 };

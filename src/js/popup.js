@@ -1,17 +1,19 @@
+'use strict';
+
 import variable from './variable';
 import constant from './constant';
 import util     from './util';
 import API      from './api';
 
 const Message = {
-  isBookmarked          : 'This URL is already bookmarked.',
-  isNotAuthenticated    : 'API Token is not authenticated.',
-  bookmarkedSuccessfully: 'Bookmarked successfully!',
-  updatedSuccessfully   : 'Updated successfully!',
-  deletedSuccessfully   : 'Deleted successfully!',
-  failedToBookmark      : 'Failed to bookmark...',
-  failedToUpdate        : 'Failed to update...',
-  failedToDelete        : 'Failed to delete...'
+  isBookmarked           : 'This URL is already bookmarked.',
+  isNotAuthenticated     : 'API Token is not authenticated.',
+  bookmarkedSuccessfully : 'Bookmarked successfully!',
+  updatedSuccessfully    : 'Updated successfully!',
+  deletedSuccessfully    : 'Deleted successfully!',
+  failedToBookmark       : 'Failed to bookmark...',
+  failedToUpdate         : 'Failed to update...',
+  failedToDelete         : 'Failed to delete...'
 };
 
 // autofocus attribute is not working on chrome extension :(
@@ -37,11 +39,11 @@ $(() => {
   let $delete           = $('#js-delete');
   let $alert            = $('#js-alert');
 
-  function setAlertInfo(message = '') {
-    $alert.removeClass('alert-danger alert-warning alert-success')
-          .addClass('alert-info')
-          .text(message);
-  }
+  //function setAlertInfo(message = '') {
+  //  $alert.removeClass('alert-danger alert-warning alert-success')
+  //        .addClass('alert-info')
+  //        .text(message);
+  //}
 
   function setAlertSuccess(message = '') {
     $alert.removeClass('alert-info alert-warning alert-danger')
@@ -63,7 +65,7 @@ $(() => {
 
   // when popup is opened,
   // send blank message to background
-  chrome.runtime.sendMessage({useStrict: true}, (response) => {
+  chrome.runtime.sendMessage({useStrict : true}, (response) => {
 
     $url.val(response.url);
     $title.val(response.title);
@@ -107,25 +109,30 @@ $(() => {
             let post = data.posts.shift();
             $tags.val(post.tags);
             $description.val(post.extended);
-            $bookmark.removeClass('btn-primary').addClass('btn-warning').text('Update bookmark');
-            $bookmarkDropdown.removeAttr('disabled').removeClass('btn-primary').addClass('btn-warning');
+            $bookmark
+              .removeClass('btn-primary')
+              .addClass('btn-warning')
+              .text('Update bookmark');
+            $bookmarkDropdown
+              .removeAttr('disabled')
+              .removeClass('btn-primary')
+              .addClass('btn-warning');
 
             setAlertWarning(Message.isBookmarked);
 
             Message.bookmarkedSuccessfully = Message.updatedSuccessfully;
             Message.failedToBookmark = Message.failedToUpdate;
 
-          } else {
+          } else if (variable.useTagSuggestion) {
 
-            if (variable.useTagSuggestion) {
-              API.suggestPost(response.url).then((array) => {
-                for (let data of array) {
-                  if (Array.isArray(data.popular)) {
-                    $tags.val(data.popular.join(' '));
-                  }
+            API.suggestPost(response.url).then((array) => {
+              for (let tag of array) {
+                if (Array.isArray(tag.popular)) {
+                  $tags.val(tag.popular.join(' '));
                 }
-              });
-            }
+              }
+            });
+
           }
         }).then(() => {
 
@@ -133,23 +140,34 @@ $(() => {
           API.getTags().then((data) => {
 
             let availableTags = Object.keys(data);
-            $tags.on('keydown', function (event) {
-              if (event.keyCode === $.ui.keyCode.TAB && $(this).data('ui-autocomplete').menu.active) {
-                event.preventDefault();
+
+            $tags.on('keydown', function(e) {
+
+              let $this = $(this);
+
+              if (e.keyCode === $.ui.keyCode.TAB &&
+                  $this.data('ui-autocomplete').menu.active) {
+                e.preventDefault();
               }
             }).autocomplete({
-              minLength: 0,
-              max: 5,
-              autoFocus: true,
-              source: function (request, response) {
+              minLength : 0,
+              max       : 5,
+              autoFocus : true,
+
+              source : function(req, res) {
                 // delegate back to autocomplete, but extract the last term
-                response($.ui.autocomplete.filter(availableTags, util.extractLast(request.term)).slice(0, 5));
+                res(
+                  $.ui.autocomplete.filter(
+                    availableTags,
+                    util.extractLast(req.term)
+                  ).slice(0, 5)
+                );
               },
-              focus: function () {
+              focus : function() {
                 // prevent value inserted on focus
                 return false;
               },
-              select: function (event, ui) {
+              select : function(event, ui) {
                 let terms = util.split(this.value);
                 // remove the current input
                 terms.pop();
@@ -164,16 +182,16 @@ $(() => {
           });
         });
 
-        $form.on('submit', function (e) {
+        $form.on('submit', function(e) {
 
           e.preventDefault();
-          
+
           API.addPost(
             $url.val(),
             $title.val(),
             $description.val(),
             $tags.val(),
-            $private.prop('checked')   ? 'no' : 'yes',
+            $private.prop('checked') ? 'no' : 'yes',
             $readlater.prop('checked') ? 'yes' : 'no'
           ).then((data) => {
 
@@ -182,17 +200,18 @@ $(() => {
               setAlertDanger(Message.failedToBookmark);
 
               chrome.runtime.sendMessage({
-                useStrict: false,
-                isBookmarked: false
-              }, (response) => {});
+                useStrict    : false,
+                isBookmarked : false
+              });
+
             } else {
 
               setAlertSuccess(Message.bookmarkedSuccessfully);
 
               chrome.runtime.sendMessage({
-                useStrict: false,
-                isBookmarked: true
-              }, (response) => {});
+                useStrict    : false,
+                isBookmarked : true
+              });
 
               // close popup window
               window.setTimeout(() => window.close(), 300);
@@ -202,13 +221,13 @@ $(() => {
             setAlertDanger(error);
 
             chrome.runtime.sendMessage({
-              useStrict: false,
-              isBookmarked: false
-            }, (response) => {});
+              useStrict    : false,
+              isBookmarked : false
+            });
           });
         });
 
-        $bookmark.on('click', function (e) {
+        $bookmark.on('click', function(e) {
 
           e.preventDefault();
 
@@ -217,7 +236,7 @@ $(() => {
             $title.val(),
             $description.val(),
             $tags.val(),
-            $private.prop('checked')   ? 'no' : 'yes',
+            $private.prop('checked') ? 'no' : 'yes',
             $readlater.prop('checked') ? 'yes' : 'no'
           ).then((data) => {
 
@@ -226,18 +245,18 @@ $(() => {
               setAlertDanger(Message.failedToBookmark);
 
               chrome.runtime.sendMessage({
-                useStrict: false,
-                isBookmarked: false
-              }, (response) => {});
-              
+                useStrict    : false,
+                isBookmarked : false
+              });
+
             } else {
 
               setAlertSuccess(Message.bookmarkedSuccessfully);
 
               chrome.runtime.sendMessage({
-                useStrict: false,
-                isBookmarked: true
-              }, (response) => {});
+                useStrict    : false,
+                isBookmarked : true
+              });
 
               window.setTimeout(() => window.close(), 300);
             }
@@ -246,13 +265,13 @@ $(() => {
             setAlertDanger(error);
 
             chrome.runtime.sendMessage({
-              useStrict: false,
-              isBookmarked: false
-            }, (response) => {});
+              useStrict    : false,
+              isBookmarked : false
+            });
           });
         });
 
-        $delete.on('click', function (e) {
+        $delete.on('click', function(e) {
 
           e.preventDefault();
 
@@ -264,18 +283,18 @@ $(() => {
               setAlertDanger(Message.failedToDelete);
 
               chrome.runtime.sendMessage({
-                useStrict: false,
-                isBookmarked: true
-              }, (response) => {});
+                useStrict    : false,
+                isBookmarked : true
+              });
 
             } else {
 
               setAlertSuccess(Message.deletedSuccessfully);
 
               chrome.runtime.sendMessage({
-                useStrict: false,
-                isBookmarked: false
-              }, (response) => {});
+                useStrict    : false,
+                isBookmarked : false
+              });
 
               window.setTimeout(() => window.close(), 300);
             }
@@ -284,9 +303,9 @@ $(() => {
             setAlertDanger(error);
 
             chrome.runtime.sendMessage({
-              useStrict: false,
-              isBookmarked: true
-            }, (response) => {});
+              useStrict    : false,
+              isBookmarked : true
+            });
           });
         });
       }

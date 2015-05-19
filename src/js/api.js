@@ -1,3 +1,5 @@
+'use strict';
+
 import variable from './variable';
 import constant from './constant';
 import util     from './util';
@@ -8,7 +10,7 @@ export default {
    * Sync auth status
    * @returns {Promise}
    */
-  syncAuthStatus: function () {
+  syncAuthStatus : function() {
 
     return new Promise((resolve, reject) => {
 
@@ -23,7 +25,7 @@ export default {
 
           variable.authToken       = item[constant.authToken];
           variable.isAuthenticated = !!item[constant.isAuthenticated];
-          
+
           if (variable.authToken === '' || !variable.isAuthenticated) {
             reject(new Error('API Token is not authenticated.'));
           } else {
@@ -39,20 +41,20 @@ export default {
    * Check API Token
    * @returns {Promise}
    */
-  checkToken: function () {
-    
+  checkToken : function() {
+
     return new Promise((resolve, reject) => {
 
       let queryString = util.serialize({
-        format    : 'json',
-        auth_token: variable.authToken,
-        url       : '',
-        _         : Date.now()
+        format       : 'json',
+        'auth_token' : variable.authToken,
+        url          : '',
+        _            : Date.now()
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/get?${queryString}`)
         .then((response) => response.json())
-        .then((data) => resolve())
+        .then(() => resolve())
         .catch((error) => reject(error));
     });
   },
@@ -67,25 +69,25 @@ export default {
    * @param {String} toread
    * @returns {Promise}
    */
-  addPost: function (url, title, description, tags, shared, toread) {
+  addPost : function(url, title, description, tags, shared, toread) {
 
     return this.syncAuthStatus().then(() => {
 
       let queryString = util.serialize({
-        format     : 'json',
-        auth_token : variable.authToken,
-        url        : encodeURIComponent(url),
-        description: encodeURIComponent(title),
-        extended   : encodeURIComponent(description),
-        tags       : encodeURIComponent(tags),
-        shared     : shared,
-        toread     : toread,
-        _          : Date.now()
+        format       : 'json',
+        'auth_token' : variable.authToken,
+        url          : encodeURIComponent(url),
+        description  : encodeURIComponent(title),
+        extended     : encodeURIComponent(description),
+        tags         : encodeURIComponent(tags),
+        shared       : shared,
+        toread       : toread,
+        _            : Date.now()
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/add?${queryString}`)
         .then((response) => response.json())
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     });
   },
   /**
@@ -94,20 +96,20 @@ export default {
    * @param {String} url
    * @returns {Promise}
    */
-  deletePost: function (url) {
+  deletePost : function(url) {
 
     return this.syncAuthStatus().then(() => {
 
       let queryString = util.serialize({
-        format    : 'json',
-        auth_token: variable.authToken,
-        url       : encodeURIComponent(url),
-        _         : Date.now()
+        format       : 'json',
+        'auth_token' : variable.authToken,
+        url          : encodeURIComponent(url),
+        _            : Date.now()
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/delete?${queryString}`)
         .then((response) => response.json())
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     });
   },
   /**
@@ -117,21 +119,21 @@ export default {
    * @param {String} url
    * @returns {Promise}
    */
-  getPost: function (url) {
+  getPost : function(url) {
 
     // synchronize authentication status
     return this.syncAuthStatus().then(() => {
 
       let queryString = util.serialize({
-        format    : 'json',
-        auth_token: variable.authToken,
-        url       : url ? encodeURIComponent(url) : '',
-        _         : Date.now()
+        format       : 'json',
+        'auth_token' : variable.authToken,
+        url          : url ? encodeURIComponent(url) : '',
+        _            : Date.now()
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/get?${queryString}`)
         .then((response) => response.json())
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     });
   },
   /**
@@ -142,20 +144,20 @@ export default {
    * @param {String} url
    * @returns {Promise}
    */
-  suggestPost: function (url) {
+  suggestPost : function(url) {
 
     return this.syncAuthStatus().then(() => {
 
       let queryString = util.serialize({
-        format    : 'json',
-        auth_token: variable.authToken,
-        url       : encodeURIComponent(url),
-        _         : Date.now()
+        format       : 'json',
+        'auth_token' : variable.authToken,
+        url          : encodeURIComponent(url),
+        _            : Date.now()
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/suggest?${queryString}`)
         .then((response) => response.json())
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     });
   },
   /**
@@ -163,19 +165,19 @@ export default {
    * @see https://pinboard.in/api#tags_get
    * @returns {Promise}
    */
-  getTags: function () {
+  getTags : function() {
 
     return this.syncAuthStatus().then(() => {
 
       let queryString = util.serialize({
-        format    : 'json',
-        auth_token: variable.authToken,
-        _         : Date.now()
+        format       : 'json',
+        'auth_token' : variable.authToken,
+        _            : Date.now()
       });
 
       return fetch(`https://api.pinboard.in/v1/tags/get?${queryString}`)
         .then((response) => response.json())
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     });
   }
 };

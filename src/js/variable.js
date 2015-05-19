@@ -1,7 +1,9 @@
+'use strict';
+
 export default {
-  authToken       : '',
-  isAuthenticated : false,
-  defaultPrivate  : false,
-  defaultReadLater: false,
-  useTagSuggestion: false
+  authToken        : '',
+  isAuthenticated  : false,
+  defaultPrivate   : false,
+  defaultReadLater : false,
+  useTagSuggestion : false
 };

@@ -1,3 +1,5 @@
+'use strict';
+
 import variable from './variable';
 import constant from './constant';
 import API      from './api';
@@ -34,6 +36,23 @@ function cacheActiveTab(tabId) {
   });
 }
 
+function isBookmarkable(url) {
+
+  if (url.indexOf('chrome://') !== -1) {
+    return false;
+  }
+
+  if (url.indexOf('chrome-extension://') !== -1) {
+    return false;
+  }
+
+  if (url.indexOf('file://') !== -1) {
+    return false;
+  }
+
+  return true;
+}
+
 /**
  * Check URL is already bookmarked or not
  * @param {Number} tabId
@@ -41,38 +60,36 @@ function cacheActiveTab(tabId) {
  */
 function updateIcon(tabId, checkURL) {
 
-  let isNotBookmarkable = 
-    (checkURL.indexOf('chrome://') !== -1) || 
-    (checkURL.indexOf('chrome-extension://') !== -1) || 
-    (checkURL.indexOf('file://') !== -1);
+  let isNotBookmarkable = !isBookmarkable(checkURL);
 
   // if schema is chrome related
   if (isNotBookmarkable) {
     chrome.browserAction.setBadgeText({
-      text: '',
-      tabId: tabId
+      text  : '',
+      tabId : tabId
     });
     return;
   }
-  
+
   // if API token is authenticated
   if (variable.isAuthenticated) {
     // set background
     chrome.browserAction.setBadgeBackgroundColor({
-      color: '#66cc33'
+      color : '#66cc33'
     });
 
     // request
     API.getPost(checkURL).then((data) => {
       chrome.browserAction.setBadgeText({
-        text: (data.posts.length !== 0) ? '●': '',
-        tabId: tabId
+        text  : (data.posts.length !== 0) ? '●' : '',
+        tabId : tabId
       });
     }).catch((error) => {
       chrome.browserAction.setBadgeText({
-        text: '',
-        tabId: tabId
+        text  : '',
+        tabId : tabId
       });
+      console.error(error);
     });
   }
 }
@@ -85,16 +102,13 @@ function updateIcon(tabId, checkURL) {
  */
 function setIcon(tabId, checkURL, isChecked) {
 
-  let isNotBookmarkable =
-    (checkURL.indexOf('chrome://') !== -1) ||
-    (checkURL.indexOf('chrome-extension://') !== -1) ||
-    (checkURL.indexOf('file://') !== -1);
+  let isNotBookmarkable = !isBookmarkable(checkURL);
 
   // if schema is chrome related
   if (isNotBookmarkable) {
     chrome.browserAction.setBadgeText({
-      text: '',
-      tabId: tabId
+      text  : '',
+      tabId : tabId
     });
     return;
   }
@@ -103,13 +117,13 @@ function setIcon(tabId, checkURL, isChecked) {
   if (variable.isAuthenticated) {
     // set background
     chrome.browserAction.setBadgeBackgroundColor({
-      color: '#66cc33'
+      color : '#66cc33'
     });
 
     // set icon checked
     chrome.browserAction.setBadgeText({
-      text: isChecked ? '●': '',
-      tabId: tabId
+      text  : isChecked ? '●' : '',
+      tabId : tabId
     });
   }
 }
@@ -125,11 +139,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     cacheActiveTab(tabId);
   }
 });
-  
+
 // when current window is switched
 chrome.windows.onFocusChanged.addListener((windowId) => {
+
+  console.debug(`windowId: ${windowId}`);
+
   chrome.windows.getCurrent({
-    populate: true
+    populate : true
   }, (window) => {
     if (window && Array.isArray(window.tabs)) {
       for (let tab of window.tabs) {
@@ -141,7 +158,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
   });
 });
 
-// when received message, 
+// when received message,
 // return the url and title of active tab
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.useStrict) {
@@ -150,13 +167,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     setIcon(activeTabId, activeTabUrl, !!message.isBookmarked);
   }
   sendResponse({
-    url: activeTabUrl,
-    title: activeTabTitle
+    url   : activeTabUrl,
+    title : activeTabTitle
   });
 });
 
 chrome.commands.onCommand.addListener((command) => {
-  if ('direct-bookmark' === command) {
+  if (command === 'direct-bookmark') {
     API.addPost(
       activeTabUrl,
       activeTabTitle,
@@ -172,15 +189,16 @@ chrome.commands.onCommand.addListener((command) => {
       }
     }).catch((error) => {
       setIcon(activeTabId, activeTabUrl, false);
+      console.error(error);
     });
   }
 });
 
 // launch options.html on installation
 chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason == 'install'){
+  if (details.reason === 'install') {
     chrome.tabs.create({
-      url: '/html/options.html'
+      url : '/html/options.html'
     });
   }
 });
