@@ -27,17 +27,17 @@ if (location.search !== '?foo') {
 
 $(() => {
 
-  let $form             = $('#js-form');
-  let $url              = $('#js-url');
-  let $title            = $('#js-title');
-  let $tags             = $('#js-tags');
-  let $description      = $('#js-description');
-  let $private          = $('#js-private');
-  let $readlater        = $('#js-readlater');
-  let $bookmark         = $('#js-bookmark');
-  let $bookmarkDropdown = $('#js-bookmark-dropdown');
-  let $delete           = $('#js-delete');
-  let $alert            = $('#js-alert');
+  let $form        = $('#js-form');
+  let $url         = $('#js-url');
+  let $title       = $('#js-title');
+  let $tags        = $('#js-tags');
+  let $description = $('#js-description');
+  let $private     = $('#js-private');
+  let $readlater   = $('#js-readlater');
+  let $bookmark    = $('#js-bookmark');
+  let $dropdown    = $('#js-bookmark-dropdown');
+  let $delete      = $('#js-delete');
+  let $alert       = $('#js-alert');
 
   //function setAlertInfo(message = '') {
   //  $alert.removeClass('alert-danger alert-warning alert-success')
@@ -113,7 +113,7 @@ $(() => {
               .removeClass('btn-primary')
               .addClass('btn-warning')
               .text('Update bookmark');
-            $bookmarkDropdown
+            $dropdown
               .removeAttr('disabled')
               .removeClass('btn-primary')
               .addClass('btn-warning');

@@ -114,6 +114,6 @@ gulp.task('watch', function () {
   });
 
   gulp.watch(['src/js/*.js'], function () {
-    gulp.start('js');
+    gulp.start('test', 'js');
   });
 });

@@ -42,6 +42,9 @@ const notAvailableSchemes = [
   'file://'
 ];
 
+/**
+ * Check an URL is bookmarkable or not
+ **/
 function isBookmarkable(url) {
   return notAvailableSchemes.every((scheme) => {
     return url.indexOf(scheme) === -1;
@@ -49,13 +52,13 @@ function isBookmarkable(url) {
 }
 
 /**
- * Check URL is already bookmarked or not
+ * Check an URL is already bookmarked or not
  * @param {Number} tabId
- * @param {String} checkURL
+ * @param {String} url
  */
-function updateIcon(tabId, checkURL) {
+function updateIcon(tabId, url) {
 
-  let isNotBookmarkable = !isBookmarkable(checkURL);
+  let isNotBookmarkable = !isBookmarkable(url);
 
   // if schema is chrome related
   if (isNotBookmarkable) {
@@ -74,7 +77,7 @@ function updateIcon(tabId, checkURL) {
     });
 
     // request
-    API.getPost(checkURL).then((data) => {
+    API.getPost(url).then((data) => {
       chrome.browserAction.setBadgeText({
         text  : (data.posts.length !== 0) ? '●' : '',
         tabId : tabId
@@ -92,12 +95,12 @@ function updateIcon(tabId, checkURL) {
 /**
  * Set extension icon checked or not
  * @param {Number} tabId
- * @param {String} checkURL
- * @param {Bookean} isChecked
+ * @param {String} url
+ * @param {Boolean} isChecked
  */
-function setIcon(tabId, checkURL, isChecked) {
+function setIcon(tabId, url, isChecked) {
 
-  let isNotBookmarkable = !isBookmarkable(checkURL);
+  let isNotBookmarkable = !isBookmarkable(url);
 
   // if schema is chrome related
   if (isNotBookmarkable) {
