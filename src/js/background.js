@@ -2,6 +2,7 @@
 
 import variable from './variable';
 import constant from './constant';
+import mark     from './mark';
 import API      from './api';
 
 let activeTabId    = 0;
@@ -63,7 +64,7 @@ function updateIcon(tabId, url) {
   // if schema is chrome related
   if (isNotBookmarkable) {
     chrome.browserAction.setBadgeText({
-      text  : '',
+      text  : mark.notYet,
       tabId : tabId
     });
     return;
@@ -79,12 +80,12 @@ function updateIcon(tabId, url) {
     // request
     API.getPost(url).then((data) => {
       chrome.browserAction.setBadgeText({
-        text  : (data.posts.length !== 0) ? '●' : '',
+        text  : (data.posts.length !== 0) ? mark.bookmarked : mark.notYet,
         tabId : tabId
       });
     }).catch((error) => {
       chrome.browserAction.setBadgeText({
-        text  : '',
+        text  : mark.notYet,
         tabId : tabId
       });
       console.error(error);
@@ -105,7 +106,7 @@ function setIcon(tabId, url, isChecked) {
   // if schema is chrome related
   if (isNotBookmarkable) {
     chrome.browserAction.setBadgeText({
-      text  : '',
+      text  : mark.notYet,
       tabId : tabId
     });
     return;
@@ -120,7 +121,7 @@ function setIcon(tabId, url, isChecked) {
 
     // set icon checked
     chrome.browserAction.setBadgeText({
-      text  : isChecked ? '●' : '',
+      text  : isChecked ? mark.bookmarked : mark.notYet,
       tabId : tabId
     });
   }
