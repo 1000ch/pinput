@@ -187,6 +187,12 @@ chrome.windows.onFocusChanged.addListener(() => {
 // return the url and title of active tab
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
+  if (message.isBookmarked) {
+    bookmarkedURLs.add(activeTabUrl);
+  } else {
+    bookmarkedURLs.delete(activeTabUrl);
+  }
+
   if (message.useStrict) {
     updateIcon(activeTabId, activeTabUrl);
   } else {
