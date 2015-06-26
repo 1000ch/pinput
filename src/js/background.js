@@ -8,6 +8,7 @@ import API      from './api';
 let activeTabId    = 0;
 let activeTabUrl   = '';
 let activeTabTitle = '';
+let bookmarkedURLs = new Set();
 
 const keys = [
   constant.authToken,
@@ -53,42 +54,71 @@ function isBookmarkable(url) {
 }
 
 /**
+ * Check an URL is bookmarked or not
+ **/
+function isBookmarked(url) {
+
+  return new Promise((resolve, reject) => {
+
+    API.getPost(url).then((data) => {
+      if (data.posts.length !== 0) {
+        resolve();
+      } else {
+        reject();
+      }
+    }).catch((error) => {
+      console.error(error);
+      reject(error);
+    });
+
+  });
+}
+
+/**
  * Check an URL is already bookmarked or not
  * @param {Number} tabId
  * @param {String} url
  */
 function updateIcon(tabId, url) {
 
-  let isNotBookmarkable = !isBookmarkable(url);
-
   // if schema is chrome related
-  if (isNotBookmarkable) {
-    chrome.browserAction.setBadgeText({
-      text  : mark.notYet,
-      tabId : tabId
-    });
+  if (!isBookmarkable(url)) {
+    setIcon(tabId, url, false);
     return;
   }
 
   // if API token is authenticated
   if (variable.isAuthenticated) {
+
     // set background
     chrome.browserAction.setBadgeBackgroundColor({
       color : '#66cc33'
     });
 
-    // request
-    API.getPost(url).then((data) => {
+    if (bookmarkedURLs.has(url)) {
       chrome.browserAction.setBadgeText({
-        text  : (data.posts.length !== 0) ? mark.bookmarked : mark.notYet,
+        text  : mark.bookmarked,
         tabId : tabId
       });
-    }).catch((error) => {
+      return;
+    }
+
+    isBookmarked(url).then(() => {
+
+      bookmarkedURLs.add(url);
+      chrome.browserAction.setBadgeText({
+        text  : mark.bookmarked,
+        tabId : tabId
+      });
+
+    }).catch(() => {
+
+      bookmarkedURLs.delete(url);
       chrome.browserAction.setBadgeText({
         text  : mark.notYet,
         tabId : tabId
       });
-      console.error(error);
+
     });
   }
 }
@@ -101,10 +131,8 @@ function updateIcon(tabId, url) {
  */
 function setIcon(tabId, url, isChecked) {
 
-  let isNotBookmarkable = !isBookmarkable(url);
-
   // if schema is chrome related
-  if (isNotBookmarkable) {
+  if (!isBookmarkable(url)) {
     chrome.browserAction.setBadgeText({
       text  : mark.notYet,
       tabId : tabId
@@ -140,9 +168,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 // when current window is switched
-chrome.windows.onFocusChanged.addListener((windowId) => {
-
-  console.debug(`windowId: ${windowId}`);
+chrome.windows.onFocusChanged.addListener(() => {
 
   chrome.windows.getCurrent({
     populate : true
@@ -160,11 +186,13 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
 // when received message,
 // return the url and title of active tab
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
   if (message.useStrict) {
     updateIcon(activeTabId, activeTabUrl);
   } else {
     setIcon(activeTabId, activeTabUrl, !!message.isBookmarked);
   }
+
   sendResponse({
     url   : activeTabUrl,
     title : activeTabTitle
@@ -181,12 +209,15 @@ chrome.commands.onCommand.addListener((command) => {
       variable.defaultPrivate ? 'no' : 'yes',
       variable.defaultReadLater ? 'yes' : 'no'
     ).then((data) => {
-      if (data.result_code !== 'done') {
-        setIcon(activeTabId, activeTabUrl, false);
-      } else {
+      if (data.result_code === 'done') {
+        bookmarkedURLs.add(activeTabUrl);
         setIcon(activeTabId, activeTabUrl, true);
+      } else {
+        bookmarkedURLs.delete(activeTabUrl);
+        setIcon(activeTabId, activeTabUrl, false);
       }
     }).catch((error) => {
+      bookmarkedURLs.delete(activeTabUrl);
       setIcon(activeTabId, activeTabUrl, false);
       console.error(error);
     });
