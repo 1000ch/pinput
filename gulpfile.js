@@ -14,10 +14,10 @@ gulp.task('html', function () {
 
 gulp.task('css', function () {
   
-  var csso = require('gulp-csso');
+  var cssnano = require('gulp-cssnano');
   
   return gulp.src(['src/css/lib/jquery-ui.custom.css'])
-    .pipe(csso())
+    .pipe(cssnano())
     .pipe(gulp.dest('dist/css/lib/'));
 });
 
