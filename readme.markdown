@@ -1,4 +1,4 @@
-# Pinput [![Build Status](https://travis-ci.org/1000ch/pinput.svg?branch=master)](https://travis-ci.org/1000ch/pinput)
+# Pinput [![Build Status](https://travis-ci.org/1000ch/pinput.svg?branch=master)](https://travis-ci.org/1000ch/pinput) [![devDependency Status](https://david-dm.org/1000ch/pinput/dev-status.svg)](https://david-dm.org/1000ch/pinput#info=devDependencies)
 
 ![](assets/tile.png)
 
