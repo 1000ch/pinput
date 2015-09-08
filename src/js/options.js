@@ -1,5 +1,3 @@
-'use strict';
-
 import variable from './variable';
 import constant from './constant';
 import API      from './api';

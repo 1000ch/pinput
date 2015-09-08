@@ -1,5 +1,3 @@
-'use strict';
-
 export default {
   authToken        : 'pinput_authToken',
   isAuthenticated  : 'pinput_isAuthenticated',

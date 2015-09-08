@@ -13,7 +13,7 @@
   },
 
   "rules": {
-    "strict": 2,
+    "strict": 0,
     "valid-jsdoc": 0,
 
     "default-case": 2,
@@ -31,8 +31,8 @@
     "brace-style": [2, "1tbs", { "allowSingleLine": false }],
     "consistent-this": [2, "DO NOT USE"],
 
-    "space-in-brackets": [2, "never"],
-    "space-before-function-parentheses": [2, "never"],
+    "object-curly-spacing": [2, "never"],
+    "space-before-function-paren": [2, "never"],
     "space-before-blocks": [2, "always"],
     "space-after-keywords": [2, "always"],
 

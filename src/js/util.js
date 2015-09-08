@@ -1,5 +1,3 @@
-'use strict';
-
 export default {
   /**
    * Split string with whitespace
