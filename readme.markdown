@@ -1,10 +1,8 @@
 # Pinput [![Build Status](https://travis-ci.org/1000ch/pinput.svg?branch=master)](https://travis-ci.org/1000ch/pinput) [![devDependency Status](https://david-dm.org/1000ch/pinput/dev-status.svg)](https://david-dm.org/1000ch/pinput#info=devDependencies)
 
-![](assets/tile.png)
-
-## About
-
 Light-weight chrome extension for [Pinboard](http://pinboard.in/).
+
+![](assets/tile.png)
 
 ## Usage
 
