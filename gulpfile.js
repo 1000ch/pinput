@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 
 gulp.task('html', function () {
-  
+
   var htmlmin = require('gulp-htmlmin');
 
   return gulp.src(['src/html/*.html'])
@@ -13,9 +13,9 @@ gulp.task('html', function () {
 });
 
 gulp.task('css', function () {
-  
+
   var cssnano = require('gulp-cssnano');
-  
+
   return gulp.src(['src/css/lib/jquery-ui.custom.css'])
     .pipe(cssnano())
     .pipe(gulp.dest('dist/css/lib/'));
@@ -32,8 +32,9 @@ gulp.task('js', function () {
   browserify({
     entries: ['src/js/background.js'],
     extensions: ['.js']
-  }).transform(babelify)
-    .bundle()
+  }).transform(babelify.configure({
+    presets: ['es2015']
+  })).bundle()
     .pipe(source('background.js'))
     .pipe(buffer())
     .pipe(uglify())
@@ -42,8 +43,9 @@ gulp.task('js', function () {
   browserify({
     entries: ['src/js/options.js'],
     extensions: ['.js']
-  }).transform(babelify)
-    .bundle()
+  }).transform(babelify.configure({
+    presets: ['es2015']
+  })).bundle()
     .pipe(source('options.js'))
     .pipe(buffer())
     .pipe(uglify())
@@ -52,8 +54,9 @@ gulp.task('js', function () {
   browserify({
     entries: ['src/js/popup.js'],
     extensions: ['.js']
-  }).transform(babelify)
-    .bundle()
+  }).transform(babelify.configure({
+    presets: ['es2015']
+  })).bundle()
     .pipe(source('popup.js'))
     .pipe(buffer())
     .pipe(uglify())
@@ -61,17 +64,17 @@ gulp.task('js', function () {
 });
 
 gulp.task('copy', function () {
-  
+
   gulp.src([
     'bower_components/bootstrap/dist/fonts/*'
   ]).pipe(gulp.dest('src/fonts'))
     .pipe(gulp.dest('dist/fonts'));
-  
+
   gulp.src([
     'bower_components/bootstrap/dist/css/bootstrap.min.css'
   ]).pipe(gulp.dest('src/css/lib'))
     .pipe(gulp.dest('dist/css/lib'));
-  
+
   gulp.src([
     'bower_components/jquery/dist/jquery.min.js',
     'bower_components/bootstrap/dist/js/bootstrap.min.js'
@@ -98,7 +101,7 @@ gulp.task('build', function () {
 gulp.task('test', function () {
 
   var eslint = require('gulp-eslint');
-  
+
   return gulp.src(['src/js/*.js'])
     .pipe(eslint({
       useEslintrc: true
