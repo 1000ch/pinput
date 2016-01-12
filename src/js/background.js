@@ -36,19 +36,18 @@ function cacheActiveTab(tabId) {
   });
 }
 
-const notAvailableSchemes = [
-  'chrome://',
-  'chrome-extension://',
-  'file://'
-];
-
 /**
  * Check an URL is bookmarkable or not
  **/
 function isBookmarkable(url) {
-  return notAvailableSchemes.every(scheme => {
-    return url.indexOf(scheme) === -1;
-  });
+  let protocol = new URL(url).protocol;
+  if (protocol === 'http:') {
+    return true;
+  } else if (protocol === 'https:') {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
