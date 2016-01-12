@@ -16,7 +16,7 @@ const keys = [
 ];
 
 // check token authentication
-chrome.storage.sync.get(keys, (item) => {
+chrome.storage.sync.get(keys, item => {
   variable.authToken        = String(item[constant.authToken]);
   variable.isAuthenticated  = Boolean(item[constant.isAuthenticated]);
   variable.defaultPrivate   = Boolean(item[constant.defaultPrivate]);
@@ -29,7 +29,7 @@ chrome.storage.sync.get(keys, (item) => {
  */
 function cacheActiveTab(tabId) {
   activeTabId = tabId;
-  chrome.tabs.get(tabId, (tab) => {
+  chrome.tabs.get(tabId, tab => {
     activeTabUrl = tab.url;
     activeTabTitle = tab.title;
     updateIcon(activeTabId, activeTabUrl);
@@ -46,7 +46,7 @@ const notAvailableSchemes = [
  * Check an URL is bookmarkable or not
  **/
 function isBookmarkable(url) {
-  return notAvailableSchemes.every((scheme) => {
+  return notAvailableSchemes.every(scheme => {
     return url.indexOf(scheme) === -1;
   });
 }
@@ -55,20 +55,17 @@ function isBookmarkable(url) {
  * Check an URL is bookmarked or not
  **/
 function isBookmarked(url) {
-
   return new Promise((resolve, reject) => {
-
-    API.getPost(url).then((data) => {
+    API.getPost(url).then(data => {
       if (data.posts.length !== 0) {
         resolve();
       } else {
         reject();
       }
-    }).catch((error) => {
+    }).catch(error => {
       console.error(error);
       reject(error);
     });
-
   });
 }
 
@@ -78,7 +75,6 @@ function isBookmarked(url) {
  * @param {String} url
  */
 function updateIcon(tabId, url) {
-
   // if schema is chrome related
   if (!isBookmarkable(url)) {
     setIcon(tabId, url, false);
@@ -87,7 +83,6 @@ function updateIcon(tabId, url) {
 
   // if API token is authenticated
   if (variable.isAuthenticated) {
-
     // set background
     chrome.browserAction.setBadgeBackgroundColor({
       color : '#66cc33'
@@ -102,21 +97,17 @@ function updateIcon(tabId, url) {
     }
 
     isBookmarked(url).then(() => {
-
       bookmarkedURLs.add(url);
       chrome.browserAction.setBadgeText({
         text  : mark.bookmarked,
         tabId : tabId
       });
-
     }).catch(() => {
-
       bookmarkedURLs.delete(url);
       chrome.browserAction.setBadgeText({
         text  : mark.notYet,
         tabId : tabId
       });
-
     });
   }
 }
@@ -128,7 +119,6 @@ function updateIcon(tabId, url) {
  * @param {Boolean} isChecked
  */
 function setIcon(tabId, url, isChecked) {
-
   // if schema is chrome related
   if (!isBookmarkable(url)) {
     chrome.browserAction.setBadgeText({
@@ -154,7 +144,7 @@ function setIcon(tabId, url, isChecked) {
 }
 
 // when the active tab is changed
-chrome.tabs.onActivated.addListener((activeInfo) => {
+chrome.tabs.onActivated.addListener(activeInfo => {
   cacheActiveTab(activeInfo.tabId);
 });
 
@@ -167,10 +157,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // when current window is switched
 chrome.windows.onFocusChanged.addListener(() => {
-
   chrome.windows.getCurrent({
     populate : true
-  }, (window) => {
+  }, window => {
     if (window && Array.isArray(window.tabs)) {
       for (let tab of window.tabs) {
         if (tab.highlighted) {
@@ -184,7 +173,6 @@ chrome.windows.onFocusChanged.addListener(() => {
 // when received message,
 // return the url and title of active tab
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-
   if (message.isBookmarked) {
     bookmarkedURLs.add(activeTabUrl);
   } else {
@@ -203,7 +191,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   });
 });
 
-chrome.commands.onCommand.addListener((command) => {
+chrome.commands.onCommand.addListener(command => {
   if (command === 'direct-bookmark') {
     API.addPost(
       activeTabUrl,
@@ -212,7 +200,7 @@ chrome.commands.onCommand.addListener((command) => {
       '',
       variable.defaultPrivate ? 'no' : 'yes',
       variable.defaultReadLater ? 'yes' : 'no'
-    ).then((data) => {
+    ).then(data => {
       if (data.result_code === 'done') {
         bookmarkedURLs.add(activeTabUrl);
         setIcon(activeTabId, activeTabUrl, true);
@@ -220,7 +208,7 @@ chrome.commands.onCommand.addListener((command) => {
         bookmarkedURLs.delete(activeTabUrl);
         setIcon(activeTabId, activeTabUrl, false);
       }
-    }).catch((error) => {
+    }).catch(error => {
       bookmarkedURLs.delete(activeTabUrl);
       setIcon(activeTabId, activeTabUrl, false);
       console.error(error);
@@ -229,7 +217,7 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 // launch options.html on installation
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(details => {
   if (details.reason === 'install') {
     chrome.tabs.create({
       url : '/html/options.html'
