@@ -3,6 +3,7 @@
   "name": "Pinput for Pinboard",
   "version": "1.7.4",
   "description": "Light-weight chrome extension for Pinboard.",
+  "author": "1000ch",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -15,7 +16,8 @@
     "https://*/*"
   ],
   "background": {
-    "page": "/html/background.html"
+    "page": "html/background.html",
+    "persistent": false
   },
   "browser_action": {
     "default_icon": "icons/icon38.png",
@@ -39,6 +41,5 @@
       "description": "Open popup window."
     }
   },
-  "offline_enabled": false,
-  "author": "1000ch"
+  "offline_enabled": false
 }
