@@ -218,7 +218,7 @@ chrome.commands.onCommand.addListener(command => {
 chrome.runtime.onInstalled.addListener(details => {
   if (details.reason === 'install') {
     chrome.tabs.create({
-      url : '/html/options.html'
+      url : 'html/options.html'
     });
   }
 });
