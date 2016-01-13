@@ -232,6 +232,6 @@ chrome.contextMenus.create({
 
 chrome.contextMenus.onClicked.addListener(({menuItemId}) => {
   if (menuItemId == 'Open Pinboard') {
-    chrome.tabs.create({ url : 'https://pinboard.in/'});
+    chrome.tabs.create({url : 'https://pinboard.in/'});
   }
 });
