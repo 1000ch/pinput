@@ -102,6 +102,8 @@ $(() => {
             let post = data.posts.shift();
             $tags.val(post.tags);
             $description.val(post.extended);
+            $private.prop('checked', post.shared === 'no');
+            $readlater.prop('checked', post.toread !== 'no');
             $bookmark
               .removeClass('btn-primary')
               .addClass('btn-warning')
