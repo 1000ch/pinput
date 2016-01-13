@@ -45,9 +45,8 @@ function isBookmarkable(url) {
     return true;
   } else if (protocol === 'https:') {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 /**
@@ -228,7 +227,7 @@ chrome.runtime.onInstalled.addListener(details => {
 chrome.contextMenus.create({
   title    : 'Open Pinboard',
   contexts : ['browser_action'],
-  onclick  : function() {
+  onclick  : () => {
     chrome.tabs.create({
       url : 'https://pinboard.in/'
     });
