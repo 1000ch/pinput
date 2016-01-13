@@ -237,10 +237,12 @@ chrome.contextMenus.create({
 // add open pinboard to browser action right click menu
 chrome.contextMenus.create({
   title    : 'Open Pinboard',
+  id       : 'Open Pinboard',
   contexts : ['browser_action'],
-  onclick  : function() {
-    chrome.tabs.create({
-      url : 'https://pinboard.in/'
-    });
+});
+
+chrome.contextMenus.onClicked.addListener(({menuItemId}) => {
+  if (menuItemId == 'Open Pinboard') {
+    chrome.tabs.create({ url : 'https://pinboard.in/'});
   }
 });
