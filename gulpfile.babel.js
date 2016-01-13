@@ -1,8 +1,7 @@
-var gulp = require('gulp');
+const gulp = require('gulp');
 
-gulp.task('html', function () {
-
-  var htmlmin = require('gulp-htmlmin');
+gulp.task('html', () => {
+  const htmlmin = require('gulp-htmlmin');
 
   return gulp.src(['src/html/*.html'])
     .pipe(htmlmin({
@@ -12,22 +11,20 @@ gulp.task('html', function () {
     .pipe(gulp.dest('dist/html/'));
 });
 
-gulp.task('css', function () {
-
-  var cssnano = require('gulp-cssnano');
+gulp.task('css', () => {
+  const cssnano = require('gulp-cssnano');
 
   return gulp.src(['src/css/lib/jquery-ui.custom.css'])
     .pipe(cssnano())
     .pipe(gulp.dest('dist/css/lib/'));
 });
 
-gulp.task('js', function () {
-
-  var browserify = require("browserify");
-  var babelify   = require("babelify");
-  var source     = require('vinyl-source-stream');
-  var buffer     = require('vinyl-buffer');
-  var uglify     = require("gulp-uglify");
+gulp.task('js', () => {
+  const browserify = require("browserify");
+  const babelify   = require("babelify");
+  const source     = require('vinyl-source-stream');
+  const buffer     = require('vinyl-buffer');
+  const uglify     = require("gulp-uglify");
 
   browserify({
     entries: ['src/js/background.js'],
@@ -63,8 +60,7 @@ gulp.task('js', function () {
     .pipe(gulp.dest('dist/js/'));
 });
 
-gulp.task('copy', function () {
-
+gulp.task('copy', () => {
   gulp.src([
     'bower_components/bootstrap/dist/fonts/*'
   ]).pipe(gulp.dest('src/fonts'))
@@ -94,13 +90,12 @@ gulp.task('copy', function () {
   ]).pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', function () {
+gulp.task('build', () => {
   gulp.start('html', 'css', 'js', 'copy');
 });
 
-gulp.task('test', function () {
-
-  var eslint = require('gulp-eslint');
+gulp.task('test', () => {
+  const eslint = require('gulp-eslint');
 
   return gulp.src(['src/js/*.js'])
     .pipe(eslint({
@@ -110,13 +105,12 @@ gulp.task('test', function () {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('watch', function () {
-
-  gulp.watch(['src/html/*.html'], function () {
+gulp.task('watch', () => {
+  gulp.watch(['src/html/*.html'], () => {
     gulp.start('html');
   });
 
-  gulp.watch(['src/js/*.js'], function () {
+  gulp.watch(['src/js/*.js'], () => {
     gulp.start('test', 'js');
   });
 });

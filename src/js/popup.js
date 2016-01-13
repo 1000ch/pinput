@@ -24,7 +24,6 @@ if (location.search !== '?foo') {
 }
 
 $(() => {
-
   let $form        = $('#js-form');
   let $url         = $('#js-url');
   let $title       = $('#js-title');
@@ -44,27 +43,29 @@ $(() => {
   //}
 
   function setAlertSuccess(message = '') {
-    $alert.removeClass('alert-info alert-warning alert-danger')
-          .addClass('alert-success')
-          .text(message);
+    $alert
+      .removeClass('alert-info alert-warning alert-danger')
+      .addClass('alert-success')
+      .text(message);
   }
 
   function setAlertDanger(message = '') {
-    $alert.removeClass('alert-info alert-warning alert-success')
-          .addClass('alert-danger')
-          .text(message);
+    $alert
+      .removeClass('alert-info alert-warning alert-success')
+      .addClass('alert-danger')
+      .text(message);
   }
 
   function setAlertWarning(message = '') {
-    $alert.removeClass('alert-info alert-success alert-danger')
-          .addClass('alert-warning')
-          .text(message);
+    $alert
+      .removeClass('alert-info alert-success alert-danger')
+      .addClass('alert-warning')
+      .text(message);
   }
 
   // when popup is opened,
   // send blank message to background
-  chrome.runtime.sendMessage({useStrict : true}, (response) => {
-
+  chrome.runtime.sendMessage({useStrict : true}, response => {
     $url.val(response.url);
     $title.val(response.title);
     $tags.focus();
@@ -77,8 +78,7 @@ $(() => {
       constant.useTagSuggestion
     ];
 
-    chrome.storage.sync.get(keys, (item) => {
-
+    chrome.storage.sync.get(keys, item => {
       variable.authToken        = String(item[constant.authToken]);
       variable.isAuthenticated  = Boolean(item[constant.isAuthenticated]);
       variable.defaultPrivate   = Boolean(item[constant.defaultPrivate]);
@@ -94,19 +94,16 @@ $(() => {
       }
 
       if (!variable.isAuthenticated) {
-
         setAlertDanger(Message.isNotAuthenticated);
         $bookmark.prop('disabled', true);
-
       } else {
-
-        API.getPost(response.url).then((data) => {
-
+        API.getPost(response.url).then(data => {
           if (data.posts.length !== 0) {
-
             let post = data.posts.shift();
             $tags.val(post.tags);
             $description.val(post.extended);
+            $private.prop('checked', post.shared === 'no');
+            $readlater.prop('checked', post.toread !== 'no');
             $bookmark
               .removeClass('btn-primary')
               .addClass('btn-warning')
@@ -120,28 +117,22 @@ $(() => {
 
             Message.bookmarkedSuccessfully = Message.updatedSuccessfully;
             Message.failedToBookmark = Message.failedToUpdate;
-
           } else if (variable.useTagSuggestion) {
-
-            API.suggestPost(response.url).then((array) => {
+            API.suggestPost(response.url).then(array => {
               for (let tag of array) {
                 if (Array.isArray(tag.popular)) {
                   $tags.val(tag.popular.join(' '));
                 }
               }
             });
-
           }
         }).then(() => {
-
           // set up word suggestion
-          API.getTags().then((data) => {
-
+          API.getTags().then(data => {
             let availableTags = Object.keys(data);
 
-            $tags.on('keydown', function(e) {
-
-              let $this = $(this);
+            $tags.on('keydown', e => {
+              let $this = $(e.target);
 
               if (e.keyCode === $.ui.keyCode.TAB &&
                   $this.data('ui-autocomplete').menu.active) {
@@ -152,7 +143,7 @@ $(() => {
               max       : 5,
               autoFocus : true,
 
-              source : function(req, res) {
+              source : (req, res) => {
                 // delegate back to autocomplete, but extract the last term
                 res(
                   $.ui.autocomplete.filter(
@@ -161,27 +152,26 @@ $(() => {
                   ).slice(0, 5)
                 );
               },
-              focus : function() {
+              focus : () => {
                 // prevent value inserted on focus
                 return false;
               },
-              select : function(event, ui) {
-                let terms = util.split(this.value);
+              select : (e, ui) => {
+                let terms = util.split(e.target.value);
                 // remove the current input
                 terms.pop();
                 // add the selected item
                 terms.push(ui.item.value);
                 // add placeholder to get the comma-and-space at the end
                 terms.push('');
-                this.value = terms.join(' ');
+                e.target.value = terms.join(' ');
                 return false;
               }
             });
           });
         });
 
-        $form.on('submit', function(e) {
-
+        $form.on('submit', e => {
           e.preventDefault();
 
           API.addPost(
@@ -191,19 +181,15 @@ $(() => {
             $tags.val(),
             $private.prop('checked') ? 'no' : 'yes',
             $readlater.prop('checked') ? 'yes' : 'no'
-          ).then((data) => {
-
+          ).then(data => {
             if (data.result_code !== 'done') {
-
               setAlertDanger(Message.failedToBookmark);
 
               chrome.runtime.sendMessage({
                 useStrict    : false,
                 isBookmarked : false
               });
-
             } else {
-
               setAlertSuccess(Message.bookmarkedSuccessfully);
 
               chrome.runtime.sendMessage({
@@ -214,8 +200,7 @@ $(() => {
               // close popup window
               window.setTimeout(() => window.close(), 300);
             }
-          }).catch((error) => {
-
+          }).catch(error => {
             setAlertDanger(error);
 
             chrome.runtime.sendMessage({
@@ -225,8 +210,7 @@ $(() => {
           });
         });
 
-        $bookmark.on('click', function(e) {
-
+        $bookmark.on('click', e => {
           e.preventDefault();
 
           API.addPost(
@@ -239,16 +223,13 @@ $(() => {
           ).then((data) => {
 
             if (data.result_code !== 'done') {
-
               setAlertDanger(Message.failedToBookmark);
 
               chrome.runtime.sendMessage({
                 useStrict    : false,
                 isBookmarked : false
               });
-
             } else {
-
               setAlertSuccess(Message.bookmarkedSuccessfully);
 
               chrome.runtime.sendMessage({
@@ -258,8 +239,7 @@ $(() => {
 
               window.setTimeout(() => window.close(), 300);
             }
-          }).catch((error) => {
-
+          }).catch(error => {
             setAlertDanger(error);
 
             chrome.runtime.sendMessage({
@@ -269,24 +249,20 @@ $(() => {
           });
         });
 
-        $delete.on('click', function(e) {
-
+        $delete.on('click', e => {
           e.preventDefault();
 
           API.deletePost(
             $url.val()
-          ).then((data) => {
+          ).then(data => {
             if (data.result_code !== 'done') {
-
               setAlertDanger(Message.failedToDelete);
 
               chrome.runtime.sendMessage({
                 useStrict    : false,
                 isBookmarked : true
               });
-
             } else {
-
               setAlertSuccess(Message.deletedSuccessfully);
 
               chrome.runtime.sendMessage({
@@ -297,7 +273,6 @@ $(() => {
               window.setTimeout(() => window.close(), 300);
             }
           }).catch((error) => {
-
             setAlertDanger(error);
 
             chrome.runtime.sendMessage({

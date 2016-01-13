@@ -10,7 +10,6 @@ const Message = {
 };
 
 $(() => {
-
   let $input                 = $('#js-input');
   let $button                = $('#js-button');
   let $alert                 = $('#js-alert');
@@ -19,27 +18,31 @@ $(() => {
   let $checkboxTagSuggestion = $('#js-checkbox-tagsuggestion');
 
   function setAlertInfo(message) {
-    $alert.removeClass('alert-danger alert-warning alert-success')
-          .addClass('alert-info')
-          .text(message);
+    $alert
+      .removeClass('alert-danger alert-warning alert-success')
+      .addClass('alert-info')
+      .text(message);
   }
 
   function setAlertSuccess(message) {
-    $alert.removeClass('alert-info alert-warning alert-danger')
-          .addClass('alert-success')
-          .text(message);
+    $alert
+      .removeClass('alert-info alert-warning alert-danger')
+      .addClass('alert-success')
+      .text(message);
   }
 
   function setAlertDanger(message) {
-    $alert.removeClass('alert-info alert-warning alert-success')
-          .addClass('alert-danger')
-          .text(message);
+    $alert
+      .removeClass('alert-info alert-warning alert-success')
+      .addClass('alert-danger')
+      .text(message);
   }
 
   function setAlertWarning(message) {
-    $alert.removeClass('alert-info alert-success alert-danger')
-          .addClass('alert-warning')
-          .text(message);
+    $alert
+      .removeClass('alert-info alert-success alert-danger')
+      .addClass('alert-warning')
+      .text(message);
   }
 
   const keys = [
@@ -50,8 +53,7 @@ $(() => {
   ];
 
   // check set API token is authenticated
-  chrome.storage.sync.get(keys, (items) => {
-
+  chrome.storage.sync.get(keys, items => {
     if (items.hasOwnProperty(constant.authToken)) {
       variable.authToken = String(items[constant.authToken]);
     } else {
@@ -84,7 +86,7 @@ $(() => {
       API.checkToken().then(() => {
         setAlertSuccess(Message.succeed);
         variable.isAuthenticated = true;
-      }).catch((error) => {
+      }).catch(error => {
         setAlertDanger(Message.failed);
         variable.isAuthenticated = false;
         console.error(error);
@@ -97,12 +99,11 @@ $(() => {
     $input.val(variable.authToken);
   });
 
-  $input.on('change', function() {
+  $input.on('change', () => {
     setAlertWarning(Message.changed);
   });
 
-  $checkboxPrivate.on('change', function() {
-
+  $checkboxPrivate.on('change', () => {
     variable.defaultPrivate = $checkboxPrivate.prop('checked');
 
     let data = {};
@@ -111,8 +112,7 @@ $(() => {
     chrome.storage.sync.set(data, () => {});
   });
 
-  $checkboxReadLater.on('change', function() {
-
+  $checkboxReadLater.on('change', () => {
     variable.defaultReadLater = $checkboxReadLater.prop('checked');
 
     let data = {};
@@ -121,8 +121,7 @@ $(() => {
     chrome.storage.sync.set(data, () => {});
   });
 
-  $checkboxTagSuggestion.on('change', function() {
-
+  $checkboxTagSuggestion.on('change', () => {
     variable.useTagSuggestion = $checkboxTagSuggestion.prop('checked');
 
     let data = {};
@@ -132,8 +131,7 @@ $(() => {
   });
 
   // if the save button is clicked
-  $button.on('click', function() {
-
+  $button.on('click', () => {
     variable.authToken = $input.val();
 
     let data = {};
@@ -142,16 +140,13 @@ $(() => {
     chrome.storage.sync.set(data, () => {
       if (variable.authToken.length !== 0) {
         API.checkToken().then(() => {
-
           variable.isAuthenticated = true;
           data[constant.isAuthenticated] = true;
 
           chrome.storage.sync.set(data, () => {
             setAlertSuccess(Message.succeed);
           });
-
-        }).catch((error) => {
-
+        }).catch(error => {
           variable.isAuthenticated = false;
           data[constant.isAuthenticated] = false;
           console.error(error);
@@ -161,7 +156,6 @@ $(() => {
           });
         });
       } else {
-
         variable.isAuthenticated = false;
         data[constant.isAuthenticated] = false;
 

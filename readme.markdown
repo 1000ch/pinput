@@ -6,26 +6,31 @@ Light-weight chrome extension for [Pinboard](http://pinboard.in/).
 
 ## Usage
 
-### Click to open popup window.
+### Just click
 
-![Screen Shot](https://raw.github.com/1000ch/pinput/master/screenshot/pinput.png)
+To open popup window.
 
-### Shortcut key
+![Screen Shot](screenshot/pinput.png)
 
-- Press `Ctrl + B` to open popup window.
-- Press `Ctrl + Shift + B` to bookmark directly without opening popup window.
+### Shortcut keys
+
+| | Mac | Windows |
+|---|---|---|
+| Open popup window | <kbd>Command</kbd> + <kbd>B</kbd> | <kbd>Ctrl</kbd> + <kbd>B</kbd> |
+| Bookmark directly | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> |
+
+You can configure those keyboard shortcuts from **Keyboard shortcuts** on `chrome://extensions/` (at bottom of page).
 
 ## Settings
 
-To display whether the current tab is already bookmarked or not at icon,  
-set your Pinboard API token at setting page.  
-You can open setting page with right click on icon, or from extensions page.  
+You need to set **Pinboard API token** on setting page before using this extension. You can open setting page with right click on icon, or from extensions page.  
 
-![Screen Shot](https://raw.github.com/1000ch/pinput/master/screenshot/settings.png)
+![Screen Shot](screenshot/settings.png)
 
 ## License
 
-Copyright [@1000ch](http://twitter.com/1000ch)  
-Icons by [@t32k](http://twitter.com/t32k)  
+Copyright [@1000ch](https://github.com/1000ch)
 
-Licensed under the GPL License version 3.  
+Icons by [@t32k](https://github.com/t32k)
+
+Licensed under the GPL License version 3.

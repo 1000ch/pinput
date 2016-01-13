@@ -3,24 +3,19 @@ import constant from './constant';
 import util     from './util';
 
 export default {
-
   /**
    * Sync auth status
    * @returns {Promise}
    */
   syncAuthStatus : function() {
-
     return new Promise((resolve, reject) => {
-
       if (variable.authToken === '' || !variable.isAuthenticated) {
-
         const keys = [
           constant.authToken,
           constant.isAuthenticated
         ];
 
         chrome.storage.sync.get(keys, (item) => {
-
           variable.authToken       = String(item[constant.authToken]);
           variable.isAuthenticated = Boolean(item[constant.isAuthenticated]);
 
@@ -40,9 +35,7 @@ export default {
    * @returns {Promise}
    */
   checkToken : function() {
-
     return new Promise((resolve, reject) => {
-
       let queryString = util.serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
@@ -51,9 +44,9 @@ export default {
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/get?${queryString}`)
-        .then((response) => response.json())
+        .then(response => response.json())
         .then(() => resolve())
-        .catch((error) => reject(error));
+        .catch(error => reject(error));
     });
   },
   /**
@@ -68,9 +61,7 @@ export default {
    * @returns {Promise}
    */
   addPost : function(url, title, description, tags, shared, toread) {
-
     return this.syncAuthStatus().then(() => {
-
       let queryString = util.serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
@@ -84,8 +75,8 @@ export default {
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/add?${queryString}`)
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
+        .then(response => response.json())
+        .catch(error => console.error(error));
     });
   },
   /**
@@ -95,9 +86,7 @@ export default {
    * @returns {Promise}
    */
   deletePost : function(url) {
-
     return this.syncAuthStatus().then(() => {
-
       let queryString = util.serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
@@ -106,8 +95,8 @@ export default {
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/delete?${queryString}`)
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
+        .then(response => response.json())
+        .catch(error => console.error(error));
     });
   },
   /**
@@ -118,10 +107,8 @@ export default {
    * @returns {Promise}
    */
   getPost : function(url) {
-
     // synchronize authentication status
     return this.syncAuthStatus().then(() => {
-
       let queryString = util.serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
@@ -130,8 +117,8 @@ export default {
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/get?${queryString}`)
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
+        .then(response => response.json())
+        .catch(error => console.error(error));
     });
   },
   /**
@@ -143,9 +130,7 @@ export default {
    * @returns {Promise}
    */
   suggestPost : function(url) {
-
     return this.syncAuthStatus().then(() => {
-
       let queryString = util.serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
@@ -154,8 +139,8 @@ export default {
       });
 
       return fetch(`https://api.pinboard.in/v1/posts/suggest?${queryString}`)
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
+        .then(response => response.json())
+        .catch(error => console.error(error));
     });
   },
   /**
@@ -164,9 +149,7 @@ export default {
    * @returns {Promise}
    */
   getTags : function() {
-
     return this.syncAuthStatus().then(() => {
-
       let queryString = util.serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
@@ -174,8 +157,8 @@ export default {
       });
 
       return fetch(`https://api.pinboard.in/v1/tags/get?${queryString}`)
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
+        .then(response => response.json())
+        .catch(error => console.error(error));
     });
   }
 };
