@@ -1,6 +1,6 @@
 import variable from './variable';
 import constant from './constant';
-import util     from './util';
+import { serialize } from './util';
 
 export default {
   /**
@@ -36,7 +36,7 @@ export default {
    */
   checkToken : function() {
     return new Promise((resolve, reject) => {
-      let queryString = util.serialize({
+      let queryString = serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
         url          : '',
@@ -62,7 +62,7 @@ export default {
    */
   addPost : function(url, title, description, tags, shared, toread) {
     return this.syncAuthStatus().then(() => {
-      let queryString = util.serialize({
+      let queryString = serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
         url          : encodeURIComponent(url),
@@ -87,7 +87,7 @@ export default {
    */
   deletePost : function(url) {
     return this.syncAuthStatus().then(() => {
-      let queryString = util.serialize({
+      let queryString = serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
         url          : encodeURIComponent(url),
@@ -109,7 +109,7 @@ export default {
   getPost : function(url) {
     // synchronize authentication status
     return this.syncAuthStatus().then(() => {
-      let queryString = util.serialize({
+      let queryString = serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
         url          : encodeURIComponent(url),
@@ -131,7 +131,7 @@ export default {
    */
   suggestPost : function(url) {
     return this.syncAuthStatus().then(() => {
-      let queryString = util.serialize({
+      let queryString = serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
         url          : encodeURIComponent(url),
@@ -150,7 +150,7 @@ export default {
    */
   getTags : function() {
     return this.syncAuthStatus().then(() => {
-      let queryString = util.serialize({
+      let queryString = serialize({
         format       : 'json',
         'auth_token' : variable.authToken,
         _            : Date.now()

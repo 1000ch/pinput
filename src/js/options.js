@@ -1,6 +1,6 @@
 import variable from './variable';
 import constant from './constant';
-import API      from './api';
+import API from './api';
 
 const Message = {
   isBlank : 'Please input token and try to save.',

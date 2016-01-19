@@ -1,7 +1,7 @@
 import variable from './variable';
 import constant from './constant';
-import util     from './util';
-import API      from './api';
+import API from './api';
+import { extractLast, split } from './util';
 
 const Message = {
   isBookmarked           : 'This URL is already bookmarked.',
@@ -148,7 +148,7 @@ $(() => {
                 res(
                   $.ui.autocomplete.filter(
                     availableTags,
-                    util.extractLast(req.term)
+                    extractLast(req.term)
                   ).slice(0, 5)
                 );
               },
@@ -157,7 +157,7 @@ $(() => {
                 return false;
               },
               select : (e, ui) => {
-                let terms = util.split(e.target.value);
+                let terms = split(e.target.value);
                 // remove the current input
                 terms.pop();
                 // add the selected item

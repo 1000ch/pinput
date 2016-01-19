@@ -1,7 +1,7 @@
 import variable from './variable';
 import constant from './constant';
-import mark     from './mark';
-import API      from './api';
+import mark from './mark';
+import API from './api';
 
 let activeTabId    = 0;
 let activeTabUrl   = '';
