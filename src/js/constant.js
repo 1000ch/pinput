@@ -1,7 +1,5 @@
-export default {
-  authToken        : 'pinput_authToken',
-  isAuthenticated  : 'pinput_isAuthenticated',
-  defaultPrivate   : 'pinput_defaultPrivate',
-  defaultReadLater : 'pinput_defaultReadLater',
-  useTagSuggestion : 'pinput_useTagSuggestion'
-};
+export const authToken        = 'pinput_authToken';
+export const isAuthenticated  = 'pinput_isAuthenticated';
+export const defaultPrivate   = 'pinput_defaultPrivate';
+export const defaultReadLater = 'pinput_defaultReadLater';
+export const useTagSuggestion = 'pinput_useTagSuggestion';

@@ -1,6 +1,5 @@
-import variable from './variable';
-import constant from './constant';
-import API from './api';
+import * as constant from './constant';
+import * as API from './api';
 
 const Message = {
   isBlank : 'Please input token and try to save.',
@@ -52,51 +51,57 @@ $(() => {
     constant.useTagSuggestion
   ];
 
+  let authToken;
+  let defaultPrivate;
+  let defaultReadLater;
+  let useTagSuggestion;
+  let isAuthenticated;
+
   // check set API token is authenticated
   chrome.storage.sync.get(keys, items => {
     if (items.hasOwnProperty(constant.authToken)) {
-      variable.authToken = String(items[constant.authToken]);
+      authToken = String(items[constant.authToken]);
     } else {
-      variable.authToken = '';
+      authToken = '';
     }
 
     if (items.hasOwnProperty(constant.defaultPrivate)) {
-      variable.defaultPrivate = Boolean(items[constant.defaultPrivate]);
+      defaultPrivate = Boolean(items[constant.defaultPrivate]);
     } else {
-      variable.defaultPrivate = false;
+      defaultPrivate = false;
     }
 
     if (items.hasOwnProperty(constant.defaultReadLater)) {
-      variable.defaultReadLater = Boolean(items[constant.defaultReadLater]);
+      defaultReadLater = Boolean(items[constant.defaultReadLater]);
     } else {
-      variable.defaultReadLater = false;
+      defaultReadLater = false;
     }
 
     if (items.hasOwnProperty(constant.useTagSuggestion)) {
-      variable.useTagSuggestion = Boolean(items[constant.useTagSuggestion]);
+      useTagSuggestion = Boolean(items[constant.useTagSuggestion]);
     } else {
-      variable.useTagSuggestion = false;
+      useTagSuggestion = false;
     }
 
-    $checkboxPrivate.prop('checked', variable.defaultPrivate);
-    $checkboxReadLater.prop('checked', variable.defaultReadLater);
-    $checkboxTagSuggestion.prop('checked', variable.useTagSuggestion);
+    $checkboxPrivate.prop('checked', defaultPrivate);
+    $checkboxReadLater.prop('checked', defaultReadLater);
+    $checkboxTagSuggestion.prop('checked', useTagSuggestion);
 
-    if (variable.authToken.length !== 0) {
-      API.checkToken().then(() => {
+    if (authToken.length !== 0) {
+      API.checkToken(authToken).then(() => {
         setAlertSuccess(Message.succeed);
-        variable.isAuthenticated = true;
+        isAuthenticated = true;
       }).catch(error => {
         setAlertDanger(Message.failed);
-        variable.isAuthenticated = false;
+        isAuthenticated = false;
         console.error(error);
       });
     } else {
       setAlertInfo(Message.isBlank);
-      variable.isAuthenticated = false;
+      isAuthenticated = false;
     }
 
-    $input.val(variable.authToken);
+    $input.val(authToken);
   });
 
   $input.on('change', () => {
@@ -104,50 +109,50 @@ $(() => {
   });
 
   $checkboxPrivate.on('change', () => {
-    variable.defaultPrivate = $checkboxPrivate.prop('checked');
+    defaultPrivate = $checkboxPrivate.prop('checked');
 
     let data = {};
-    data[constant.defaultPrivate] = variable.defaultPrivate;
+    data[constant.defaultPrivate] = defaultPrivate;
 
     chrome.storage.sync.set(data, () => {});
   });
 
   $checkboxReadLater.on('change', () => {
-    variable.defaultReadLater = $checkboxReadLater.prop('checked');
+    defaultReadLater = $checkboxReadLater.prop('checked');
 
     let data = {};
-    data[constant.defaultReadLater] = variable.defaultReadLater;
+    data[constant.defaultReadLater] = defaultReadLater;
 
     chrome.storage.sync.set(data, () => {});
   });
 
   $checkboxTagSuggestion.on('change', () => {
-    variable.useTagSuggestion = $checkboxTagSuggestion.prop('checked');
+    useTagSuggestion = $checkboxTagSuggestion.prop('checked');
 
     let data = {};
-    data[constant.useTagSuggestion] = variable.useTagSuggestion;
+    data[constant.useTagSuggestion] = useTagSuggestion;
 
     chrome.storage.sync.set(data, () => {});
   });
 
   // if the save button is clicked
   $button.on('click', () => {
-    variable.authToken = $input.val();
+    authToken = $input.val();
 
     let data = {};
-    data[constant.authToken] = variable.authToken;
+    data[constant.authToken] = authToken;
 
     chrome.storage.sync.set(data, () => {
-      if (variable.authToken.length !== 0) {
-        API.checkToken().then(() => {
-          variable.isAuthenticated = true;
+      if (authToken.length !== 0) {
+        API.checkToken(authToken).then(() => {
+          isAuthenticated = true;
           data[constant.isAuthenticated] = true;
 
           chrome.storage.sync.set(data, () => {
             setAlertSuccess(Message.succeed);
           });
         }).catch(error => {
-          variable.isAuthenticated = false;
+          isAuthenticated = false;
           data[constant.isAuthenticated] = false;
           console.error(error);
 
@@ -156,7 +161,7 @@ $(() => {
           });
         });
       } else {
-        variable.isAuthenticated = false;
+        isAuthenticated = false;
         data[constant.isAuthenticated] = false;
 
         chrome.storage.sync.set(data, () => {

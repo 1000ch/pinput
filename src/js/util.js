@@ -26,7 +26,7 @@ export function serializeArray(param = {}) {
   let keys  = Object.keys(param);
 
   for (let key of keys) {
-    array.push(key + '=' + param[key]);
+    array.push(`${key}=${param[key]}`);
   }
 
   return array;
@@ -39,4 +39,17 @@ export function serializeArray(param = {}) {
  */
 export function serialize(param) {
   return serializeArray(param).join('&');
+}
+
+/**
+ * Check an URL is bookmarkable or not
+ **/
+export function isBookmarkable(url) {
+  let protocol = new URL(url).protocol;
+  if (protocol === 'http:') {
+    return true;
+  } else if (protocol === 'https:') {
+    return true;
+  }
+  return false;
 }

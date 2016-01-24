@@ -1,4 +1,2 @@
-export default {
-  bookmarked : '+',
-  notYet     : ''
-};
+export const bookmarked = '+';
+export const notYet     = '';

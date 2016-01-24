@@ -1,7 +1,6 @@
-import variable from './variable';
-import constant from './constant';
-import API from './api';
-import { extractLast, split } from './util';
+import * as constant from './constant';
+import * as API from './api';
+import * as util from './util';
 
 const Message = {
   isBookmarked           : 'This URL is already bookmarked.',
@@ -63,6 +62,12 @@ $(() => {
       .text(message);
   }
 
+  let authToken;
+  let isAuthenticated;
+  let defaultPrivate;
+  let defaultReadLater;
+  let useTagSuggestion;
+
   // when popup is opened,
   // send blank message to background
   chrome.runtime.sendMessage({useStrict : true}, response => {
@@ -79,25 +84,25 @@ $(() => {
     ];
 
     chrome.storage.sync.get(keys, item => {
-      variable.authToken        = String(item[constant.authToken]);
-      variable.isAuthenticated  = Boolean(item[constant.isAuthenticated]);
-      variable.defaultPrivate   = Boolean(item[constant.defaultPrivate]);
-      variable.defaultReadLater = Boolean(item[constant.defaultReadLater]);
-      variable.useTagSuggestion = Boolean(item[constant.useTagSuggestion]);
+      authToken        = String(item[constant.authToken]);
+      isAuthenticated  = Boolean(item[constant.isAuthenticated]);
+      defaultPrivate   = Boolean(item[constant.defaultPrivate]);
+      defaultReadLater = Boolean(item[constant.defaultReadLater]);
+      useTagSuggestion = Boolean(item[constant.useTagSuggestion]);
 
-      if (variable.defaultPrivate) {
+      if (defaultPrivate) {
         $private.prop('checked', true);
       }
 
-      if (variable.defaultReadLater) {
+      if (defaultReadLater) {
         $readlater.prop('checked', true);
       }
 
-      if (!variable.isAuthenticated) {
+      if (!isAuthenticated) {
         setAlertDanger(Message.isNotAuthenticated);
         $bookmark.prop('disabled', true);
       } else {
-        API.getPost(response.url).then(data => {
+        API.getPost(response.url, authToken).then(data => {
           if (data.posts.length !== 0) {
             let post = data.posts.shift();
             $tags.val(post.tags);
@@ -117,8 +122,8 @@ $(() => {
 
             Message.bookmarkedSuccessfully = Message.updatedSuccessfully;
             Message.failedToBookmark = Message.failedToUpdate;
-          } else if (variable.useTagSuggestion) {
-            API.suggestPost(response.url).then(array => {
+          } else if (useTagSuggestion) {
+            API.suggestPost(response.url, authToken).then(array => {
               for (let tag of array) {
                 if (Array.isArray(tag.popular)) {
                   $tags.val(tag.popular.join(' '));
@@ -128,7 +133,7 @@ $(() => {
           }
         }).then(() => {
           // set up word suggestion
-          API.getTags().then(data => {
+          API.getTags(authToken).then(data => {
             let availableTags = Object.keys(data);
 
             $tags.on('keydown', e => {
@@ -142,13 +147,12 @@ $(() => {
               minLength : 0,
               max       : 5,
               autoFocus : true,
-
-              source : (req, res) => {
+              source    : (req, res) => {
                 // delegate back to autocomplete, but extract the last term
                 res(
                   $.ui.autocomplete.filter(
                     availableTags,
-                    extractLast(req.term)
+                    util.extractLast(req.term)
                   ).slice(0, 5)
                 );
               },
@@ -157,7 +161,7 @@ $(() => {
                 return false;
               },
               select : (e, ui) => {
-                let terms = split(e.target.value);
+                let terms = util.split(e.target.value);
                 // remove the current input
                 terms.pop();
                 // add the selected item
@@ -180,7 +184,8 @@ $(() => {
             $description.val(),
             $tags.val(),
             $private.prop('checked') ? 'no' : 'yes',
-            $readlater.prop('checked') ? 'yes' : 'no'
+            $readlater.prop('checked') ? 'yes' : 'no',
+            authToken
           ).then(data => {
             if (data.result_code !== 'done') {
               setAlertDanger(Message.failedToBookmark);
@@ -219,8 +224,9 @@ $(() => {
             $description.val(),
             $tags.val(),
             $private.prop('checked') ? 'no' : 'yes',
-            $readlater.prop('checked') ? 'yes' : 'no'
-          ).then((data) => {
+            $readlater.prop('checked') ? 'yes' : 'no',
+            authToken
+          ).then(data => {
 
             if (data.result_code !== 'done') {
               setAlertDanger(Message.failedToBookmark);
@@ -252,9 +258,7 @@ $(() => {
         $delete.on('click', e => {
           e.preventDefault();
 
-          API.deletePost(
-            $url.val()
-          ).then(data => {
+          API.deletePost($url.val(), authToken).then(data => {
             if (data.result_code !== 'done') {
               setAlertDanger(Message.failedToDelete);
 

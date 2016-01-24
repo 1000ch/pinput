@@ -1,7 +1,7 @@
-import variable from './variable';
-import constant from './constant';
-import mark from './mark';
-import API from './api';
+import * as constant from './constant';
+import * as mark from './mark';
+import * as API from './api';
+import * as util from './util';
 
 let activeTabId    = 0;
 let activeTabUrl   = '';
@@ -15,12 +15,17 @@ const keys = [
   constant.defaultReadLater
 ];
 
+let authToken;
+let isAuthenticated;
+let defaultPrivate;
+let defaultReadLater;
+
 // check token authentication
 chrome.storage.sync.get(keys, item => {
-  variable.authToken        = String(item[constant.authToken]);
-  variable.isAuthenticated  = Boolean(item[constant.isAuthenticated]);
-  variable.defaultPrivate   = Boolean(item[constant.defaultPrivate]);
-  variable.defaultReadLater = Boolean(item[constant.defaultReadLater]);
+  authToken        = String(item[constant.authToken]);
+  isAuthenticated  = Boolean(item[constant.isAuthenticated]);
+  defaultPrivate   = Boolean(item[constant.defaultPrivate]);
+  defaultReadLater = Boolean(item[constant.defaultReadLater]);
 });
 
 /**
@@ -37,24 +42,13 @@ function cacheActiveTab(tabId) {
 }
 
 /**
- * Check an URL is bookmarkable or not
- **/
-function isBookmarkable(url) {
-  let protocol = new URL(url).protocol;
-  if (protocol === 'http:') {
-    return true;
-  } else if (protocol === 'https:') {
-    return true;
-  }
-  return false;
-}
-
-/**
  * Check an URL is bookmarked or not
  **/
 function isBookmarked(url) {
+  // remove hash
+  let u = new URL(url);
   return new Promise((resolve, reject) => {
-    API.getPost(url).then(data => {
+    API.getPost(`${u.origin}${u.pathname}`, authToken).then(data => {
       if (data.posts.length !== 0) {
         resolve();
       } else {
@@ -74,13 +68,13 @@ function isBookmarked(url) {
  */
 function updateIcon(tabId, url) {
   // if schema is chrome related
-  if (!isBookmarkable(url)) {
+  if (!util.isBookmarkable(url)) {
     setIcon(tabId, url, false);
     return;
   }
 
   // if API token is authenticated
-  if (variable.isAuthenticated) {
+  if (isAuthenticated) {
     // set background
     chrome.browserAction.setBadgeBackgroundColor({
       color : '#66cc33'
@@ -118,7 +112,7 @@ function updateIcon(tabId, url) {
  */
 function setIcon(tabId, url, isChecked) {
   // if schema is chrome related
-  if (!isBookmarkable(url)) {
+  if (!util.isBookmarkable(url)) {
     chrome.browserAction.setBadgeText({
       text  : mark.notYet,
       tabId : tabId
@@ -127,7 +121,7 @@ function setIcon(tabId, url, isChecked) {
   }
 
   // if API token is authenticated
-  if (variable.isAuthenticated) {
+  if (isAuthenticated) {
     // set background
     chrome.browserAction.setBadgeBackgroundColor({
       color : '#66cc33'
@@ -196,8 +190,9 @@ chrome.commands.onCommand.addListener(command => {
       activeTabTitle,
       '',
       '',
-      variable.defaultPrivate ? 'no' : 'yes',
-      variable.defaultReadLater ? 'yes' : 'no'
+      defaultPrivate ? 'no' : 'yes',
+      defaultReadLater ? 'yes' : 'no',
+      authToken
     ).then(data => {
       if (data.result_code === 'done') {
         bookmarkedURLs.add(activeTabUrl);
