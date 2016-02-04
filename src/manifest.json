@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Pinput for Pinboard",
   "short_name": "Pinput",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Light-weight chrome extension for Pinboard.",
   "author": "1000ch",
   "icons": {
@@ -18,7 +18,7 @@
   ],
   "background": {
     "page": "html/background.html",
-    "persistent": false
+    "persistent": true
   },
   "browser_action": {
     "default_icon": "icons/icon38.png",
