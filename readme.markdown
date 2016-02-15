@@ -25,8 +25,6 @@ You can configure those keyboard shortcuts from **Keyboard shortcuts** on `chrom
 
 You need to set **Pinboard API token** on setting page before using this extension. You can open setting page with right click on icon, or from extensions page.  
 
-![Screen Shot](screenshot/settings.png)
-
 ## License
 
 Copyright [@1000ch](https://github.com/1000ch)
