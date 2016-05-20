@@ -14,16 +14,16 @@ To open popup window.
 
 ### Shortcut keys
 
-| | Mac | Windows |
+| | Mac / Windows |
 |---|---|---|
-| Open popup window | <kbd>Command</kbd> + <kbd>B</kbd> | <kbd>Ctrl</kbd> + <kbd>B</kbd> |
-| Bookmark directly | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> |
+| Open popup window | <kbd>Ctrl</kbd> + <kbd>B</kbd> |
+| Bookmark directly | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> |
 
 You can configure those keyboard shortcuts from **Keyboard shortcuts** on `chrome://extensions/` (at bottom of page).
 
 ## Settings
 
-You need to set **Pinboard API token** on setting page before using this extension. You can open setting page with right click on icon, or from extensions page.  
+You need to set **Pinboard API token** on setting page before using this extension. You can open setting page with right click on icon, or from extensions page.
 
 ## License
 
