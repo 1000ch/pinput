@@ -54,10 +54,7 @@ function isBookmarked(url) {
       } else {
         reject();
       }
-    }).catch(error => {
-      console.error(error);
-      reject(error);
-    });
+    }).catch(error => reject(error));
   });
 }
 
@@ -201,10 +198,9 @@ chrome.commands.onCommand.addListener(command => {
         bookmarkedURLs.delete(activeTabUrl);
         setIcon(activeTabId, activeTabUrl, false);
       }
-    }).catch(error => {
+    }).catch(() => {
       bookmarkedURLs.delete(activeTabUrl);
       setIcon(activeTabId, activeTabUrl, false);
-      console.error(error);
     });
   }
 });

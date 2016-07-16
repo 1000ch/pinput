@@ -1,4 +1,3 @@
-import * as constant from './constant';
 import * as util from './util';
 
 /**

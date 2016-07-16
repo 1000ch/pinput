@@ -55,7 +55,6 @@ $(() => {
   let defaultPrivate;
   let defaultReadLater;
   let useTagSuggestion;
-  let isAuthenticated;
 
   // check set API token is authenticated
   chrome.storage.sync.get(keys, items => {
@@ -90,15 +89,11 @@ $(() => {
     if (authToken.length !== 0) {
       API.checkToken(authToken).then(() => {
         setAlertSuccess(Message.succeed);
-        isAuthenticated = true;
-      }).catch(error => {
+      }).catch(() => {
         setAlertDanger(Message.failed);
-        isAuthenticated = false;
-        console.error(error);
       });
     } else {
       setAlertInfo(Message.isBlank);
-      isAuthenticated = false;
     }
 
     $input.val(authToken);
@@ -145,23 +140,19 @@ $(() => {
     chrome.storage.sync.set(data, () => {
       if (authToken.length !== 0) {
         API.checkToken(authToken).then(() => {
-          isAuthenticated = true;
           data[constant.isAuthenticated] = true;
 
           chrome.storage.sync.set(data, () => {
             setAlertSuccess(Message.succeed);
           });
-        }).catch(error => {
-          isAuthenticated = false;
+        }).catch(() => {
           data[constant.isAuthenticated] = false;
-          console.error(error);
 
           chrome.storage.sync.set(data, () => {
             setAlertDanger(Message.failed);
           });
         });
       } else {
-        isAuthenticated = false;
         data[constant.isAuthenticated] = false;
 
         chrome.storage.sync.set(data, () => {
