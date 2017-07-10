@@ -161,6 +161,12 @@ $(() => {
                 return false;
               },
               select : (e, ui) => {
+                if (e.keyCode === $.ui.keyCode.ENTER) {
+                  // enter should submit the form, not autocomplete
+                  $form.trigger('submit');
+                  return false;
+                }
+
                 let terms = util.split(e.target.value);
                 // remove the current input
                 terms.pop();
