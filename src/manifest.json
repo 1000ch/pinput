@@ -25,7 +25,9 @@
     "default_title": "Pinput for Pinboard",
     "default_popup": "html/popup.html"
   },
-  "options_page": "html/options.html",
+  "options_ui": {
+    "page": "html/options.html"
+  },
   "commands": {
     "direct-bookmark": {
       "suggested_key": {
@@ -41,6 +43,5 @@
       },
       "description": "Open popup window."
     }
-  },
-  "offline_enabled": false
+  }
 }
