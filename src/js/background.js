@@ -1,18 +1,11 @@
 import { storageKey, mark } from './constant';
 import * as API from './api';
-import * as util from './util';
+import { getData, isBookmarkable } from './util';
 
 let activeTabId    = 0;
 let activeTabUrl   = '';
 let activeTabTitle = '';
 let bookmarkedURLs = new Set();
-
-const keys = [
-  storageKey.authToken,
-  storageKey.isAuthenticated,
-  storageKey.defaultPrivate,
-  storageKey.defaultReadLater
-];
 
 let authToken;
 let isAuthenticated;
@@ -20,11 +13,16 @@ let defaultPrivate;
 let defaultReadLater;
 
 // check token authentication
-chrome.storage.sync.get(keys, item => {
-  authToken        = String(item[storageKey.authToken]);
-  isAuthenticated  = Boolean(item[storageKey.isAuthenticated]);
-  defaultPrivate   = Boolean(item[storageKey.defaultPrivate]);
-  defaultReadLater = Boolean(item[storageKey.defaultReadLater]);
+getData([
+  storageKey.authToken,
+  storageKey.isAuthenticated,
+  storageKey.defaultPrivate,
+  storageKey.defaultReadLater
+]).then(items => {
+  authToken        = String(items[storageKey.authToken]);
+  isAuthenticated  = Boolean(items[storageKey.isAuthenticated]);
+  defaultPrivate   = Boolean(items[storageKey.defaultPrivate]);
+  defaultReadLater = Boolean(items[storageKey.defaultReadLater]);
 });
 
 /**
@@ -57,7 +55,7 @@ async function isBookmarked(url) {
  */
 function updateIcon(tabId, url) {
   // if schema is chrome related
-  if (!util.isBookmarkable(url)) {
+  if (!isBookmarkable(url)) {
     setIcon(tabId, url, false);
     return;
   }
@@ -101,7 +99,7 @@ function updateIcon(tabId, url) {
  */
 function setIcon(tabId, url, isChecked) {
   // if schema is chrome related
-  if (!util.isBookmarkable(url)) {
+  if (!isBookmarkable(url)) {
     chrome.browserAction.setBadgeText({
       text  : mark.notYet,
       tabId : tabId

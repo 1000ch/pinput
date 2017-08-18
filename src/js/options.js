@@ -1,5 +1,6 @@
 import { storageKey } from './constant';
 import * as API from './api';
+import { getData, setData} from './util';
 
 const Message = {
   isBlank : 'Please input token and try to save.',
@@ -44,20 +45,18 @@ $(() => {
       .text(message);
   }
 
-  const keys = [
-    storageKey.authToken,
-    storageKey.defaultPrivate,
-    storageKey.defaultReadLater,
-    storageKey.useTagSuggestion
-  ];
-
   let authToken;
   let defaultPrivate;
   let defaultReadLater;
   let useTagSuggestion;
 
   // check set API token is authenticated
-  chrome.storage.sync.get(keys, items => {
+  getData([
+    storageKey.authToken,
+    storageKey.defaultPrivate,
+    storageKey.defaultReadLater,
+    storageKey.useTagSuggestion
+  ]).then(items => {
     if (items.hasOwnProperty(storageKey.authToken)) {
       authToken = String(items[storageKey.authToken]);
     } else {

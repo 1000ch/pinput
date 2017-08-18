@@ -1,6 +1,6 @@
 import { storageKey } from './constant';
 import * as API from './api';
-import * as util from './util';
+import { getData, extractLast, split } from './util';
 
 const Message = {
   isBookmarked           : 'This URL is already bookmarked.',
@@ -75,20 +75,18 @@ $(() => {
     $title.val(response.title);
     $tags.focus();
 
-    const keys = [
+    getData([
       storageKey.authToken,
       storageKey.isAuthenticated,
       storageKey.defaultPrivate,
       storageKey.defaultReadLater,
       storageKey.useTagSuggestion
-    ];
-
-    chrome.storage.sync.get(keys, item => {
-      authToken        = String(item[storageKey.authToken]);
-      isAuthenticated  = Boolean(item[storageKey.isAuthenticated]);
-      defaultPrivate   = Boolean(item[storageKey.defaultPrivate]);
-      defaultReadLater = Boolean(item[storageKey.defaultReadLater]);
-      useTagSuggestion = Boolean(item[storageKey.useTagSuggestion]);
+    ]).then(items => {
+      authToken        = String(items[storageKey.authToken]);
+      isAuthenticated  = Boolean(items[storageKey.isAuthenticated]);
+      defaultPrivate   = Boolean(items[storageKey.defaultPrivate]);
+      defaultReadLater = Boolean(items[storageKey.defaultReadLater]);
+      useTagSuggestion = Boolean(items[storageKey.useTagSuggestion]);
 
       if (defaultPrivate) {
         $private.prop('checked', true);
@@ -152,7 +150,7 @@ $(() => {
                 res(
                   $.ui.autocomplete.filter(
                     availableTags,
-                    util.extractLast(req.term)
+                    extractLast(req.term)
                   ).slice(0, 5)
                 );
               },
@@ -161,7 +159,7 @@ $(() => {
                 return false;
               },
               select : (e, ui) => {
-                let terms = util.split(e.target.value);
+                let terms = split(e.target.value);
                 // remove the current input
                 terms.pop();
                 // add the selected item

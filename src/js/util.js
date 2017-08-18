@@ -28,3 +28,15 @@ export function isBookmarkable(url) {
   }
   return false;
 }
+
+export function getData(keys) {
+  return new Promise(resolve => {
+    chrome.storage.sync.get(keys, resolve);
+  });
+}
+
+export function setData(data) {
+  return new Promise(resolve => {
+    chrome.storage.sync.set(data, resolve);
+  });
+}
