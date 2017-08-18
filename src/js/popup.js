@@ -1,4 +1,4 @@
-import * as constant from './constant';
+import { storageKey } from './constant';
 import * as API from './api';
 import * as util from './util';
 
@@ -76,19 +76,19 @@ $(() => {
     $tags.focus();
 
     const keys = [
-      constant.authToken,
-      constant.isAuthenticated,
-      constant.defaultPrivate,
-      constant.defaultReadLater,
-      constant.useTagSuggestion
+      storageKey.authToken,
+      storageKey.isAuthenticated,
+      storageKey.defaultPrivate,
+      storageKey.defaultReadLater,
+      storageKey.useTagSuggestion
     ];
 
     chrome.storage.sync.get(keys, item => {
-      authToken        = String(item[constant.authToken]);
-      isAuthenticated  = Boolean(item[constant.isAuthenticated]);
-      defaultPrivate   = Boolean(item[constant.defaultPrivate]);
-      defaultReadLater = Boolean(item[constant.defaultReadLater]);
-      useTagSuggestion = Boolean(item[constant.useTagSuggestion]);
+      authToken        = String(item[storageKey.authToken]);
+      isAuthenticated  = Boolean(item[storageKey.isAuthenticated]);
+      defaultPrivate   = Boolean(item[storageKey.defaultPrivate]);
+      defaultReadLater = Boolean(item[storageKey.defaultReadLater]);
+      useTagSuggestion = Boolean(item[storageKey.useTagSuggestion]);
 
       if (defaultPrivate) {
         $private.prop('checked', true);

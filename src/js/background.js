@@ -1,4 +1,4 @@
-import * as constant from './constant';
+import { storageKey } from './constant';
 import * as mark from './mark';
 import * as API from './api';
 import * as util from './util';
@@ -9,10 +9,10 @@ let activeTabTitle = '';
 let bookmarkedURLs = new Set();
 
 const keys = [
-  constant.authToken,
-  constant.isAuthenticated,
-  constant.defaultPrivate,
-  constant.defaultReadLater
+  storageKey.authToken,
+  storageKey.isAuthenticated,
+  storageKey.defaultPrivate,
+  storageKey.defaultReadLater
 ];
 
 let authToken;
@@ -22,10 +22,10 @@ let defaultReadLater;
 
 // check token authentication
 chrome.storage.sync.get(keys, item => {
-  authToken        = String(item[constant.authToken]);
-  isAuthenticated  = Boolean(item[constant.isAuthenticated]);
-  defaultPrivate   = Boolean(item[constant.defaultPrivate]);
-  defaultReadLater = Boolean(item[constant.defaultReadLater]);
+  authToken        = String(item[storageKey.authToken]);
+  isAuthenticated  = Boolean(item[storageKey.isAuthenticated]);
+  defaultPrivate   = Boolean(item[storageKey.defaultPrivate]);
+  defaultReadLater = Boolean(item[storageKey.defaultReadLater]);
 });
 
 /**
