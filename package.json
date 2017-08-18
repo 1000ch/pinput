@@ -8,8 +8,7 @@
   "scripts": {
     "postinstall": "bower install",
     "build": "npm run html && npm run css && npm run js && npm run copy",
-    "html": "mkdir -p dist/html && npm run html:background && npm run html:options && npm run html:popup",
-    "html:background": "html-minifier $npm_package_config_htmlmin -o dist/html/background.html src/html/background.html",
+    "html": "mkdir -p dist/html && npm run html:options && npm run html:popup",
     "html:options": "html-minifier $npm_package_config_htmlmin -o dist/html/options.html src/html/options.html",
     "html:popup": "html-minifier $npm_package_config_htmlmin -o dist/html/popup.html src/html/popup.html",
     "css": "mkdir -p dist/css/lib && npm run css:jquery-ui && npm run css:bootstrap",
