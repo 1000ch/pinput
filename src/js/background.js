@@ -43,18 +43,11 @@ function cacheActiveTab(tabId) {
 /**
  * Check an URL is bookmarked or not
  **/
-function isBookmarked(url) {
-  // remove hash
-  let u = new URL(url);
-  return new Promise((resolve, reject) => {
-    API.getPost(`${u.origin}${u.pathname}`, authToken).then(data => {
-      if (data.posts.length !== 0) {
-        resolve();
-      } else {
-        reject();
-      }
-    }).catch(error => reject(error));
-  });
+async function isBookmarked(url) {
+  const u = new URL(url);
+  const data = await API.getPost(`${u.origin}${u.pathname}`, authToken);
+
+  return data.posts.length !== 0;
 }
 
 /**
