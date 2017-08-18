@@ -5,3 +5,8 @@ export const storageKey = {
   defaultReadLater : 'pinput_defaultReadLater',
   useTagSuggestion : 'pinput_useTagSuggestion'
 };
+
+export const mark = {
+  bookmarked : '+',
+  notYet     : ''
+};

@@ -1,5 +1,4 @@
-import { storageKey } from './constant';
-import * as mark from './mark';
+import { storageKey, mark } from './constant';
 import * as API from './api';
 import * as util from './util';
 
