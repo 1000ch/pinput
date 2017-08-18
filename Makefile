@@ -11,10 +11,10 @@ node_modules: package.json
 	@npm install
 
 bower_components: bower.json
-	@bower install
+	@./node_modules/.bin/bower install
 
 build: node_modules bower_components
-	@gulp build
+	@npm run build
 
 archive: ./dist
 	@zip pinput.zip -r ./dist
