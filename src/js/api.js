@@ -1,3 +1,4 @@
+import * as qs from 'querystring';
 import * as util from './util';
 
 /**
@@ -5,16 +6,18 @@ import * as util from './util';
  * @param {String} authToken
  * @returns {Promise}
  */
-export function checkToken(authToken) {
-  let queryString = util.serialize({
+export async function checkToken(authToken) {
+  const requestURL = `https://api.pinboard.in/v1/posts/get?${qs.stringify({
     format       : 'json',
     'auth_token' : authToken,
     url          : '',
     _            : Date.now()
-  });
-  let requestURL = `https://api.pinboard.in/v1/posts/get?${queryString}`;
+  })}`;
 
-  return fetch(requestURL).then(response => response.json());
+  const response = await fetch(requestURL);
+  const json = await response.json();
+
+  return json;
 }
 
 /**
@@ -29,21 +32,23 @@ export function checkToken(authToken) {
  * @param {String} authToken
  * @returns {Promise}
  */
-export function addPost(url, title, description, tags, shared, toread, authToken) {
-  let queryString = util.serialize({
+export async function addPost(url, title, description, tags, shared, toread, authToken) {
+  const requestURL = `https://api.pinboard.in/v1/posts/add?${qs.stringify({
     format       : 'json',
     'auth_token' : authToken,
-    url          : encodeURIComponent(url),
-    description  : encodeURIComponent(title),
-    extended     : encodeURIComponent(description),
-    tags         : encodeURIComponent(tags),
+    url          : url,
+    description  : title,
+    extended     : description,
+    tags         : tags,
     shared       : shared,
     toread       : toread,
     _            : Date.now()
-  });
-  let requestURL = `https://api.pinboard.in/v1/posts/add?${queryString}`;
+  })}`;
 
-  return fetch(requestURL).then(response => response.json());
+  const response = await fetch(requestURL);
+  const json = await response.json();
+
+  return json;
 }
 
 /**
@@ -53,16 +58,18 @@ export function addPost(url, title, description, tags, shared, toread, authToken
  * @param {String} authToken
  * @returns {Promise}
  */
-export function deletePost(url, authToken) {
-  let queryString = util.serialize({
+export async function deletePost(url, authToken) {
+  const requestURL = `https://api.pinboard.in/v1/posts/delete?${qs.stringify({
     format       : 'json',
     'auth_token' : authToken,
-    url          : encodeURIComponent(url),
+    url          : url,
     _            : Date.now()
-  });
-  let requestURL = `https://api.pinboard.in/v1/posts/delete?${queryString}`;
+  })}`;
 
-  return fetch(requestURL).then(response => response.json());
+  const response = await fetch(requestURL);
+  const json = await response.json();
+
+  return json;
 }
 
 /**
@@ -73,16 +80,18 @@ export function deletePost(url, authToken) {
  * @param {String} authToken
  * @returns {Promise}
  */
-export function getPost(url, authToken) {
-  let queryString = util.serialize({
+export async function getPost(url, authToken) {
+  const requestURL = `https://api.pinboard.in/v1/posts/get?${qs.stringify({
     format       : 'json',
     'auth_token' : authToken,
-    url          : encodeURIComponent(url),
+    url          : url,
     _            : Date.now()
-  });
-  let requestURL = `https://api.pinboard.in/v1/posts/get?${queryString}`;
+  })}`;
 
-  return fetch(requestURL).then(response => response.json());
+  const response = await fetch(requestURL);
+  const json = await response.json();
+
+  return json;
 }
 
 /**
@@ -94,16 +103,18 @@ export function getPost(url, authToken) {
  * @param {String} authToken
  * @returns {Promise}
  */
-export function suggestPost(url, authToken) {
-  let queryString = util.serialize({
+export async function suggestPost(url, authToken) {
+  const requestURL = `https://api.pinboard.in/v1/posts/suggest?${qs.stringify({
     format       : 'json',
     'auth_token' : authToken,
-    url          : encodeURIComponent(url),
+    url          : url,
     _            : Date.now()
-  });
-  let requestURL = `https://api.pinboard.in/v1/posts/suggest?${queryString}`;
+  })}`;
 
-  return fetch(requestURL).then(response => response.json());
+  const response = await fetch(requestURL);
+  const json = await response.json();
+
+  return json;
 }
 
 /**
@@ -112,13 +123,15 @@ export function suggestPost(url, authToken) {
  * @param {String} authToken
  * @returns {Promise}
  */
-export function getTags(authToken) {
-  let queryString = util.serialize({
+export async function getTags(authToken) {
+  const requestURL = `https://api.pinboard.in/v1/tags/get?${qs.stringify({
     format       : 'json',
     'auth_token' : authToken,
     _            : Date.now()
-  });
-  let requestURL = `https://api.pinboard.in/v1/tags/get?${queryString}`;
+  })}`;
 
-  return fetch(requestURL).then(response => response.json());
+  const response = await fetch(requestURL);
+  const json = await response.json();
+
+  return json;
 }
