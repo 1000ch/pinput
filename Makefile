@@ -10,10 +10,7 @@ prelogue:
 node_modules: package.json
 	@npm install
 
-bower_components: bower.json
-	@./node_modules/.bin/bower install
-
-build: node_modules bower_components
+build: node_modules
 	@npm run build
 
 archive: ./dist
