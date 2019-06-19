@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Pinput for Pinboard",
   "short_name": "Pinput",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "Light-weight chrome extension for Pinboard.",
   "author": "1000ch",
   "icons": {
