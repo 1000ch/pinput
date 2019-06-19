@@ -43,15 +43,15 @@
     "url": "https://github.com/1000ch/pinput/issues"
   },
   "dependencies": {
-    "jquery-ui": "^1.11.4",
     "bootstrap": "^3.3.6",
-    "jquery": "^2.2.0"
+    "jquery": "^3.4.1",
+    "jquery-ui": "^1.11.4"
   },
   "devDependencies": {
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babelify": "^7.3.0",
-    "browserify": "^14.4.0",
+    "browserify": "^16.2.3",
     "csso-cli": "^1.0.0",
-    "html-minifier": "^3.5.3"
+    "html-minifier": "^4.0.0"
   }
 }
