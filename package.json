@@ -6,7 +6,6 @@
     "htmlmin": "--remove-comments --collapse-whitespace"
   },
   "scripts": {
-    "postinstall": "bower install",
     "build": "npm run html && npm run css && npm run js && npm run copy",
     "html": "mkdir -p dist/html && npm run html:background && npm run html:options && npm run html:popup",
     "html:background": "html-minifier $npm_package_config_htmlmin -o dist/html/background.html src/html/background.html",
@@ -14,7 +13,7 @@
     "html:popup": "html-minifier $npm_package_config_htmlmin -o dist/html/popup.html src/html/popup.html",
     "css": "mkdir -p dist/css/lib && npm run css:jquery-ui && npm run css:bootstrap",
     "css:jquery-ui": "csso src/css/lib/jquery-ui.custom.css -o dist/css/lib/jquery-ui.custom.css",
-    "css:bootstrap": "csso bower_components/bootstrap/dist/css/bootstrap.min.css -o dist/css/lib/bootstrap.min.css",
+    "css:bootstrap": "csso node_modules/bootstrap/dist/css/bootstrap.min.css -o dist/css/lib/bootstrap.min.css",
     "js": "mkdir -p dist/js/lib && npm run js:background && npm run js:options && npm run js:popup",
     "js:background": "browserify $npm_package_config_browserify -o dist/js/background.js src/js/background.js",
     "js:options": "browserify $npm_package_config_browserify -o dist/js/options.js src/js/options.js",
@@ -22,10 +21,10 @@
     "copy": "npm run copy:manifest && npm run copy:icons && npm run copy:fonts && npm run copy:jquery && npm run copy:jquery-ui && npm run copy:bootstrap",
     "copy:manifest": "cp src/manifest.json dist",
     "copy:icons": "mkdir -p dist/icons && cp src/icons/*.png dist/icons",
-    "copy:fonts": "mkdir -p dist/fonts && cp bower_components/bootstrap/dist/fonts/* dist/fonts",
-    "copy:jquery": "cp bower_components/jquery/dist/jquery.min.js dist/js/lib",
+    "copy:fonts": "mkdir -p dist/fonts && cp node_modules/bootstrap/dist/fonts/* dist/fonts",
+    "copy:jquery": "cp node_modules/jquery/dist/jquery.min.js dist/js/lib",
     "copy:jquery-ui": "cp src/js/lib/jquery-ui.custom.min.js dist/js/lib",
-    "copy:bootstrap": "cp bower_components/bootstrap/dist/js/bootstrap.min.js dist/js/lib"
+    "copy:bootstrap": "cp node_modules/bootstrap/dist/js/bootstrap.min.js dist/js/lib"
   },
   "repository": {
     "type": "git",
@@ -43,10 +42,14 @@
   "bugs": {
     "url": "https://github.com/1000ch/pinput/issues"
   },
+  "dependencies": {
+    "jquery-ui": "^1.11.4",
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.0"
+  },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babelify": "^7.3.0",
-    "bower": "^1.7.9",
     "browserify": "^14.4.0",
     "csso-cli": "^1.0.0",
     "html-minifier": "^3.5.3"
