@@ -212,7 +212,7 @@ $(() => {
               window.setTimeout(() => window.close(), 300);
             }
           }).catch(error => {
-            setAlertDanger(error);
+            setAlertDanger(error.message);
 
             chrome.runtime.sendMessage({
               useStrict    : false,
@@ -233,7 +233,6 @@ $(() => {
             $readlater.prop('checked') ? 'yes' : 'no',
             authToken
           ).then(data => {
-
             if (data.result_code !== 'done') {
               setAlertDanger(Message.failedToBookmark);
 
@@ -252,7 +251,7 @@ $(() => {
               window.setTimeout(() => window.close(), 300);
             }
           }).catch(error => {
-            setAlertDanger(error);
+            setAlertDanger(error.message);
 
             chrome.runtime.sendMessage({
               useStrict    : false,
@@ -282,8 +281,8 @@ $(() => {
 
               window.setTimeout(() => window.close(), 300);
             }
-          }).catch((error) => {
-            setAlertDanger(error);
+          }).catch(error => {
+            setAlertDanger(error.message);
 
             chrome.runtime.sendMessage({
               useStrict    : false,
