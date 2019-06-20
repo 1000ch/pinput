@@ -14,7 +14,13 @@ export function checkToken(authToken) {
   });
   let requestURL = `https://api.pinboard.in/v1/posts/get?${queryString}`;
 
-  return fetch(requestURL).then(response => response.json());
+  return fetch(requestURL).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw new Error('Network Error');
+  });
 }
 
 /**
@@ -43,7 +49,13 @@ export function addPost(url, title, description, tags, shared, toread, authToken
   });
   let requestURL = `https://api.pinboard.in/v1/posts/add?${queryString}`;
 
-  return fetch(requestURL).then(response => response.json());
+  return fetch(requestURL).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw new Error('Network Error');
+  });
 }
 
 /**
@@ -62,7 +74,13 @@ export function deletePost(url, authToken) {
   });
   let requestURL = `https://api.pinboard.in/v1/posts/delete?${queryString}`;
 
-  return fetch(requestURL).then(response => response.json());
+  return fetch(requestURL).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw new Error('Network Error');
+  });
 }
 
 /**
@@ -82,7 +100,13 @@ export function getPost(url, authToken) {
   });
   let requestURL = `https://api.pinboard.in/v1/posts/get?${queryString}`;
 
-  return fetch(requestURL).then(response => response.json());
+  return fetch(requestURL).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw new Error('Network Error');
+  });
 }
 
 /**
@@ -103,7 +127,13 @@ export function suggestPost(url, authToken) {
   });
   let requestURL = `https://api.pinboard.in/v1/posts/suggest?${queryString}`;
 
-  return fetch(requestURL).then(response => response.json());
+  return fetch(requestURL).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw new Error('Network Error');
+  });
 }
 
 /**
@@ -120,5 +150,11 @@ export function getTags(authToken) {
   });
   let requestURL = `https://api.pinboard.in/v1/tags/get?${queryString}`;
 
-  return fetch(requestURL).then(response => response.json());
+  return fetch(requestURL).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw new Error('Network Error');
+  });
 }
