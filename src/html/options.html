@@ -7,50 +7,50 @@
   </head>
   <body>
     <div class="container">
-      <header class="page-header">
-        <h1>
-          <img src="../icons/icon128.png" width="64px" height="64px" alt="Pinput">
-          <a href="https://github.com/1000ch/pinput" target="_blank">Pinput</a> Settings
-          <small>Light-weight chrome extension for <a href="https://pinboard.in/" target="_blank">Pinboard</a>.</small>
-        </h1>
-      </header>
       <section>
-        <h2>Pinboard API Token</h2>
         <p>
           Pinput requires Pinboard API Token that is available at <a href="https://pinboard.in/settings/password" target="_blank"><code>settings &gt; password</code></a>. This token will be saved at chrome sync storage.
         </p>
         <div class="row">
-          <div class="col-xs-6">
-            <input type="text" id="js-input" class="form-control input-lg" placeholder="Pinboard API Token">
-          </div>
-          <div class="col-xs-2">
-            <button id="js-button" class="btn btn-primary btn-block btn-lg" type="button">Save</button>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-8" style="margin: 20px 0px;">
-            <div id="js-alert" class="alert alert-info">Please input token and save it.</div>
-          </div>
-        </div>
-      </section>
-      <section>
-        <h2>Settings</h2>
-        <div class="row">
-          <div class="col-xs-8">
-            <input type="checkbox" class="input-lg" id="js-checkbox-private" style="vertical-align: middle;">
-            <label for="js-checkbox-private" style="vertical-align: middle;margin-left: 10px;margin-bottom: 0;">"Private" as default</label>
+          <div class="col-xs-12">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Pinboard API Token</label>
+              <div class="input-group">
+                <input type="text" id="js-input" class="form-control" placeholder="Pinboard API Token">
+                <span class="input-group-btn">
+                  <button id="js-button" class="btn btn-primary" type="button">Save</button>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-8">
-            <input type="checkbox" class="input-lg" id="js-checkbox-readlater" style="vertical-align: middle;">
-            <label for="js-checkbox-readlater" style="vertical-align: middle;margin-left: 10px;margin-bottom: 0;">"Read later" as default</label>
+          <div class="col-xs-12">
+            <div id="js-alert" class="alert alert-info">Please input API token and save it.</div>
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-8">
-            <input type="checkbox" class="input-lg" id="js-checkbox-tagsuggestion" style="vertical-align: middle;">
-            <label for="js-checkbox-tagsuggestion" style="vertical-align: middle;margin-left: 10px;margin-bottom: 0;">Suggest tag for given url</label>
+          <div class="col-xs-12">
+            <label>
+              <input type="checkbox" id="js-checkbox-private">
+              "Private" as default
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <label>
+              <input type="checkbox" id="js-checkbox-readlater">
+              "Read later" as default
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <label>
+              <input type="checkbox" id="js-checkbox-tagsuggestion">
+              Suggest tag for given url
+            </label>
           </div>
         </div>
       </section>
