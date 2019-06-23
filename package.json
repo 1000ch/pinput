@@ -2,7 +2,6 @@
   "name": "pinput",
   "description": "Light-weight chrome extension for Pinboard.",
   "config": {
-    "browserify": "--transform [ babelify --plugins [ transform-es2015-modules-commonjs ] ]",
     "htmlmin": "--remove-comments --collapse-whitespace"
   },
   "scripts": {
@@ -15,9 +14,9 @@
     "css:jquery-ui": "csso src/css/lib/jquery-ui.custom.css -o dist/css/lib/jquery-ui.custom.css",
     "css:bootstrap": "csso node_modules/bootstrap/dist/css/bootstrap.min.css -o dist/css/lib/bootstrap.min.css",
     "js": "mkdir -p dist/js/lib && npm run js:background && npm run js:options && npm run js:popup",
-    "js:background": "browserify $npm_package_config_browserify -o dist/js/background.js src/js/background.js",
-    "js:options": "browserify $npm_package_config_browserify -o dist/js/options.js src/js/options.js",
-    "js:popup": "browserify $npm_package_config_browserify -o dist/js/popup.js src/js/popup.js",
+    "js:background": "rollup --file dist/js/background.js --format iife --config rollup.config.js src/js/background.js",
+    "js:options": "rollup --file dist/js/options.js --format iife --config rollup.config.js src/js/options.js",
+    "js:popup": "rollup --file dist/js/popup.js --format iife --config rollup.config.js src/js/popup.js",
     "copy": "npm run copy:manifest && npm run copy:icons && npm run copy:fonts && npm run copy:jquery && npm run copy:jquery-ui && npm run copy:bootstrap",
     "copy:manifest": "cp src/manifest.json dist",
     "copy:icons": "mkdir -p dist/icons && cp src/icons/*.png dist/icons",
@@ -45,13 +44,14 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "jquery": "^2.2.4",
-    "jquery-ui": "^1.11.4"
+    "jquery-ui": "^1.11.4",
+    "webext-options-sync": "^0.16.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "babelify": "^7.3.0",
-    "browserify": "^16.2.3",
     "csso-cli": "^1.0.0",
-    "html-minifier": "^4.0.0"
+    "html-minifier": "^4.0.0",
+    "rollup": "^1.16.2",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-node-resolve": "^5.0.4"
   }
 }

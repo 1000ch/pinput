@@ -1,4 +1,4 @@
-import * as constant from './constant';
+import optionsSync from './options-sync';
 import * as mark from './mark';
 import * as API from './api';
 import * as util from './util';
@@ -8,24 +8,17 @@ let activeTabUrl   = '';
 let activeTabTitle = '';
 let bookmarkedURLs = new Set();
 
-const keys = [
-  constant.authToken,
-  constant.isAuthenticated,
-  constant.defaultPrivate,
-  constant.defaultReadLater
-];
-
 let authToken;
 let isAuthenticated;
 let defaultPrivate;
 let defaultReadLater;
 
 // check token authentication
-chrome.storage.sync.get(keys, item => {
-  authToken        = String(item[constant.authToken]);
-  isAuthenticated  = Boolean(item[constant.isAuthenticated]);
-  defaultPrivate   = Boolean(item[constant.defaultPrivate]);
-  defaultReadLater = Boolean(item[constant.defaultReadLater]);
+optionsSync.getAll().then(options => {
+  authToken        = options.authToken;
+  isAuthenticated  = options.isAuthenticated;
+  defaultPrivate   = options.defaultPrivate;
+  defaultReadLater = options.defaultReadLater;
 });
 
 /**

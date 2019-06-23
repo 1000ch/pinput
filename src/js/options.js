@@ -1,5 +1,5 @@
-import * as constant from './constant';
-import * as API from './api';
+import optionsSync from './options-sync.js';
+import * as API from './api.js';
 
 const Message = {
   isBlank : 'Please input token and try to save.',
@@ -44,50 +44,14 @@ $(() => {
       .text(message);
   }
 
-  const keys = [
-    constant.authToken,
-    constant.defaultPrivate,
-    constant.defaultReadLater,
-    constant.useTagSuggestion
-  ];
+  (async () => {
+    const options = await optionsSync.getAll();
+    $checkboxPrivate.prop('checked', options.defaultPrivate);
+    $checkboxReadLater.prop('checked', options.defaultReadLater);
+    $checkboxTagSuggestion.prop('checked', options.useTagSuggestion);
 
-  let authToken;
-  let defaultPrivate;
-  let defaultReadLater;
-  let useTagSuggestion;
-
-  // check set API token is authenticated
-  chrome.storage.sync.get(keys, items => {
-    if (items.hasOwnProperty(constant.authToken)) {
-      authToken = String(items[constant.authToken]);
-    } else {
-      authToken = '';
-    }
-
-    if (items.hasOwnProperty(constant.defaultPrivate)) {
-      defaultPrivate = Boolean(items[constant.defaultPrivate]);
-    } else {
-      defaultPrivate = false;
-    }
-
-    if (items.hasOwnProperty(constant.defaultReadLater)) {
-      defaultReadLater = Boolean(items[constant.defaultReadLater]);
-    } else {
-      defaultReadLater = false;
-    }
-
-    if (items.hasOwnProperty(constant.useTagSuggestion)) {
-      useTagSuggestion = Boolean(items[constant.useTagSuggestion]);
-    } else {
-      useTagSuggestion = false;
-    }
-
-    $checkboxPrivate.prop('checked', defaultPrivate);
-    $checkboxReadLater.prop('checked', defaultReadLater);
-    $checkboxTagSuggestion.prop('checked', useTagSuggestion);
-
-    if (authToken.length !== 0) {
-      API.checkToken(authToken).then(() => {
+    if (options.authToken.length !== 0) {
+      API.checkToken(options.authToken).then(() => {
         setAlertSuccess(Message.succeed);
       }).catch(() => {
         setAlertDanger(Message.failed);
@@ -96,66 +60,48 @@ $(() => {
       setAlertInfo(Message.isBlank);
     }
 
-    $input.val(authToken);
-  });
+    $input.val(options.authToken);
+  })();
 
   $input.on('change', () => {
     setAlertWarning(Message.changed);
   });
 
   $checkboxPrivate.on('change', () => {
-    defaultPrivate = $checkboxPrivate.prop('checked');
-
-    let data = {};
-    data[constant.defaultPrivate] = defaultPrivate;
-
-    chrome.storage.sync.set(data, () => {});
+    optionsSync.set({
+      defaultPrivate: $checkboxPrivate.prop('checked')
+    });
   });
 
   $checkboxReadLater.on('change', () => {
-    defaultReadLater = $checkboxReadLater.prop('checked');
-
-    let data = {};
-    data[constant.defaultReadLater] = defaultReadLater;
-
-    chrome.storage.sync.set(data, () => {});
+    optionsSync.set({
+      defaultReadLater: $checkboxReadLater.prop('checked')
+    });
   });
 
   $checkboxTagSuggestion.on('change', () => {
-    useTagSuggestion = $checkboxTagSuggestion.prop('checked');
-
-    let data = {};
-    data[constant.useTagSuggestion] = useTagSuggestion;
-
-    chrome.storage.sync.set(data, () => {});
+    optionsSync.set({
+      useTagSuggestion: $checkboxTagSuggestion.prop('checked')
+    });
   });
 
   // if the save button is clicked
   $button.on('click', () => {
-    authToken = $input.val();
+    const authToken = $input.val();
 
-    let data = {};
-    data[constant.authToken] = authToken;
-
-    chrome.storage.sync.set(data, () => {
+    optionsSync.set({ authToken }).then(() => {
       if (authToken.length !== 0) {
         API.checkToken(authToken).then(() => {
-          data[constant.isAuthenticated] = true;
-
-          chrome.storage.sync.set(data, () => {
+          optionsSync.set('isAuthenticated', true).then(() => {
             setAlertSuccess(Message.succeed);
           });
         }).catch(() => {
-          data[constant.isAuthenticated] = false;
-
-          chrome.storage.sync.set(data, () => {
+          optionsSync.set('isAuthenticated', false).then(() => {
             setAlertDanger(Message.failed);
           });
         });
       } else {
-        data[constant.isAuthenticated] = false;
-
-        chrome.storage.sync.set(data, () => {
+        optionsSync.set('isAuthenticated', false).then(() => {
           setAlertInfo(Message.isBlank);
         });
       }

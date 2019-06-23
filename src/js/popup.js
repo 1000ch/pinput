@@ -1,6 +1,6 @@
-import * as constant from './constant';
-import * as API from './api';
-import * as util from './util';
+import optionsSync from './options-sync.js';
+import * as API from './api.js';
+import * as util from './util.js';
 
 const Message = {
   isBookmarked           : 'This URL is already bookmarked.',
@@ -62,12 +62,6 @@ $(() => {
       .text(message);
   }
 
-  let authToken;
-  let isAuthenticated;
-  let defaultPrivate;
-  let defaultReadLater;
-  let useTagSuggestion;
-
   // when popup is opened,
   // send blank message to background
   chrome.runtime.sendMessage({useStrict : true}, response => {
@@ -75,34 +69,15 @@ $(() => {
     $title.val(response.title);
     $tags.focus();
 
-    const keys = [
-      constant.authToken,
-      constant.isAuthenticated,
-      constant.defaultPrivate,
-      constant.defaultReadLater,
-      constant.useTagSuggestion
-    ];
+    optionsSync.getAll(options => {
+      $private.prop('checked', options.defaultPrivate);
+      $readlater.prop('checked', options.defaultReadLater);
 
-    chrome.storage.sync.get(keys, item => {
-      authToken        = String(item[constant.authToken]);
-      isAuthenticated  = Boolean(item[constant.isAuthenticated]);
-      defaultPrivate   = Boolean(item[constant.defaultPrivate]);
-      defaultReadLater = Boolean(item[constant.defaultReadLater]);
-      useTagSuggestion = Boolean(item[constant.useTagSuggestion]);
-
-      if (defaultPrivate) {
-        $private.prop('checked', true);
-      }
-
-      if (defaultReadLater) {
-        $readlater.prop('checked', true);
-      }
-
-      if (!isAuthenticated) {
+      if (!options.isAuthenticated) {
         setAlertDanger(Message.isNotAuthenticated);
         $bookmark.prop('disabled', true);
       } else {
-        API.getPost(response.url, authToken).then(data => {
+        API.getPost(response.url, options.authToken).then(data => {
           if (data.posts.length !== 0) {
             let post = data.posts.shift();
             $tags.val(post.tags);
@@ -122,8 +97,8 @@ $(() => {
 
             Message.bookmarkedSuccessfully = Message.updatedSuccessfully;
             Message.failedToBookmark = Message.failedToUpdate;
-          } else if (useTagSuggestion) {
-            API.suggestPost(response.url, authToken).then(array => {
+          } else if (options.useTagSuggestion) {
+            API.suggestPost(response.url, options.authToken).then(array => {
               for (let tag of array) {
                 if (Array.isArray(tag.popular)) {
                   $tags.val(tag.popular.join(' '));
@@ -133,7 +108,7 @@ $(() => {
           }
         }).then(() => {
           // set up word suggestion
-          API.getTags(authToken).then(data => {
+          API.getTags(options.authToken).then(data => {
             let availableTags = Object.keys(data);
 
             $tags.on('keydown', e => {
@@ -191,7 +166,7 @@ $(() => {
             $tags.val(),
             $private.prop('checked') ? 'no' : 'yes',
             $readlater.prop('checked') ? 'yes' : 'no',
-            authToken
+            options.authToken
           ).then(data => {
             if (data.result_code !== 'done') {
               setAlertDanger(Message.failedToBookmark);
@@ -231,7 +206,7 @@ $(() => {
             $tags.val(),
             $private.prop('checked') ? 'no' : 'yes',
             $readlater.prop('checked') ? 'yes' : 'no',
-            authToken
+            options.authToken
           ).then(data => {
             if (data.result_code !== 'done') {
               setAlertDanger(Message.failedToBookmark);
@@ -263,7 +238,7 @@ $(() => {
         $delete.on('click', e => {
           e.preventDefault();
 
-          API.deletePost($url.val(), authToken).then(data => {
+          API.deletePost($url.val(), options.authToken).then(data => {
             if (data.result_code !== 'done') {
               setAlertDanger(Message.failedToDelete);
 
