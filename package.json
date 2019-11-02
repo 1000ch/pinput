@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.6",
-    "jquery": "^2.2.4",
+    "jquery": "^3.4.0",
     "jquery-ui": "^1.11.4"
   },
   "devDependencies": {
