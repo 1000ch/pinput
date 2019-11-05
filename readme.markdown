@@ -15,7 +15,7 @@ To open popup window.
 ### Shortcut keys
 
 | | Mac / Windows |
-|---|---|---|
+|---|---|
 | Open popup window | <kbd>Ctrl</kbd> + <kbd>B</kbd> |
 | Bookmark directly | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> |
 
