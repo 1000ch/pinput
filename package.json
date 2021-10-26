@@ -45,7 +45,7 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "jquery": "^2.2.4",
-    "jquery-ui": "^1.11.4"
+    "jquery-ui": "^1.13.0"
   },
   "devDependencies": {
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
