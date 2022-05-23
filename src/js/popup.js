@@ -102,6 +102,13 @@ $(() => {
         setAlertDanger(Message.isNotAuthenticated);
         $bookmark.prop('disabled', true);
       } else {
+        // set up keyboard form submission
+        $description.on('keydown', e => {
+          if (e.key === "Enter" && e.shiftKey) {
+            $form.trigger('submit');
+            return false;
+          }
+        })
         API.getPost(response.url, authToken).then(data => {
           if (data.posts.length !== 0) {
             let post = data.posts.shift();
